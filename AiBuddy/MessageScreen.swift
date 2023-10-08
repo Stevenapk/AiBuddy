@@ -7,13 +7,40 @@
 
 import SwiftUI
 import Combine
+import CoreData
+
+
+final class DataManager {
+    static let shared = DataManager()
+    
+    var allMessages = [MessageSwift]()
+    var allCharacters = [CharacterSwift]()
+}
+
+struct MessageSwift: Identifiable {
+    var id = UUID()
+    var idString: String {
+        id.uuidString
+    }
+    var content = ""
+    var timestamp: Date = Date()
+    var isSentByUser = false
+    var character: Character
+}
+
 
 struct MessageScreen: View {
     
     var character: Character
     
     //instead of this have a Message type with a string and a isSentByUser bool property
-    @State var messages: [String] = []
+//    @State var messages: [String] = []
+    
+    // Fetch Messages from Core Data and sort by timestamp
+    @FetchRequest(
+        entity: Message.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Message.timestamp, ascending: true)]
+    ) var messages: FetchedResults<Message>
     
     @State private var models: [String] = []
     
@@ -31,7 +58,7 @@ struct MessageScreen: View {
                     Image(systemName: "chevron.left")
                 }
                 Spacer()
-                Text("Contact Name")
+                Text(character.name)
                     .font(.headline)
                 Spacer()
                 EmptyView() // Add a placeholder for any additional buttons/icons
@@ -43,9 +70,13 @@ struct MessageScreen: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     // Replace with dynamic messages from the selected contact
-                    ForEach(messages.indices, id: \.self) { index in
-                                    MessageBubble(text: messages[index], isSentByUser: index % 2 == 0)
-                                }
+                    //                    ForEach(messages.indices, id: \.self) { index in
+                    //                                    MessageBubble(text: messages[index], isSentByUser: index % 2 == 0)
+                    //                                }
+                    //                }
+                    ForEach(messages) { message in
+                        MessageBubble(text: message.content, isSentByUser: message.isSentByUser)
+                    }
                 }
                 .padding()
             }
@@ -62,7 +93,7 @@ struct MessageScreen: View {
                 
                 Button(action: {
                     // Handle send button action
-                    self.messages.append(messageText)
+//                    self.messages.append(messageText)
                     sendMessage()
                 }) {
                     Image(systemName: "paperplane")
@@ -89,7 +120,7 @@ struct MessageScreen: View {
                     print("RESPONSE DELAYED \(models)")
                 }
                 let formattedOutput =  output.trimmingCharacters(in: .newlines)
-                self.messages.append(formattedOutput)
+//                self.messages.append(formattedOutput)
                 self.models.append(output)
                 responseText = models.joined(separator: " ")
             case .failure(let error):
@@ -222,6 +253,6 @@ extension Notification {
 
 struct MessageScreen_Previews: PreviewProvider {
     static var previews: some View {
-        MessageScreen(character: Character(name: "Phil"))
+        MessageScreen(character: Character(context: PersistenceController.shared.container.viewContext))
     }
 }

@@ -22,6 +22,16 @@
 		4E599D5C2AD1F44700221393 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5A2AD1F44700221393 /* HomeScreen.swift */; };
 		4E599D5E2AD1F5C700221393 /* MessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5D2AD1F5C700221393 /* MessageScreen.swift */; };
 		4E599D5F2AD1F5C700221393 /* MessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5D2AD1F5C700221393 /* MessageScreen.swift */; };
+		4E599D642AD340E100221393 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D602AD340E100221393 /* Message+CoreDataClass.swift */; };
+		4E599D652AD340E100221393 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D602AD340E100221393 /* Message+CoreDataClass.swift */; };
+		4E599D662AD340E100221393 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D612AD340E100221393 /* Message+CoreDataProperties.swift */; };
+		4E599D672AD340E100221393 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D612AD340E100221393 /* Message+CoreDataProperties.swift */; };
+		4E599D682AD340E100221393 /* Character+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D622AD340E100221393 /* Character+CoreDataClass.swift */; };
+		4E599D692AD340E100221393 /* Character+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D622AD340E100221393 /* Character+CoreDataClass.swift */; };
+		4E599D6A2AD340E100221393 /* Character+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D632AD340E100221393 /* Character+CoreDataProperties.swift */; };
+		4E599D6B2AD340E100221393 /* Character+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D632AD340E100221393 /* Character+CoreDataProperties.swift */; };
+		4E599D6D2AD34BBF00221393 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D6C2AD34BBF00221393 /* Constants.swift */; };
+		4E599D6E2AD34BBF00221393 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D6C2AD34BBF00221393 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +68,11 @@
 		4E599D582AD1EEC400221393 /* APIHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandler.swift; sourceTree = "<group>"; };
 		4E599D5A2AD1F44700221393 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		4E599D5D2AD1F5C700221393 /* MessageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageScreen.swift; sourceTree = "<group>"; };
+		4E599D602AD340E100221393 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4E599D612AD340E100221393 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4E599D622AD340E100221393 /* Character+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4E599D632AD340E100221393 /* Character+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4E599D6C2AD34BBF00221393 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +104,10 @@
 		4E599D192AD1EDC700221393 = {
 			isa = PBXGroup;
 			children = (
+				4E599D602AD340E100221393 /* Message+CoreDataClass.swift */,
+				4E599D612AD340E100221393 /* Message+CoreDataProperties.swift */,
+				4E599D622AD340E100221393 /* Character+CoreDataClass.swift */,
+				4E599D632AD340E100221393 /* Character+CoreDataProperties.swift */,
 				4E599D242AD1EDC700221393 /* AiBuddy */,
 				4E599D3B2AD1EDCF00221393 /* AiBuddyTests */,
 				4E599D452AD1EDCF00221393 /* AiBuddyUITests */,
@@ -119,6 +138,7 @@
 				4E599D582AD1EEC400221393 /* APIHandler.swift */,
 				4E599D5A2AD1F44700221393 /* HomeScreen.swift */,
 				4E599D5D2AD1F5C700221393 /* MessageScreen.swift */,
+				4E599D6C2AD34BBF00221393 /* Constants.swift */,
 			);
 			path = AiBuddy;
 			sourceTree = "<group>";
@@ -285,12 +305,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E599D2F2AD1EDCE00221393 /* Persistence.swift in Sources */,
+				4E599D6D2AD34BBF00221393 /* Constants.swift in Sources */,
 				4E599D5E2AD1F5C700221393 /* MessageScreen.swift in Sources */,
+				4E599D6A2AD340E100221393 /* Character+CoreDataProperties.swift in Sources */,
 				4E599D282AD1EDC700221393 /* ContentView.swift in Sources */,
 				4E599D5B2AD1F44700221393 /* HomeScreen.swift in Sources */,
 				4E599D592AD1EEC400221393 /* APIHandler.swift in Sources */,
+				4E599D662AD340E100221393 /* Message+CoreDataProperties.swift in Sources */,
 				4E599D322AD1EDCE00221393 /* AiBuddy.xcdatamodeld in Sources */,
 				4E599D262AD1EDC700221393 /* AiBuddyApp.swift in Sources */,
+				4E599D642AD340E100221393 /* Message+CoreDataClass.swift in Sources */,
+				4E599D682AD340E100221393 /* Character+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,9 +323,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E599D6B2AD340E100221393 /* Character+CoreDataProperties.swift in Sources */,
 				4E599D5F2AD1F5C700221393 /* MessageScreen.swift in Sources */,
+				4E599D692AD340E100221393 /* Character+CoreDataClass.swift in Sources */,
 				4E599D5C2AD1F44700221393 /* HomeScreen.swift in Sources */,
 				4E599D3D2AD1EDCF00221393 /* AiBuddyTests.swift in Sources */,
+				4E599D6E2AD34BBF00221393 /* Constants.swift in Sources */,
+				4E599D672AD340E100221393 /* Message+CoreDataProperties.swift in Sources */,
+				4E599D652AD340E100221393 /* Message+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
