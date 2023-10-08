@@ -16,6 +16,12 @@
 		4E599D3D2AD1EDCF00221393 /* AiBuddyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D3C2AD1EDCF00221393 /* AiBuddyTests.swift */; };
 		4E599D472AD1EDCF00221393 /* AiBuddyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D462AD1EDCF00221393 /* AiBuddyUITests.swift */; };
 		4E599D492AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D482AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift */; };
+		4E599D572AD1EE7C00221393 /* OpenAISwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4E599D562AD1EE7C00221393 /* OpenAISwift */; };
+		4E599D592AD1EEC400221393 /* APIHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D582AD1EEC400221393 /* APIHandler.swift */; };
+		4E599D5B2AD1F44700221393 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5A2AD1F44700221393 /* HomeScreen.swift */; };
+		4E599D5C2AD1F44700221393 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5A2AD1F44700221393 /* HomeScreen.swift */; };
+		4E599D5E2AD1F5C700221393 /* MessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5D2AD1F5C700221393 /* MessageScreen.swift */; };
+		4E599D5F2AD1F5C700221393 /* MessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5D2AD1F5C700221393 /* MessageScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +55,9 @@
 		4E599D422AD1EDCF00221393 /* AiBuddyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AiBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E599D462AD1EDCF00221393 /* AiBuddyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiBuddyUITests.swift; sourceTree = "<group>"; };
 		4E599D482AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiBuddyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4E599D582AD1EEC400221393 /* APIHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandler.swift; sourceTree = "<group>"; };
+		4E599D5A2AD1F44700221393 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		4E599D5D2AD1F5C700221393 /* MessageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E599D572AD1EE7C00221393 /* OpenAISwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +116,9 @@
 				4E599D332AD1EDCE00221393 /* Info.plist */,
 				4E599D302AD1EDCE00221393 /* AiBuddy.xcdatamodeld */,
 				4E599D2B2AD1EDCE00221393 /* Preview Content */,
+				4E599D582AD1EEC400221393 /* APIHandler.swift */,
+				4E599D5A2AD1F44700221393 /* HomeScreen.swift */,
+				4E599D5D2AD1F5C700221393 /* MessageScreen.swift */,
 			);
 			path = AiBuddy;
 			sourceTree = "<group>";
@@ -151,6 +164,9 @@
 			dependencies = (
 			);
 			name = AiBuddy;
+			packageProductDependencies = (
+				4E599D562AD1EE7C00221393 /* OpenAISwift */,
+			);
 			productName = AiBuddy;
 			productReference = 4E599D222AD1EDC700221393 /* AiBuddy.app */;
 			productType = "com.apple.product-type.application";
@@ -223,6 +239,9 @@
 				Base,
 			);
 			mainGroup = 4E599D192AD1EDC700221393;
+			packageReferences = (
+				4E599D552AD1EE7C00221393 /* XCRemoteSwiftPackageReference "OpenAISwift" */,
+			);
 			productRefGroup = 4E599D232AD1EDC700221393 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -266,7 +285,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E599D2F2AD1EDCE00221393 /* Persistence.swift in Sources */,
+				4E599D5E2AD1F5C700221393 /* MessageScreen.swift in Sources */,
 				4E599D282AD1EDC700221393 /* ContentView.swift in Sources */,
+				4E599D5B2AD1F44700221393 /* HomeScreen.swift in Sources */,
+				4E599D592AD1EEC400221393 /* APIHandler.swift in Sources */,
 				4E599D322AD1EDCE00221393 /* AiBuddy.xcdatamodeld in Sources */,
 				4E599D262AD1EDC700221393 /* AiBuddyApp.swift in Sources */,
 			);
@@ -276,6 +298,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E599D5F2AD1F5C700221393 /* MessageScreen.swift in Sources */,
+				4E599D5C2AD1F44700221393 /* HomeScreen.swift in Sources */,
 				4E599D3D2AD1EDCF00221393 /* AiBuddyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -593,6 +617,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4E599D552AD1EE7C00221393 /* XCRemoteSwiftPackageReference "OpenAISwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/adamrushy/OpenAISwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4E599D562AD1EE7C00221393 /* OpenAISwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E599D552AD1EE7C00221393 /* XCRemoteSwiftPackageReference "OpenAISwift" */;
+			productName = OpenAISwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		4E599D302AD1EDCE00221393 /* AiBuddy.xcdatamodeld */ = {
