@@ -55,11 +55,8 @@ struct HomeScreen: View {
                 }
                 .navigationTitle("Message Hub")
                 .fullScreenCover(item: $selectedCharacter) { character in
-                    MessageScreen(character: character)
+                    MessageScreen(character: character, messages: character.sortedMessages)
                 }
-            }
-            .onAppear {
-                print("CHARACTERS ->>>>> \(characters.first?.name)")
             }
         }
 }

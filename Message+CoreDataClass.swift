@@ -20,15 +20,12 @@ public class Message: NSManagedObject {
         self.timestamp = Date()
         
         //add the newest timestamp and the newest text content to character properties
-        self.character.modified = timestamp
-        self.character.lastText = content
+//        self.character.modified = timestamp
+//        self.character.lastText = content
+        
+        print("awoken from insert \(self.character.lastText)")
         
 //        addObserver(self, forKeyPath: "myProperty", options: .new, context: nil)
-    }
-    
-    func updateCharacterValues() {
-        self.character.modified = timestamp
-        self.character.lastText = content
     }
 
 //    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

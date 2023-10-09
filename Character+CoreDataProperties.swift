@@ -22,6 +22,14 @@ extension Character {
     @NSManaged public var modified: Date
     @NSManaged public var lastText: String
     @NSManaged public var messages: NSSet?
+    
+    var sortedMessages: [Message] {
+        if let messages {
+            let unsortedMessageArray = messages.allObjects as! [Message]
+            return unsortedMessageArray.sorted { $0.timestamp < $1.timestamp }
+        }
+        return []
+    }
 
 }
 

@@ -75,13 +75,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             let message = Message(context: context)
             message.isSentByUser = true
             message.content = "How's it going?"
-            message.character = character
+            message.set(character)
             
             //create their variable message
             let response = Message(context: context)
             response.isSentByUser = false
             response.content = data.lastText
-            response.character = character
+            response.set(character)
+            
+            character.addToMessages(message)
+            character.addToMessages(response)
             
             //is this necessary?
 //            response.updateCharacterValues()

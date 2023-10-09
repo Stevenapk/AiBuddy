@@ -31,16 +31,20 @@ struct MessageSwift: Identifiable {
 
 struct MessageScreen: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     var character: Character
     
     //instead of this have a Message type with a string and a isSentByUser bool property
 //    @State var messages: [String] = []
     
     // Fetch Messages from Core Data and sort by timestamp
-    @FetchRequest(
-        entity: Message.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Message.timestamp, ascending: true)]
-    ) var messages: FetchedResults<Message>
+//    @FetchRequest(
+//        entity: Message.entity(),
+//        sortDescriptors: [NSSortDescriptor(keyPath: \Message.timestamp, ascending: true)]
+//    ) var messages: FetchedResults<Message>
+    
+    @State var messages: [Message]
     
     @State private var models: [String] = []
     
@@ -54,6 +58,7 @@ struct MessageScreen: View {
             HStack {
                 Button(action: {
                     // Handle back button action
+                    dismiss()
                 }) {
                     Image(systemName: "chevron.left")
                 }
@@ -253,6 +258,6 @@ extension Notification {
 
 struct MessageScreen_Previews: PreviewProvider {
     static var previews: some View {
-        MessageScreen(character: Character(context: PersistenceController.shared.container.viewContext))
+        MessageScreen(character: Character(context: PersistenceController.shared.container.viewContext), messages: [])
     }
 }
