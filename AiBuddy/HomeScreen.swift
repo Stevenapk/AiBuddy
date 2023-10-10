@@ -27,6 +27,8 @@ struct HomeScreen: View {
     @State private var searchText = ""
     @State private var selectedCharacter: Character? = nil
     
+    @State private var showingNewMessageScreen = false
+    
 //    @State private var characters = [
 //        CharacterSwift(name: "That 70's Guy", promptPrefix: "a 17 year old friend from the era of the 1970's who responds in slang and loves to go dancing and to the movies", lastMessage: "Hey dude, "),
 //        CharacterSwift(name: "Selena Gomez", promptPrefix: "Selena Gomez", lastMessage: "Hey there, "),
@@ -53,9 +55,25 @@ struct HomeScreen: View {
                         }
                     }
                 }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            // Present AddMessageScreen
+                            showingNewMessageScreen = true
+                        }) {
+                            Image(systemName: "square.and.pencil")
+                                .font(.title2)
+                                .padding(8)
+                            
+                        }
+                    }
+                }
                 .navigationTitle("Message Hub")
                 .fullScreenCover(item: $selectedCharacter) { character in
                     MessageScreen(character: character, messages: character.sortedMessages)
+                }
+                .sheet(isPresented: $showingNewMessageScreen) {
+                    NewMessageScreen()
                 }
             }
         }
@@ -66,13 +84,21 @@ struct CharacterRow: View {
     
     var body: some View {
         HStack {
-            ZStack {
-                Circle()
-                    .foregroundColor(.blue)
-                    .frame(width: 50, height: 50)
-                Text(String(character.name.prefix(1)).uppercased())
-                    .foregroundColor(.white)
-                    .font(.headline)
+            //display letters if they have no contact image, but have a name
+            if character.image == nil && !character.name.isEmpty {
+                ZStack {
+                    Circle()
+                        .foregroundColor(character.colorForFirstInitial)
+                        .frame(width: 50, height: 50)
+                    Text(character.firstInitial)
+                        .foregroundColor(.white)
+                        .font(.headline)
+                }
+            } else {
+                Image(uiImage: character.image ?? UIImage(systemName: "person.crop.circle")!)
+                    .resizable()
+                    .frame(width: 52.375, height: 52.375)
+                    .clipShape(Circle())
             }
             VStack(alignment: .leading) {
                 Text(character.name)

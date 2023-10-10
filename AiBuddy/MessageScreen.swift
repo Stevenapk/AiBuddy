@@ -98,7 +98,19 @@ struct MessageScreen: View {
                 
                 Button(action: {
                     // Handle send button action
-//                    self.messages.append(messageText)
+                    // Create user message object from sent string
+                    let message = Message(context: Constants.context)
+                    message.content = messageText
+                    message.isSentByUser = true
+                    message.set(character)
+                    
+                    // Save changes to core data
+                    PersistenceController.shared.saveContext()
+                    
+                    // Append to array for UI update
+                    self.messages.append(message)
+                    
+                    // Send message to AI Personality and await response
                     sendMessage()
                 }) {
                     Image(systemName: "paperplane")
@@ -115,17 +127,31 @@ struct MessageScreen: View {
     }
     
     func sendMessage() {
-        // Handle sending message
-        print("RESPONSE WHYYYY")
-        APIHandler.shared.getResponse(input: messageText) { result in
+        
+        //define prompt from message text
+        let prompt = character.promptFrom(messageText)
+        
+        //clear textfield
+        messageText = ""
+        
+        APIHandler.shared.getResponse(input: prompt) { result in
             switch result {
             case .success(let output):
-                print("RESPONSE \(output)")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                    print("RESPONSE DELAYED \(models)")
-                }
+                
+                //format string output to remove empty first line
                 let formattedOutput =  output.trimmingCharacters(in: .newlines)
-//                self.messages.append(formattedOutput)
+                
+                //create message object from string output
+                let message = Message(context: Constants.context)
+                message.content = formattedOutput
+                message.set(character)
+                
+                //save changes to core data
+                PersistenceController.shared.saveContext()
+                
+                //append to array
+                self.messages.append(message)
+                
                 self.models.append(output)
                 responseText = models.joined(separator: " ")
             case .failure(let error):

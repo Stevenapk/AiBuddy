@@ -54,4 +54,28 @@ struct PersistenceController {
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+    
+    // MARK: - Core Data Saving support
+    func saveContext () {
+        let context = container.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                // present error alert
+//                let nserror = error as NSError
+//                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                      let sceneDelegate = windowScene.delegate as? SceneDelegate,
+//                      let window = sceneDelegate.window
+//                else {
+//                    return
+//                }
+//                let alert = UIAlertController(title: "Whoops", message: "There was an error saving your progress. We'll try to save these changes again the next time you update data. \(nserror.localizedDescription)", preferredStyle: UIAlertController.Style.alert)
+//                alert.view.subviews.first?.subviews.first?.subviews.first?.backgroundColor = #colorLiteral(red: 0.342459091, green: 0.09067009209, blue: 0.1163981668, alpha: 0.8980392157)
+//                alert.addAction(UIAlertAction(title: "Okay", style: UIAlertAction.Style.default, handler: nil))
+//
+//                window.rootViewController?.present(alert, animated: true, completion: nil)
+            }
+        }
+    }
 }
