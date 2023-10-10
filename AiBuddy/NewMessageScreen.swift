@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct NewMessageScreen: View {
+    
+    @Environment(\.dismiss) var dismiss
+    
     @State private var recipient = ""
     @State private var message = ""
     
     @State var showingNewCharacterScreen = false
-
+    
     var body: some View {
         VStack {
             HStack {
@@ -26,22 +29,22 @@ struct NewMessageScreen: View {
                     Image(systemName: "plus.circle")
                 }
                 .padding(.trailing)
-
+                
             }
             .background(Color(.systemGray6))
-
+            
             Divider()
-
+            
             Spacer()
-
+            
             HStack {
-//                Spacer()
+                //                Spacer()
                 
                 TextField("", text: $message)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                     .padding(.leading)
-
+                
                 Button(action: {
                     // Action when Send button is tapped
                 }) {

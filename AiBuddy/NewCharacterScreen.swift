@@ -9,6 +9,11 @@ import SwiftUI
 import UIKit
 
 struct NewCharacterScreen: View {
+    
+    var character: Character?
+    
+    @Environment(\.dismiss) var dismiss
+    
     @State private var name = ""
     @State private var aboutMe = ""
     @State private var contactImage: UIImage? {
@@ -52,111 +57,118 @@ struct NewCharacterScreen: View {
     }
     
     var body: some View {
-        VStack {
-            Button {
-                self.showImagePicker = true
-            } label: {
-                VStack {
-                    //display letters if they have no contact image, but have a name
-                    if contactImage == nil && !name.isEmpty {
-                        ZStack {
-                            Circle()
-                                .foregroundColor(getColorFor(initial: firstInitial))
-                                .frame(width: 100, height: 100)
-                            Text(firstInitial)
-                                .foregroundColor(.white)
-                                .font(.headline)
+        NavigationView {
+            VStack {
+                Button {
+                    self.showImagePicker = true
+                } label: {
+                    VStack {
+                        //display letters if they have no contact image, but have a name
+                        if contactImage == nil && !name.isEmpty {
+                            ZStack {
+                                Circle()
+                                    .foregroundColor(getColorFor(initial: firstInitial))
+                                    .frame(width: 100, height: 100)
+                                Text(firstInitial)
+                                    .foregroundColor(.white)
+                                    .font(.headline)
+                            }
+                        } else {
+                            Image(uiImage: contactImage ?? UIImage(systemName: "person.crop.circle")!)
+                                .resizable()
+                                .frame(width: 104.75, height: 104.75)
+                                .clipShape(Circle())
                         }
-                    } else {
-                        Image(uiImage: contactImage ?? UIImage(systemName: "person.crop.circle")!)
-                            .resizable()
-                            .frame(width: 104.75, height: 104.75)
-                            .clipShape(Circle())
-                    }
-                    Text(showEditButton ? "Edit" : "Add")
-                        .font(.caption)
-                        .padding(4)
-                    //                        .offset(x: 30, y: -30)
-                    //                        .opacity(contactImage != nil ? 1 : 0)
-                }
-            }
-            .actionSheet(isPresented: $showImagePicker) {
-                var buttons: [ActionSheet.Button] = [
-                    .default(Text("Camera Roll")) {
-                        // Handle selecting from camera roll
-                        self.showImagePicker.toggle() // Dismiss the action sheet
-                        //                        self.selectPhoto(source: .photoLibrary)
-                        showPhotoLibrary = true
-                    },
-                    .cancel()
-                ]
-                
-                if isCameraAvailable() {
-                    buttons.insert(.default(Text("Camera"), action: {
-                        // Handle taking a new photo
-                        self.showImagePicker.toggle() // Dismiss the action sheet
-                        
-                        //                        self.selectPhoto(source: .camera)
-                        //                        ImagePickerView(image: self.$contactImage)
-                        showCapturePhoto = true
-                    }), at: 1)
-                }
-                
-                return ActionSheet(title: Text("Select Image"), buttons: buttons)
-            }
-            
-            TextField("Name", text: $name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                .padding()
-            
-            VStack(alignment: .leading) {
-                Text("About Me/Personality")
-                    .font(.headline)
-                    .padding(.horizontal)
-                
-                TextEditor(text: $aboutMe)
-                    .frame(height: 157.5)
-                    .overlay(
-                        Text("\(aboutMe.count)/350")
-                            .foregroundColor(aboutMe.count <= 350 ? .black : .red)
+                        Text(showEditButton ? "Edit" : "Add")
+                            .font(.caption)
                             .padding(4)
-                            .padding(.horizontal, 8)
-                            .font(Font.caption)
-                            .bold()
-                            .background(Color.white.opacity(0.7))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .offset(x: 0, y: -5)
-                            .opacity(aboutMe.isEmpty ? 0.5 : 1)
-                            .animation(.easeInOut)
-                        , alignment: .bottomTrailing)
+                        //                        .offset(x: 30, y: -30)
+                        //                        .opacity(contactImage != nil ? 1 : 0)
+                    }
+                }
+                .actionSheet(isPresented: $showImagePicker) {
+                    var buttons: [ActionSheet.Button] = [
+                        .default(Text("Camera Roll")) {
+                            // Handle selecting from camera roll
+                            self.showImagePicker.toggle() // Dismiss the action sheet
+                            //                        self.selectPhoto(source: .photoLibrary)
+                            showPhotoLibrary = true
+                        },
+                        .cancel()
+                    ]
+                    
+                    if isCameraAvailable() {
+                        buttons.insert(.default(Text("Camera"), action: {
+                            // Handle taking a new photo
+                            self.showImagePicker.toggle() // Dismiss the action sheet
+                            
+                            //                        self.selectPhoto(source: .camera)
+                            //                        ImagePickerView(image: self.$contactImage)
+                            showCapturePhoto = true
+                        }), at: 1)
+                    }
+                    
+                    return ActionSheet(title: Text("Select Image"), buttons: buttons)
+                }
+                
+                TextField("Name", text: $name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .padding(.horizontal)
+                    .padding()
+                
+                VStack(alignment: .leading) {
+                    Text("About Me/Personality")
+                        .font(.headline)
+                        .padding(.horizontal)
+                    
+                    TextEditor(text: $aboutMe)
+                        .frame(height: 157.5)
+                        .overlay(
+                            Text("\(aboutMe.count)/350")
+                                .foregroundColor(aboutMe.count <= 350 ? .black : .red)
+                                .padding(4)
+                                .padding(.horizontal, 8)
+                                .font(Font.caption)
+                                .bold()
+                                .background(Color.white.opacity(0.7))
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .offset(x: 0, y: -5)
+                                .opacity(aboutMe.isEmpty ? 0.5 : 1)
+                                .animation(.easeInOut)
+                            , alignment: .bottomTrailing)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        .padding(.horizontal)
+                }
+                Spacer()
             }
-            Spacer()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        // Dismiss Screen
+                        dismiss()
+                    }) {
+                        Text("Cancel")
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // Save character to core data
+                        saveCharacter()
+                        // Dismiss screen
+                        dismiss()
+                    }) {
+                        Text("Done")
+                    }
+                    .disabled(name.isEmpty)
+                }
+            }
+            .navigationTitle(character == nil ? "New Contact" : "Edit Contact")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .padding()
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    // Dismiss Screen
-                }) {
-                    Text("Cancel")
-                }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    // Save character to core data and then dismiss screen
-                }) {
-                    Text("Done")
-                }
-                .disabled(name.isEmpty)
-            }
-        }
-        .navigationTitle("New Contact")
-        .navigationBarTitleDisplayMode(.inline)
+
         .onAppear {
             if contactImage != nil {
                 showEditButton = true
@@ -186,17 +198,21 @@ struct NewCharacterScreen: View {
     }
     
     func saveCharacter() {
-        // Implement saving character to Core Data
+        // Save character to Core Data
+        if character != nil {
+            character!.name = name
+//            character!.imageRef = imageRef
+            character!.promptPrefix = aboutMe
+        } else {
+            let newChar = Character(context: Constants.context)
+            newChar.name = name
+//            newChar.imageRef = imageRef
+            newChar.promptPrefix = aboutMe
+        }
+        
+        PersistenceController.shared.saveContext()
     }
-    
-    func cancel() {
-        // Implement dismissing screen
-    }
-    
-    func done() {
-        // Implement saving character and dismissing screen
-    }
-    
+
     func isCameraAvailable() -> Bool {
         return UIImagePickerController.isSourceTypeAvailable(.camera)
     }
