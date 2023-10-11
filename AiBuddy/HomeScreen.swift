@@ -28,6 +28,7 @@ struct HomeScreen: View {
     @State private var selectedCharacter: Character? = nil
     
     @State private var showingNewMessageScreen = false
+    @State private var showingSearchResultsScreen = false
     
 //    @State private var characters = [
 //        CharacterSwift(name: "That 70's Guy", promptPrefix: "a 17 year old friend from the era of the 1970's who responds in slang and loves to go dancing and to the movies", lastMessage: "Hey dude, "),
@@ -40,6 +41,10 @@ struct HomeScreen: View {
             NavigationView {
                 VStack {
                     SearchBar(text: $searchText)
+                        .onTapGesture {
+                            //present search screen
+                            showingSearchResultsScreen = true
+                        }
                         .padding()
                     
                     List(characters
@@ -53,6 +58,15 @@ struct HomeScreen: View {
                         }) {
                             CharacterRow(character: character)
                         }
+                    }
+                    .fullScreenCover(isPresented: $showingSearchResultsScreen) {
+                        SearchResultsScreen()
+                    }
+                    .fullScreenCover(item: $selectedCharacter) { character in
+                        MessageScreen(character: character, messages: character.sortedMessages)
+                    }
+                    .sheet(isPresented: $showingNewMessageScreen) {
+                        NewMessageScreen()
                     }
                 }
                 .toolbar {
@@ -69,12 +83,6 @@ struct HomeScreen: View {
                     }
                 }
                 .navigationTitle("Message Hub")
-                .fullScreenCover(item: $selectedCharacter) { character in
-                    MessageScreen(character: character, messages: character.sortedMessages)
-                }
-                .sheet(isPresented: $showingNewMessageScreen) {
-                    NewMessageScreen()
-                }
             }
         }
 }

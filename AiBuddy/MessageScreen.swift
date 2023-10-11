@@ -46,6 +46,8 @@ struct MessageScreen: View {
     
     @State var messages: [Message]
     
+    var messageIndexToScrollTo: Int?
+    
     @State private var models: [String] = []
     
     @State private var messageText = ""
@@ -71,19 +73,40 @@ struct MessageScreen: View {
             .padding()
             .background(Color(.systemGray6))
             
+            
             // Message List
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    // Replace with dynamic messages from the selected contact
-                    //                    ForEach(messages.indices, id: \.self) { index in
-                    //                                    MessageBubble(text: messages[index], isSentByUser: index % 2 == 0)
-                    //                                }
-                    //                }
-                    ForEach(messages) { message in
-                        MessageBubble(text: message.content, isSentByUser: message.isSentByUser)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        // Replace with dynamic messages from the selected contact
+                        //                    ForEach(messages.indices, id: \.self) { index in
+                        //                                    MessageBubble(text: messages[index], isSentByUser: index % 2 == 0)
+                        //                                }
+                        //                }
+                        ForEach(messages.indices, id: \.self) { index in
+                            MessageBubble(text: messages[index].content, isSentByUser: messages[index].isSentByUser)
+                                .id(index) // Ensure each message has a unique ID
+                                .background(
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .onAppear {
+                                                if let scrollToIndex = messageIndexToScrollTo, index == scrollToIndex {
+                                                    let minY = geometry.frame(in: .global).minY
+                                                    let height = geometry.size.height
+                                                    
+                                                    let offset = minY + height
+                                                    proxy.scrollTo(index, anchor: .top)
+                                                }
+                                            }
+                                    }
+                                )
+                        }
+                        //                    ForEach(messages) { message in
+                        //                        MessageBubble(text: message.content, isSentByUser: message.isSentByUser)
+                        //                    }
                     }
+                    .padding()
                 }
-                .padding()
             }
             
             // Text Input Field

@@ -36,6 +36,8 @@
 		4E599D742AD48ED100221393 /* NewMessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D722AD48ED100221393 /* NewMessageScreen.swift */; };
 		4E599D792AD4924200221393 /* NewCharacterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D782AD4924200221393 /* NewCharacterScreen.swift */; };
 		4E599D7A2AD4924200221393 /* NewCharacterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D782AD4924200221393 /* NewCharacterScreen.swift */; };
+		4E599D7C2AD5D47400221393 /* SearchResultsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D7B2AD5D47400221393 /* SearchResultsScreen.swift */; };
+		4E599D7D2AD5D47400221393 /* SearchResultsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D7B2AD5D47400221393 /* SearchResultsScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,7 @@
 		4E599D6C2AD34BBF00221393 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4E599D722AD48ED100221393 /* NewMessageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageScreen.swift; sourceTree = "<group>"; };
 		4E599D782AD4924200221393 /* NewCharacterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCharacterScreen.swift; sourceTree = "<group>"; };
+		4E599D7B2AD5D47400221393 /* SearchResultsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +149,7 @@
 				4E599D5D2AD1F5C700221393 /* MessageScreen.swift */,
 				4E599D722AD48ED100221393 /* NewMessageScreen.swift */,
 				4E599D782AD4924200221393 /* NewCharacterScreen.swift */,
+				4E599D7B2AD5D47400221393 /* SearchResultsScreen.swift */,
 				4E599D6C2AD34BBF00221393 /* Constants.swift */,
 			);
 			path = AiBuddy;
@@ -326,6 +330,7 @@
 				4E599D262AD1EDC700221393 /* AiBuddyApp.swift in Sources */,
 				4E599D642AD340E100221393 /* Message+CoreDataClass.swift in Sources */,
 				4E599D682AD340E100221393 /* Character+CoreDataClass.swift in Sources */,
+				4E599D7C2AD5D47400221393 /* SearchResultsScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +343,7 @@
 				4E599D6B2AD340E100221393 /* Character+CoreDataProperties.swift in Sources */,
 				4E599D5F2AD1F5C700221393 /* MessageScreen.swift in Sources */,
 				4E599D692AD340E100221393 /* Character+CoreDataClass.swift in Sources */,
+				4E599D7D2AD5D47400221393 /* SearchResultsScreen.swift in Sources */,
 				4E599D5C2AD1F44700221393 /* HomeScreen.swift in Sources */,
 				4E599D3D2AD1EDCF00221393 /* AiBuddyTests.swift in Sources */,
 				4E599D6E2AD34BBF00221393 /* Constants.swift in Sources */,

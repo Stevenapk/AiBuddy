@@ -17,43 +17,45 @@ struct NewMessageScreen: View {
     @State var showingNewCharacterScreen = false
     
     var body: some View {
-        VStack {
-            HStack {
-                TextField("To:", text: $recipient)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                Button {
-                    //present add character screen
-                    showingNewCharacterScreen = true
-                } label: {
-                    Image(systemName: "plus.circle")
+        NavigationView {
+            VStack {
+                HStack {
+                    TextField("To:", text: $recipient)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    Button {
+                        //present add character screen
+                        showingNewCharacterScreen = true
+                    } label: {
+                        Image(systemName: "plus.circle")
+                    }
+                    .padding(.trailing)
+                    
                 }
-                .padding(.trailing)
+                .background(Color(.systemGray6))
                 
-            }
-            .background(Color(.systemGray6))
-            
-            Divider()
-            
-            Spacer()
-            
-            HStack {
-                //                Spacer()
+                Divider()
                 
-                TextField("", text: $message)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                    .padding(.leading)
+                Spacer()
                 
-                Button(action: {
-                    // Action when Send button is tapped
-                }) {
-                    Image(systemName: "arrow.up.circle.fill")
+                HStack {
+                    //                Spacer()
+                    
+                    TextField("", text: $message)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                        .padding(.leading)
+                    
+                    Button(action: {
+                        // Action when Send button is tapped
+                    }) {
+                        Image(systemName: "arrow.up.circle.fill")
+                    }
+                    .padding(.trailing, 16)
                 }
-                .padding(.trailing, 16)
             }
+            .navigationBarTitle("New Message", displayMode: .inline)
         }
-        .navigationBarTitle("New Message", displayMode: .inline)
         .sheet(isPresented: $showingNewCharacterScreen) {
             NewCharacterScreen()
         }
@@ -63,8 +65,7 @@ struct NewMessageScreen: View {
 
 struct NewMessageScreen_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            NewMessageScreen()
-        }
+        NewMessageScreen()
+//            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }
