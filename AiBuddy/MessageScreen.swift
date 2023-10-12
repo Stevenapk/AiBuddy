@@ -11,6 +11,227 @@ import CoreData
 import Speech
 import AVFoundation
 
+struct NavigationBar: View {
+    
+    var dismiss: () -> Void
+    
+    var character: Character
+    @Binding var refreshID: UUID
+    @Binding var isTextFieldFocused: Bool
+    
+    var body: some View {
+        HStack {
+            Button(action: {
+                // Handle back button action
+                refreshID = UUID()
+                isTextFieldFocused = false // Set the text field to not be focused
+                dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+            }
+            Spacer()
+            Text(character.name)
+                .font(.headline)
+            Spacer()
+            EmptyView() // Add a placeholder for any additional buttons/icons
+        }
+        .padding()
+        .background(Color(.systemGray6))
+    }
+}
+
+struct TimestampView: View {
+    var date: Date
+
+    var body: some View {
+        HStack {
+            Spacer()
+            Text(date.longFormattedString)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+            Spacer()
+        }
+    }
+}
+
+struct MessageList: View {
+    
+    @Binding var messages: [Message]
+    @Binding var selectedMessage: Message?
+    var messageIndexToScrollTo: Int?
+    var character: Character // does this need to be binding var?
+    
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(messages.indices, id: \.self) { index in
+                        //display dates and times over messages sent over an hour apart
+//                        if index == 0 || messages[index].timestamp.timeIntervalSince(messages[index-1].timestamp) >= 3600 {
+//                            Text(messages[index].timestamp.longFormattedDateString)
+//                                .font(.caption)
+//                                .padding(.vertical, 8)
+//                                .padding(.horizontal, 16)
+//                                .background(Color.gray.opacity(0.5))
+//                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        //                        }
+                        if index == 0 || messages[index].timestamp.timeIntervalSince(messages[index-1].timestamp) >= 3600 {
+
+                                TimestampView(date: messages[index].timestamp)
+
+                            
+                        }
+                        MessageBubble(text: messages[index].content, timestamp: messages[index].timestamp, isSentByUser: messages[index].isSentByUser)
+                            .id(index) // Ensure each message has a unique ID
+                            .background(
+                                GeometryReader { geometry in
+                                    Color.clear
+                                        .onAppear {
+                                            if let scrollToIndex = messageIndexToScrollTo, index == scrollToIndex {
+                                                let minY = geometry.frame(in: .global).minY
+                                                let height = geometry.size.height
+//                                                let offset = minY + height
+                                                proxy.scrollTo(index, anchor: .top)
+                                            }
+                                        }
+                                }
+                            )
+                            .contextMenu {
+                                Button(action: {
+                                    // Delete character action
+                                    selectedMessage = messages[index]
+                                }) {
+                                    Text("Delete")
+                                    Image(systemName: "trash.fill")
+                                }
+                            }
+                    }
+                    .actionSheet(item: $selectedMessage) { message in
+                        ActionSheet(
+                            title: Text(""),
+                            message: Text("This message will be deleted."),
+                            buttons: [
+                                .destructive(Text("Delete"), action: {
+                                    // Copy messageContent
+                                    let text = message.content
+
+                                    // Delete message
+                                    Constants.context.delete(message)
+
+                                    // Remove the message from the messages array to properly update this view
+                                    let index = messages.firstIndex(of: message)!
+                                    messages.remove(at: index)
+
+                                    // If the last text in the chain was the one deleted, update the lastText and last modified date of the corresponding character/contact
+                                    if text == character.lastText {
+                                        if let lastMessage = messages.last {
+                                            character.lastText = lastMessage.content
+                                            character.modified = lastMessage.timestamp
+                                        } else {
+                                            character.lastText = ""
+                                        }
+                                    }
+
+                                    // Save changes to core data
+                                    PersistenceController.shared.saveContext()
+                                }),
+                                .cancel(Text("Cancel"))
+                            ]
+                        )
+                    }
+                }
+                .padding()
+            }
+        }
+
+    }
+}
+
+struct TextInputFieldView: View {
+    @Binding var text: String
+    var sendAction: () -> Void
+
+    var body: some View {
+        HStack {
+            TextField("Type a message...", text: $text)
+                .padding(10)
+                .background(Color(.systemGray5))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .onTapGesture {
+                    // Assuming you want to set isTextFieldFocused here
+                }
+
+            Button(action: sendAction) {
+                Image(systemName: "paperplane")
+                    .font(.headline)
+            }
+        }
+        .padding()
+    }
+}
+
+extension Calendar {
+    func isDateInLastWeek(_ date: Date) -> Bool {
+        guard let oneWeekAgo = self.date(byAdding: .day, value: -7, to: Date()) else {
+            return false
+        }
+        return date > oneWeekAgo
+    }
+}
+
+extension Date {
+    
+    var localizedMediumDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EE, M d"
+        return formatter.string(from: self)
+    }
+    
+    var localizedDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter.string(from: self)
+    }
+    
+    var dayOfWeekString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE"
+        return formatter.string(from: self)
+    }
+    
+    var localizedTimeString: String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter.string(from: self)
+    }
+    
+    var formattedString: String {
+        if Calendar.current.isDateInToday(self) {
+            return localizedTimeString
+        } else if Calendar.current.isDateInYesterday(self) {
+            return "Yesterday"
+        } else if Calendar.current.isDateInLastWeek(self) {
+            return dayOfWeekString
+        } else {
+            return "\(localizedMediumDateString) at \(localizedTimeString)"
+        }
+    }
+    
+    var longFormattedString: String {
+        if Calendar.current.isDateInToday(self) {
+            return localizedTimeString
+        } else if Calendar.current.isDateInYesterday(self) {
+            return "Yesterday \(localizedTimeString)"
+        } else if Calendar.current.isDateInLastWeek(self) {
+            return "\(dayOfWeekString) \(localizedTimeString)"
+        } else {
+            return localizedDateString
+        }
+    }
+}
+
 //struct SpeechRecognitionView: View {
 //    @State private var isRecording = false
 //    @State private var recognizedText = ""
@@ -127,10 +348,16 @@ struct MessageSwift: Identifiable {
 
 struct MessageScreen: View {
     
+    @State var selectedMessage: Message? = nil
+    
     @Binding var refreshID: UUID
     
 //    @StateObject var speechRecognizer = SpeechRecognizer()
     @State private var isRecording = false
+    
+    func dismissScreen() {
+        dismiss()
+    }
     
     @Environment(\.dismiss) var dismiss
     
@@ -155,135 +382,16 @@ struct MessageScreen: View {
     var body: some View {
         VStack {
             // Navigation Bar
-            HStack {
-                Button(action: {
-                    // Handle back button action
-                    refreshID = UUID()
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                Spacer()
-                Text(character.name)
-                    .font(.headline)
-                Spacer()
-                EmptyView() // Add a placeholder for any additional buttons/icons
-            }
-            .padding()
-            .background(Color(.systemGray6))
+            NavigationBar(dismiss: dismissScreen, character: character, refreshID: $refreshID, isTextFieldFocused: $isTextFieldFocused)
             
             
             // Message List
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        // Replace with dynamic messages from the selected contact
-                        //                    ForEach(messages.indices, id: \.self) { index in
-                        //                                    MessageBubble(text: messages[index], isSentByUser: index % 2 == 0)
-                        //                                }
-                        //                }
-                        ForEach(messages.indices, id: \.self) { index in
-                            MessageBubble(text: messages[index].content, isSentByUser: messages[index].isSentByUser)
-                                .id(index) // Ensure each message has a unique ID
-                                .background(
-                                    GeometryReader { geometry in
-                                        Color.clear
-                                            .onAppear {
-                                                if let scrollToIndex = messageIndexToScrollTo, index == scrollToIndex {
-                                                    let minY = geometry.frame(in: .global).minY
-                                                    let height = geometry.size.height
-                                                    
-                                                    let offset = minY + height
-                                                    proxy.scrollTo(index, anchor: .top)
-                                                }
-                                            }
-                                    }
-                                )
-                        }
-                        //                    ForEach(messages) { message in
-                        //                        MessageBubble(text: message.content, isSentByUser: message.isSentByUser)
-                        //                    }
-                    }
-                    .padding()
-                }
-            }
+            MessageList(messages: $messages, selectedMessage: $selectedMessage, messageIndexToScrollTo: messageIndexToScrollTo, character: character)
             
 //            Text(speechRecognizer.transcript)
             
             // Text Input Field
-            HStack {
-                TextField("Type a message...", text: $messageText)
-                    .padding(10)
-                    .background(Color(.systemGray5))
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .onTapGesture {
-                        isTextFieldFocused = true
-                    }
-                
-//                if isRecording {
-//                    Button {
-//                        speechRecognizer.stopTranscribing()
-//                        isRecording.toggle()
-//                    } label: {
-//                        Image(systemName: "stop.circle")
-//                            .font(.title)
-//                            .foregroundColor(.red)
-//                    }
-//                } else {
-//                    Button {
-//                        speechRecognizer.transcribe()
-//                        isRecording.toggle()
-//                    } label: {
-//                        Image(systemName: "mic.circle")
-//                            .font(.title)
-//                            .foregroundColor(.blue)
-//                    }
-////                    .disabled(
-////                        isMicrophoneInUse()
-////                        //                        || isTextFieldFocused
-////                    ) // Disable when text field is focused
-//                }
-                
-//                if isRecording {
-//                    Button(action: stopRecording) {
-//                        Image(systemName: "stop.circle")
-//                            .font(.title)
-//                            .foregroundColor(.red)
-//                    }
-//                } else {
-//                    Button(action: startRecording) {
-//                        Image(systemName: "mic.circle")
-//                            .font(.title)
-//                            .foregroundColor(.blue)
-//                    }
-//                    .disabled(
-//                        isMicrophoneInUse()
-////                        || isTextFieldFocused
-//                    ) // Disable when text field is focused
-//                }
-                
-                Button(action: {
-                    // Handle send button action
-                    // Create user message object from sent string
-                    let message = Message(context: Constants.context)
-                    message.content = messageText
-                    message.isSentByUser = true
-                    message.set(character)
-                    
-                    // Save changes to core data
-                    PersistenceController.shared.saveContext()
-                    
-                    // Append to array for UI update
-                    self.messages.append(message)
-                    
-                    // Send message to AI Personality and await response
-                    sendMessage()
-                }) {
-                    Image(systemName: "paperplane")
-                        .font(.headline)
-                }
-            }
-            .padding()
+            TextInputFieldView(text: $messageText, sendAction: sendMessage)
         }
         .padding(.bottom, isTextFieldFocused ? getKeyboardHeight() : 0)
         .animation(.easeInOut(duration: 0.3))
@@ -385,8 +493,12 @@ struct MessageScreen: View {
 }
 
 struct MessageBubble: View {
+    
     var text: String
+    var timestamp: Date
     var isSentByUser: Bool
+    
+    @State var showTimestamp: Bool = false
     
     var body: some View {
         HStack() {
@@ -395,35 +507,61 @@ struct MessageBubble: View {
             }
             
             VStack(alignment: isSentByUser ? .trailing : .leading, spacing: 0) {
-                    HStack(spacing: 0) {
-                        if !isSentByUser {
-                            Triangle(direction: .southwest)
-                                .fill(Color(.systemGray3))
-                                .frame(width: 25, height: 10)
-                                .offset(CGSize(width: 16, height: 15))
-                            
-                        }
-                        Text(text)
-                            .foregroundColor(isSentByUser ? .white : .black)
-                            .padding(10)
-                            .background(isSentByUser ? Color.blue : Color(.systemGray3))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(.systemGray4), lineWidth: 1)
-                            )
-                        if isSentByUser {
-                            Triangle(direction: .southeast)
-                                .fill(Color.blue)
-                                .frame(width: 25, height: 10)
-                                .offset(CGSize(width: -16, height: 15))
-                        }
-                        
+                HStack(spacing: 0) {
+                    if !isSentByUser {
+                        Triangle(direction: .southwest)
+                            .fill(Color(.systemGray3))
+                            .frame(width: 25, height: 10)
+                            .offset(CGSize(width: 16, height: 15))
                         
                     }
+                    Text(text)
+                        .foregroundColor(isSentByUser ? .white : .black)
+                        .padding(10)
+                        .background(isSentByUser ? Color.blue : Color(.systemGray3))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color(.systemGray4), lineWidth: 1)
+                        )
+                    //prevents bubble from going too far to the opposite side
+//                        .frame(maxWidth: .infinity)
+//                        .padding(.leading, isSentByUser ? 100 : 0)
+//                        .padding(.trailing, !isSentByUser ? 100 : 0)
+                    if isSentByUser {
+                        Triangle(direction: .southeast)
+                            .fill(Color.blue)
+                            .frame(width: 25, height: 10)
+                            .offset(CGSize(width: -16, height: 15))
+                    }
+                    
+                }
                 if !isSentByUser {
                     Spacer() // Step 8: Add a spacer to push the message bubble to the left edge
                 }
+                if showTimestamp {
+                    HStack {
+                        if isSentByUser {
+                            Spacer()
+                            Text(timestamp.localizedTimeString)
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                                .padding(.trailing, 30)
+                                .padding(.bottom, 1)
+                        }
+                        if !isSentByUser {
+                            Text(timestamp.localizedTimeString)
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                                .padding(.leading, 30)
+                                .padding(.bottom, 0)
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            .onTapGesture {
+                showTimestamp.toggle()
             }
         }
     }
