@@ -10,9 +10,14 @@ import UIKit
 
 struct NewCharacterScreen: View {
     
+    @Binding var refreshID: UUID
+    
     var character: Character?
     
     @Environment(\.dismiss) var dismiss
+    
+    @State private var showToggleInfoView = false
+    @State private var showAboutTipsScreen = false
     
     @State private var name = ""
     @State private var aboutMe = ""
@@ -29,6 +34,7 @@ struct NewCharacterScreen: View {
     @State private var showPhotoLibrary = false
     @State private var showCapturePhoto = false
     @State private var showEditButton = true
+    @State private var isNameRecognizable = false
     
     var firstInitial: String {
         String(name.prefix(1)).uppercased()
@@ -114,11 +120,48 @@ struct NewCharacterScreen: View {
                 TextField("Name", text: $name)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.top)
+                    .padding(.bottom, 5)
+                
+                HStack {
+                    Toggle("Famous Character", isOn: $isNameRecognizable)
+                        .toggleStyle(SwitchToggleStyle(tint: .green))
+                        .padding(.trailing, 5)
+                    Button(action: {
+                        showToggleInfoView = true
+                    }) {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.blue)
+                            .offset(y: 1)
+                    }
+                    .alert(isPresented: $showToggleInfoView) {
+                        Alert(title: Text("Famous Character"), message: Text("If \(!name.isEmpty ? "\""+name+"\"" : "the name you entered") is a well-known person or character, such as Selena Gomez or Harry Potter, set this switch to ON. \n\nA good rule of thumb is if you can search them on google and they're in the top couple results, they are famous."), dismissButton: .default(Text("Okay")))
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.bottom)
                 
                 VStack(alignment: .leading) {
-                    Text("About Me/Personality")
-                        .font(.headline)
+                    HStack {
+                        Text(isNameRecognizable ? "About (Optional)" : "About (Required)")
+                            .font(.headline)
+                        Spacer()
+                        NavigationLink {
+                            AboutTipsScreen()
+                        } label: {
+                            Capsule()
+                                .stroke(Color.blue, lineWidth: 1.5) // Outline with blue color
+                                .overlay(
+                                    HStack(spacing: 2.5) {
+                                        Image(systemName: "info.circle")
+                                        Image(systemName: "chevron.right")
+                                    }
+                                )
+                                .frame(width: 50, height: 25)
+                        }
+
+                    }
                         .padding(.horizontal)
                     
                     TextEditor(text: $aboutMe)
@@ -161,7 +204,7 @@ struct NewCharacterScreen: View {
                     }) {
                         Text("Done")
                     }
-                    .disabled(name.isEmpty)
+                    .disabled(!isValidForSave())
                 }
             }
             .navigationTitle(character == nil ? "New Contact" : "Edit Contact")
@@ -170,10 +213,27 @@ struct NewCharacterScreen: View {
         .padding()
         
         .onAppear {
-            if contactImage != nil {
-                showEditButton = true
+            
+            //if editing, pre-fill fields
+            if let character {
+                name = character.name
+                isNameRecognizable = character.isRecognizableName
+                if let image = character.image {
+                    contactImage = image
+                    showEditButton = true
+                } else {
+                    showEditButton = false
+                }
+                aboutMe = character.promptPrefix
+            //if adding new character
             } else {
+                //don't show edit image button
                 showEditButton = false
+//                if contactImage != nil {
+//                    showEditButton = true
+//                } else {
+//                    showEditButton = false
+//                }
             }
         }
         //        .navigationBarItems(trailing:
@@ -192,6 +252,40 @@ struct NewCharacterScreen: View {
         }
     }
     
+    func isValidForSave() -> Bool {
+        guard !name.isEmpty else { return false }
+        
+        //if overwriting
+        if let character {
+            //if at least one element has changed
+            if character.name != name || character.promptPrefix != aboutMe || character.isRecognizableName != isNameRecognizable {
+                //if famous character and has name
+                if isNameRecognizable {
+                    return true
+                } else {
+                    //if not famous character but has name and about me
+                    if !aboutMe.isEmpty {
+                        return true
+                    }
+                }
+            }
+            
+        //else if is new character save
+        } else {
+            //if famous character and has name
+            if isNameRecognizable {
+                return true
+            } else {
+                //if not famous character but has name and about me
+                if !aboutMe.isEmpty {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
     
     func updateImage(_ image: UIImage?) {
         contactImage = image
@@ -206,7 +300,11 @@ struct NewCharacterScreen: View {
             character!.name = name
             //            character!.imageRef = imageRef
             character!.promptPrefix = aboutMe
+            character!.isRecognizableName = isNameRecognizable
             PersistenceController.shared.saveContext()
+            
+            //refresh HomeScreen to reflect character change
+            refreshID = UUID()
             
         //if saving new character
         } else {
@@ -214,6 +312,7 @@ struct NewCharacterScreen: View {
             newChar.name = name
             //            newChar.imageRef = imageRef
             newChar.promptPrefix = aboutMe
+            newChar.isRecognizableName = isNameRecognizable
             
             //Have their new character send a custom greeting text!
             sendGreetingText(from: newChar)
@@ -227,8 +326,24 @@ struct NewCharacterScreen: View {
     func sendGreetingText(from newChar: Character) {
         //define prompt from message text
         let messageText = "Greet me in a way unique to you"
-        let prompt = newChar.promptFrom(messageText)
+        var prompt: String {
+            if isNameRecognizable {
+                if !aboutMe.isEmpty {
+                    return "Act as \(name). Additionally, you are \(aboutMe). \(messageText)."
+                } else {
+                    return "Act as \(name). \(messageText)"
+                }
+            } else {
+                if !aboutMe.isEmpty {
+                    return "Act as \(aboutMe). If I ask, your name is \(name). \(messageText)."
+                } else {
+                    //TODO: should not be allowed to do only a name if isRecognizableName is set to false, so if the switch is set to false, the word "optional" in parenthesis should be replaced with "REQUIRED". You will also need an info button next to this switch so they know exactly what it does. The words should be "Well-known person or character" right next to the character, the info button will say, "If it is a well-known person or character such as Selena Gomez or Peter Pan, the about me section is no longer required. Although you may still use it to add aspects to their personality, character, or life story.
+                    return "If I ask, your name is \(name). \(messageText)."
+                }
+            }
+        }
         
+
         
         APIHandler.shared.getResponse(input: prompt) { result in
             switch result {
@@ -445,7 +560,13 @@ struct NewCharacterScreen: View {
     struct NewCharacterScreen_Previews: PreviewProvider {
         static var previews: some View {
             NavigationView {
-                NewCharacterScreen()
+                let refreshID = Binding<UUID>(get: {
+                            // Return your initial value here
+                            return UUID()
+                        }, set: { newValue in
+                            // Handle the updated value here
+                        })
+                NewCharacterScreen(refreshID: refreshID)
             }
         }
     }

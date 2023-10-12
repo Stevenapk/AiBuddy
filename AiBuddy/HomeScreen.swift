@@ -19,6 +19,25 @@ struct CharacterSwift: Identifiable {
 
 struct HomeScreen: View {
     
+    enum ActionSheetType: Identifiable {
+        case deleteMessages(Character)
+        case deleteCharacter(Character)
+        
+        var id: Int {
+            // Generate a unique identifier for each case
+            switch self {
+            case .deleteMessages:
+                return 1
+            case .deleteCharacter:
+                return 2
+            }
+        }
+    }
+
+    @State private var refreshID = UUID()
+    
+    @State private var selectedActionSheet: ActionSheetType?
+    
     @FetchRequest(
         entity: Character.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
@@ -26,8 +45,8 @@ struct HomeScreen: View {
     
     @State private var searchText = ""
     @State private var selectedCharacter: Character? = nil
-    
-    @State private var showingNewMessageScreen = false
+    @State private var characterToEdit: Character? = nil
+    @State private var showingNewCharacterScreen = false
     @State private var showingSearchResultsScreen = false
     
 //    @State private var characters = [
@@ -48,34 +67,109 @@ struct HomeScreen: View {
                         .padding()
                     
                     List(characters
-//                        .filter {
-//                        $0.name.localizedCaseInsensitiveContains(searchText) ||
-//                        $0.promptPrefix.localizedCaseInsensitiveContains(searchText)
-//                    }
                     ) { character in
                         Button(action: {
                             selectedCharacter = character
                         }) {
                             CharacterRow(character: character)
                         }
+                        .contextMenu {
+                            Button(action: {
+                                // Edit character action
+                                characterToEdit = character
+                            }) {
+                                Text("Edit Character")
+                                Image(systemName: "pencil")
+                            }
+                            
+                            Button(action: {
+                                // Delete all messages action
+                                selectedActionSheet = .deleteMessages(character)
+                            }) {
+                                Text("Delete Messages")
+                                Image(systemName: "trash")
+                            }
+
+                            Button(action: {
+                                // Delete character action
+                                selectedActionSheet = .deleteCharacter(character)
+                            }) {
+                                Text("Delete Character")
+                                Image(systemName: "trash.fill")
+                            }
+                        }
                     }
                     .fullScreenCover(isPresented: $showingSearchResultsScreen) {
-                        SearchResultsScreen()
+                        SearchResultsScreen(refreshID: $refreshID)
                     }
                     .fullScreenCover(item: $selectedCharacter) { character in
-                        MessageScreen(character: character, messages: character.sortedMessages)
+                        MessageScreen(refreshID: $refreshID, character: character, messages: character.sortedMessages)
                     }
-                    .sheet(isPresented: $showingNewMessageScreen) {
-                        NewMessageScreen()
+                    .fullScreenCover(item: $characterToEdit) { character in
+                        NewCharacterScreen(refreshID: $refreshID, character: character)
+                    }
+                    .sheet(isPresented: $showingNewCharacterScreen) {
+                        NewCharacterScreen(refreshID: $refreshID)
+                    }
+                    .actionSheet(item: $selectedActionSheet) { actionSheetType in
+                        switch actionSheetType {
+                        case .deleteMessages(let character):
+                            return ActionSheet(
+                                title: Text(""),
+                                message: Text("All messages between you and \(character.name) will be deleted, but this character will still remain a contact."),
+                                buttons: [
+                                    .destructive(Text("Delete"), action: {
+                                        
+                                        // Delete all messages associated with the character
+//                                        for message in character.sortedMessages {
+//                                            Constants.context.delete(message)
+//                                        }
+                                        if character.messages != nil {
+                                            for message in character.messages! {
+                                                let message = message as! Message
+                                                Constants.context.delete(message)
+                                            }
+                                            character.lastText = ""
+//                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                                                refreshID = UUID() // Trigger view update
+//                                            }
+                                        }
+                                        
+                                        // Save changes to core data
+                                        PersistenceController.shared.saveContext()
+                                        
+                                    }),
+                                    .cancel(Text("Cancel"))
+                                ]
+                            )
+                        case .deleteCharacter(let character):
+                            return ActionSheet(
+                                title: Text(""),
+                                message: Text("\(character.name) will be deleted as a contact. All messages between you and them will also be deleted."),
+                                buttons: [
+                                    .destructive(Text("Delete"), action: {
+                                        
+                                        // Delete character (all associated messages are deleted thanks to the cascade property in Character Data Model)
+                                        Constants.context.delete(character)
+                                        
+                                        // Save changes to core data
+                                        PersistenceController.shared.saveContext()
+                                        
+                                    }),
+                                    .cancel(Text("Cancel"))
+                                ]
+                            )
+                        }
                     }
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
                             // Present AddMessageScreen
-                            showingNewMessageScreen = true
+                            showingNewCharacterScreen = true
                         }) {
-                            Image(systemName: "square.and.pencil")
+//                            Image(systemName: "square.and.pencil")
+                            Image(systemName: "person.crop.circle.badge.plus")
                                 .font(.title2)
                                 .padding(8)
                             
@@ -84,11 +178,13 @@ struct HomeScreen: View {
                 }
                 .navigationTitle("Message Hub")
             }
+        //ensures the refresh of this view when the refreshId is changed
+            .id(refreshID)
         }
 }
 
 struct CharacterRow: View {
-    var character: Character
+    @State var character: Character
     
     var body: some View {
         HStack {
@@ -111,7 +207,7 @@ struct CharacterRow: View {
             VStack(alignment: .leading) {
                 Text(character.name)
                     .font(.headline)
-                Text(character.lastText + "...")
+                Text(!character.lastText.isEmpty ? character.lastText + "..." : "")
                     .foregroundColor(.secondary)
                     .lineLimit(2)
             }

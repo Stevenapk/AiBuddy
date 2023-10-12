@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SearchResultsScreen: View {
     
+    @Binding var refreshID: UUID
+    
     @State var selectedCharacter: Character? = nil
     @State var selectedMessage: Message? = nil
     
@@ -66,7 +68,7 @@ struct SearchResultsScreen: View {
             }
             Spacer()
                 .fullScreenCover(item: $selectedCharacter) { character in
-                    MessageScreen(character: character, messages: character.sortedMessages)
+                    MessageScreen(refreshID: $refreshID, character: character, messages: character.sortedMessages)
 //                        .transition(.move(edge: .trailing))
                 }
                 .fullScreenCover(item: $selectedMessage) { message in
@@ -76,7 +78,7 @@ struct SearchResultsScreen: View {
                     
                     //present message screen passing optional index variable
                     MessageScreen(
-                        character: character,
+                        refreshID: $refreshID, character: character,
                         messages: messages,
                         messageIndexToScrollTo: indexToScrollTo
                     )
@@ -295,7 +297,13 @@ struct ContactIconsRow: View {
 
 struct SearchResultsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        return SearchResultsScreen()
+        let refreshID = Binding<UUID>(get: {
+                    // Return your initial value here
+                    return UUID()
+                }, set: { newValue in
+                    // Handle the updated value here
+                })
+        return SearchResultsScreen(refreshID: refreshID)
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

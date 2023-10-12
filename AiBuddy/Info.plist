@@ -8,5 +8,9 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>AiBuddy needs to access your camera to select contact photos for your ai buddies.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access to transcribe speech to text messages.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app needs speech recognition to transcribe your speech to text messages. </string>
 </dict>
 </plist>

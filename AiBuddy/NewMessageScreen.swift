@@ -9,6 +9,8 @@ import SwiftUI
 
 struct NewMessageScreen: View {
     
+    @Binding var refreshID: UUID
+    
     @Environment(\.dismiss) var dismiss
     
     @State private var recipient = ""
@@ -57,7 +59,7 @@ struct NewMessageScreen: View {
             .navigationBarTitle("New Message", displayMode: .inline)
         }
         .sheet(isPresented: $showingNewCharacterScreen) {
-            NewCharacterScreen()
+            NewCharacterScreen(refreshID: $refreshID)
         }
         
     }
@@ -65,7 +67,15 @@ struct NewMessageScreen: View {
 
 struct NewMessageScreen_Previews: PreviewProvider {
     static var previews: some View {
-        NewMessageScreen()
+        
+        let refreshID = Binding<UUID>(get: {
+                    // Return your initial value here
+                    return UUID()
+                }, set: { newValue in
+                    // Handle the updated value here
+                })
+        
+        NewMessageScreen(refreshID: refreshID)
 //            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }
