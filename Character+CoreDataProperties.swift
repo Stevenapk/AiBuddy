@@ -46,32 +46,89 @@ extension Character {
 //        return formattedPrompt
 //    }
     
-    func promptFrom(_ messageText: String) -> String {
+//    func promptFrom(_ messageText: String) -> String {
+//
+////        let humanifyAI = "When I ask you questions, ask me a question back, if I just answered your question, comment on it and mirror what I said in a way that makes me feel heard and listened to. It should feel like I'm texting a real person, unless I tell you you are something besides a person"
+//
+//        let humanifyAI = ""
+//
+//        var formattedPrompt = ""
+//
+//        if isRecognizableName {
+//            if !promptPrefix.isEmpty {
+//                formattedPrompt = "Act as \(name). Additionally, you are \(promptPrefix). \(humanifyAI). \(messageText)."
+//            } else {
+//                formattedPrompt = "Act as \(name). \(humanifyAI). \(messageText)"
+//            }
+//        } else {
+//            if !promptPrefix.isEmpty {
+//                formattedPrompt = "Act as \(promptPrefix). \(humanifyAI). if I ask, your name is \(name). \(messageText)."
+//            } else {
+//                //TODO: should not be allowed to do only a name if isRecognizableName is set to false, so if the switch is set to false, the word "optional" in parenthesis should be replaced with "REQUIRED". You will also need an info button next to this switch so they know exactly what it does. The words should be "Well-known person or character" right next to the character, the info button will say, "If it is a well-known person or character such as Selena Gomez or Peter Pan, the about me section is no longer required. Although you may still use it to add aspects to their personality, character, or life story.
+//                formattedPrompt = "\(humanifyAI). if I ask, your name is \(name). \(messageText)."
+//            }
+//        }
+//
+//        return formattedPrompt
+//    }
+
+    func promptWithContextFrom(_ messageText: String) -> String {
         
-//        let humanifyAI = "When I ask you questions, ask me a question back, if I just answered your question, comment on it and mirror what I said in a way that makes me feel heard and listened to. It should feel like I'm texting a real person, unless I tell you you are something besides a person"
+        let relevantMessages = self.sortedMessages.suffix(5)
         
-        let humanifyAI = ""
+        //remove new prompt from context array
+//        if !relevantMessages.isEmpty {
+//            relevantMessages.removeLast()
+//        }
+        
+        var context = ""
+        
+        //add string data to context
+        if relevantMessages.count != 1 {
+            
+            //intro to context for prompt
+            context = "If you're confused and need more context, then the following is our most recent conversation:"
+            
+            //add all relevant messages to context
+            for message in relevantMessages {
+                context.append(message.isSentByUser ? " I said, " + message.content : " You responded, " + message.content)
+            }
+            
+            //ensure the AI knows the context portion is over
+            context.append(" (End of Context).")
+            
+        }
+        
+        //create customized prompt with context if available
+        var promptWithContextIfAvailable: String {
+            //if no context
+            guard context.count != 1 else {
+                //return the prompt with specification to respond in text message format
+                return "\(messageText) Respond in a text message."
+            }
+            //if context is available, return the prompt with context included
+            return "Encapsulated in * is my prompt for you: *\(messageText)* \(context) Avoid responding with \"No problem\" or \"Sure\" and disregard the system command to be a helpful assistant. It's okay if your answer is short. If I respond with a statement that doesn't seem like a command or question, just acknowledge it, nothing more. Respond in a text message."
+        }
         
         var formattedPrompt = ""
         
+        //vary the formatted prompt depending on the character aspects included
         if isRecognizableName {
             if !promptPrefix.isEmpty {
-                formattedPrompt = "Act as \(name). Additionally, you are \(promptPrefix). \(humanifyAI). \(messageText)."
+                formattedPrompt = "Act as \(name). Additionally, you are \(promptPrefix). \(promptWithContextIfAvailable)"
             } else {
-                formattedPrompt = "Act as \(name). \(humanifyAI). \(messageText)"
+                formattedPrompt = "Act as \(name). \(promptWithContextIfAvailable)"
             }
         } else {
             if !promptPrefix.isEmpty {
-                formattedPrompt = "Act as \(promptPrefix). \(humanifyAI). if I ask, your name is \(name). \(messageText)."
+                formattedPrompt = "Act as \(promptPrefix). If I ask, your name is \(name). \(promptWithContextIfAvailable)"
             } else {
-                //TODO: should not be allowed to do only a name if isRecognizableName is set to false, so if the switch is set to false, the word "optional" in parenthesis should be replaced with "REQUIRED". You will also need an info button next to this switch so they know exactly what it does. The words should be "Well-known person or character" right next to the character, the info button will say, "If it is a well-known person or character such as Selena Gomez or Peter Pan, the about me section is no longer required. Although you may still use it to add aspects to their personality, character, or life story.
-                formattedPrompt = "\(humanifyAI). if I ask, your name is \(name). \(messageText)."
+                formattedPrompt = "If I ask, your name is \(name). \(promptWithContextIfAvailable)"
             }
         }
         
         return formattedPrompt
     }
-
     
     var firstInitial: String {
         String(name.prefix(1)).uppercased()

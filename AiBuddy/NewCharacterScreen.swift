@@ -329,16 +329,15 @@ struct NewCharacterScreen: View {
         var prompt: String {
             if isNameRecognizable {
                 if !aboutMe.isEmpty {
-                    return "Act as \(name). Additionally, you are \(aboutMe). \(messageText)."
+                    return "Act as \(name). Additionally, you are \(aboutMe). \(messageText)"
                 } else {
                     return "Act as \(name). \(messageText)"
                 }
             } else {
                 if !aboutMe.isEmpty {
-                    return "Act as \(aboutMe). If I ask, your name is \(name). \(messageText)."
+                    return "Act as \(aboutMe). If I ask, your name is \(name). \(messageText)"
                 } else {
-                    //TODO: should not be allowed to do only a name if isRecognizableName is set to false, so if the switch is set to false, the word "optional" in parenthesis should be replaced with "REQUIRED". You will also need an info button next to this switch so they know exactly what it does. The words should be "Well-known person or character" right next to the character, the info button will say, "If it is a well-known person or character such as Selena Gomez or Peter Pan, the about me section is no longer required. Although you may still use it to add aspects to their personality, character, or life story.
-                    return "If I ask, your name is \(name). \(messageText)."
+                    return "If I ask, your name is \(name). \(messageText)"
                 }
             }
         }
@@ -359,6 +358,9 @@ struct NewCharacterScreen: View {
                 
                 //save changes to core data
                 PersistenceController.shared.saveContext()
+                
+                //refresh HomeScreen to reflect new message in UI
+                refreshID = UUID()
                 
                 self.dismiss()
                 
