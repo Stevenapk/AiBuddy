@@ -157,6 +157,7 @@ struct MessageList: View {
     @Binding var isTextFieldFocused: Bool
     @Binding var messages: [Message]
     @Binding var selectedMessage: Message?
+    @Binding var textFieldHeight: CGFloat
     @State private var scrollOffset: CGFloat = 0
     var messageIndexToScrollTo: Int?
     var bottomMessageIndex: Int { messages.indices.last ?? 0 }
@@ -282,11 +283,11 @@ struct MessageList: View {
                     print("end point prediction: \(gesture.predictedEndLocation.y)")
                         let offset = gesture.translation.height
                         let predictedEndLocation = gesture.predictedEndLocation.y
-                    let textfieldViewHeight = 100.0
+//                    let textfieldViewHeight = 100.0
                         scrollOffset = offset
                         print(scrollOffset)
                         // Dismiss keyboard when scrolling downward past keyboard height
-                    if offset > 0 && predictedEndLocation > (getKeyboardHeight() - textfieldViewHeight) {
+                    if offset > 0 && predictedEndLocation > (getKeyboardHeight() - textFieldHeight) {
                         print("CHAHAHAHANGED")
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }
@@ -555,7 +556,7 @@ struct MessageScreen: View {
             
             
             // Message List
-            MessageList(isTextFieldFocused: $isTextFieldFocused, messages: $messages, selectedMessage: $selectedMessage, messageIndexToScrollTo: messageIndexToScrollTo, character: character)
+            MessageList(isTextFieldFocused: $isTextFieldFocused, messages: $messages, selectedMessage: $selectedMessage, textFieldHeight: $textFieldHeight, messageIndexToScrollTo: messageIndexToScrollTo, character: character)
             
             //            Text(speechRecognizer.transcript)
             // Text Input Field
@@ -574,19 +575,20 @@ struct MessageScreen: View {
 //                            .stroke(Color.gray, lineWidth: 1)
 //                            .padding(20)
 //                        )
-            Spacer()
+
             ZStack(alignment: .bottom) {
                 Rectangle() // Add a rectangle as the first view
                     .foregroundColor(Color(uiColor: .systemBackground)) // Set the desired background color
-                               .frame(height: textFieldHeight)
+                               .frame(height: textFieldHeight-10)
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(Color(.secondaryLabel), lineWidth: 1)
                     .frame(height: textFieldHeight-30)
-                    .padding(.vertical, 17.5)
+                    .padding(.bottom, 17.5)
                     .padding(.horizontal, 25)
                     HStack(alignment: .bottom) {
                         TextField("Type a message...", text: $messageText, axis: .vertical)
-                            .padding(10)
+                            .padding(.bottom, 10)
+                            .padding(.horizontal, 10)
 //                            .background(Color(.clear))
                             .onTapGesture {
                                 // Assuming you want to set isTextFieldFocused here
@@ -636,8 +638,8 @@ struct MessageScreen: View {
                         //                    .font(.headline)
                         //            }
                     }
-                    .padding()
-                    .padding(.horizontal, 7.5)
+                    .padding(.bottom, 17.5)
+                    .padding(.horizontal, 25)
                     .gesture(
                         DragGesture().onChanged { value in
                             // If User is scrolling down on text field...
