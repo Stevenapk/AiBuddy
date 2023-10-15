@@ -417,10 +417,14 @@ struct NewCharacterScreen: View {
         // if overwriting previous character
         if character != nil {
             character!.name = name
-            //            character!.imageRef = imageRef
             character!.promptPrefix = aboutMe
             character!.isRecognizableName = isNameRecognizable
             PersistenceController.shared.saveContext()
+            
+            let imgData = ImageData(context: Constants.context)
+            imgData.imageData = contactImageData
+            
+            character!.imageData = imgData
             
             //refresh HomeScreen to reflect character change
             refreshID = UUID()
@@ -429,9 +433,13 @@ struct NewCharacterScreen: View {
         } else {
             let newChar = Character(context: Constants.context)
             newChar.name = name
-            //            newChar.imageRef = imageRef
             newChar.promptPrefix = aboutMe
             newChar.isRecognizableName = isNameRecognizable
+            
+            let imgData = ImageData(context: Constants.context)
+            imgData.imageData = contactImageData
+            
+            newChar.imageData = imgData
             
             //Have their new character send a custom greeting text!
             sendGreetingText(from: newChar)
@@ -529,6 +537,9 @@ struct NewCharacterScreen: View {
                     
                     //set parent image to selectedImage
                     parent.image = uiImage
+                    
+                    //set parent imageData
+                    parent.imageData = compressedResizedImage
                 }
                 parent.presentationMode.wrappedValue.dismiss()
             }
