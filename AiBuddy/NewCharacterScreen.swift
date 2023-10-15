@@ -8,6 +8,116 @@
 import SwiftUI
 import UIKit
 
+extension UIImage {
+    
+    var resizeToContactIconSize: UIImage? {
+        let targetSize = CGSize(width: 240, height: 240) // Set target size
+
+        // Begin a graphics context of the specified size
+        UIGraphicsBeginImageContext(targetSize)
+        
+        // Ensure the context is properly cleaned up when exiting the block
+        defer { UIGraphicsEndImageContext() }
+        
+        // Draw the current image into the specified rectangle
+        self.draw(in: CGRect(origin: .zero, size: targetSize))
+        
+        // Get the image from the current graphics context
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        return resizedImage
+    }
+    
+    var toCompressedData: Data? {
+        // Attempt to create JPEG data with a compression quality of 50%
+        guard let imageData = self.jpegData(compressionQuality: 0.5) else {
+            // If creating the data fails, print an error message and return nil
+            print("Error: Failed to create JPEG data.")
+            return nil
+        }
+        
+        // Calculate the size of the image data in kilobytes
+        let sizeInKB = Double(imageData.count) / 1024.0
+        print("Size of image data: \(sizeInKB) KB")
+        
+        // Check if the image is already below 100KB
+        if sizeInKB < 100 {
+            // If so, return the image data
+            return imageData
+        } else {
+            // If the image is larger than 100KB, attempt further compression
+            // Guard against infinite recursion by checking if size is very small
+            guard sizeInKB > 1 else {
+                print("Error: Image cannot be compressed further.")
+                return nil
+            }
+            
+            // Resize the image by half (scale of 0.5)
+            let resizedImage = UIImage(data: imageData, scale: 0.5)
+            // Attempt compression by recalling this same computed property (recursion)
+            return resizedImage?.toCompressedData
+        }
+    }
+    
+//    var toCompressedData: Data? {
+//
+//        if let imageData = resizedImage.jpegData(compressionQuality: 0.5) {
+//            let sizeInKB = Double(imageData.count) / 1024.0
+//            print("Size of image data: \(sizeInKB) KB")
+//
+//            if sizeInKB < 100 {
+//                return imageData
+//            } else {
+//                return resizedImage.toCompressedData
+//            }
+//        }
+//        return nil
+//    }
+//
+//    var toCompressedData: Data? {
+//        guard let imageData = self.jpegData(compressionQuality: 0.5) else {
+//            print("Error: Failed to create JPEG data.")
+//            return nil
+//        }
+//
+//        let sizeInKB = Double(imageData.count) / 1024.0
+//        print("Size of image data: \(sizeInKB) KB")
+//
+//        if sizeInKB < 100 {
+//            return imageData
+//        } else {
+//            // Guard against infinite recursion
+//            guard sizeInKB > 1 else {
+//                print("Error: Image cannot be compressed further.")
+//                return nil
+//            }
+//
+//            let resizedImage = UIImage(data: imageData, scale: 0.5)
+//            return resizedImage?.toCompressedData
+//        }
+//    }
+//    var toCompressedData: Data? {
+//
+//        if let imageData = self.jpegData(compressionQuality: 0.5) {
+//                // imageData now contains JPEG data with a compression quality of 50%.
+//
+//                // Check the size of the imageData
+//                let sizeInKB = Double(imageData.count) / 1024.0
+//                print("Size of image data: \(sizeInKB) KB")
+//
+//                if sizeInKB < 100 {
+//                    // The image is smaller than 100KB, you can use imageData as needed.
+//                    return imageData
+//                } else {
+//                    // If the image is still too large, compress further
+//                    return self.toCompressedData
+//                }
+//            }
+//        return nil
+//
+//    }
+}
+
 struct NewCharacterScreen: View {
     
     @Binding var refreshID: UUID
@@ -21,6 +131,7 @@ struct NewCharacterScreen: View {
     
     @State private var name = ""
     @State private var aboutMe = ""
+    @State private var contactImageData: Data?
     @State private var contactImage: UIImage? {
         didSet {
             if contactImage != nil {
@@ -218,8 +329,16 @@ struct NewCharacterScreen: View {
             if let character {
                 name = character.name
                 isNameRecognizable = character.isRecognizableName
+//                if let image = character.image {
+//                    contactImage = image
+//                    showEditButton = true
+//                } else {
+//                    showEditButton = false
+//                }
+                //set image if character image is not nil and update edit button label accordingly
                 if let image = character.image {
                     contactImage = image
+                    contactImageData = character.imgData
                     showEditButton = true
                 } else {
                     showEditButton = false
@@ -245,10 +364,10 @@ struct NewCharacterScreen: View {
         //        )
         
         .sheet(isPresented: $showPhotoLibrary) {
-            ImagePickerView(image: self.$contactImage)
+            ImagePickerView(image: self.$contactImage, imageData: $contactImageData)
         }
         .sheet(isPresented: $showCapturePhoto) {
-            ImagePickerView(image: self.$contactImage, sourceType: .camera)
+            ImagePickerView(image: self.$contactImage, imageData: $contactImageData, sourceType: .camera)
         }
     }
     
@@ -258,7 +377,7 @@ struct NewCharacterScreen: View {
         //if overwriting
         if let character {
             //if at least one element has changed
-            if character.name != name || character.promptPrefix != aboutMe || character.isRecognizableName != isNameRecognizable {
+            if character.name != name || character.promptPrefix != aboutMe || character.isRecognizableName != isNameRecognizable || character.imgData != contactImageData {
                 //if famous character and has name
                 if isNameRecognizable {
                     return true
@@ -375,6 +494,7 @@ struct NewCharacterScreen: View {
     
     struct ImagePickerView: UIViewControllerRepresentable {
         @Binding var image: UIImage?
+        @Binding var imageData: Data?
         var sourceType: UIImagePickerController.SourceType = .photoLibrary
         @Environment(\.presentationMode) private var presentationMode
         
@@ -401,6 +521,13 @@ struct NewCharacterScreen: View {
             
             func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
                 if let uiImage = info[.editedImage] as? UIImage {
+                    // Resize to size appropriate for a contact icon (240x240)
+                    let resizedImage = uiImage.resizeToContactIconSize
+                    
+                    // Compress recursively to limit required storage space
+                    let compressedResizedImage = resizedImage?.toCompressedData                     // Image should now be 240x240 and less than 100kb
+                    
+                    //set parent image to selectedImage
                     parent.image = uiImage
                 }
                 parent.presentationMode.wrappedValue.dismiss()

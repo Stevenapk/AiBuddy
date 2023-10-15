@@ -24,8 +24,16 @@ extension Character {
     @NSManaged public var modified: Date
     @NSManaged public var lastText: String
     @NSManaged public var messages: NSSet?
+    @NSManaged public var imageData: ImageData?
+    
+    var imgData: Data? {
+        return imageData?.imageData
+    }
     
     var image: UIImage? {
+        if let imgData {
+            return UIImage(data: imgData)
+        }
         return nil
     }
     
