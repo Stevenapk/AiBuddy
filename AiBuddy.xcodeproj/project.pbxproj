@@ -42,6 +42,17 @@
 		4E599D802AD6FF3200221393 /* SpeechRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D7E2AD6FF3200221393 /* SpeechRecognition.swift */; };
 		4E599D9C2AD7469B00221393 /* AboutTipsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D9B2AD7469A00221393 /* AboutTipsScreen.swift */; };
 		4E599D9D2AD7469B00221393 /* AboutTipsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D9B2AD7469A00221393 /* AboutTipsScreen.swift */; };
+		4E8144E12ADDE02E00925EBA /* ContactIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144E02ADDE02E00925EBA /* ContactIcon.swift */; };
+		4E8144E32ADDE19500925EBA /* CharacterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144E22ADDE19500925EBA /* CharacterRow.swift */; };
+		4E8144E62ADDE1EF00925EBA /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144E52ADDE1EF00925EBA /* SearchBar.swift */; };
+		4E8144E92ADDE51400925EBA /* TimestampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144E82ADDE51400925EBA /* TimestampView.swift */; };
+		4E8144EB2ADDE62600925EBA /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144EA2ADDE62600925EBA /* Triangle.swift */; };
+		4E8144ED2ADEB14D00925EBA /* MessageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144EC2ADEB14D00925EBA /* MessageList.swift */; };
+		4E8144EF2ADEB1AF00925EBA /* MessageBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144EE2ADEB1AF00925EBA /* MessageBubbleView.swift */; };
+		4E8144F12ADEB22600925EBA /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144F02ADEB22600925EBA /* MessageBubble.swift */; };
+		4E8144F32ADEB28A00925EBA /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144F22ADEB28A00925EBA /* NavigationBar.swift */; };
+		4E8144F62ADEB36700925EBA /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144F52ADEB36700925EBA /* ImagePickerView.swift */; };
+		4E8144F82ADEB4AD00925EBA /* EditContactIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8144F72ADEB4AD00925EBA /* EditContactIcon.swift */; };
 		4EB553522ADC3B5C00E7F194 /* ImageData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EB553502ADC3B5C00E7F194 /* ImageData+CoreDataClass.swift */; };
 		4EB553532ADC3B5C00E7F194 /* ImageData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EB553502ADC3B5C00E7F194 /* ImageData+CoreDataClass.swift */; };
 		4EB553542ADC3B5C00E7F194 /* ImageData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EB553512ADC3B5C00E7F194 /* ImageData+CoreDataProperties.swift */; };
@@ -92,8 +103,20 @@
 		4E599D7B2AD5D47400221393 /* SearchResultsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsScreen.swift; sourceTree = "<group>"; };
 		4E599D7E2AD6FF3200221393 /* SpeechRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognition.swift; sourceTree = "<group>"; };
 		4E599D9B2AD7469A00221393 /* AboutTipsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTipsScreen.swift; sourceTree = "<group>"; };
+		4E8144E02ADDE02E00925EBA /* ContactIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactIcon.swift; sourceTree = "<group>"; };
+		4E8144E22ADDE19500925EBA /* CharacterRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterRow.swift; sourceTree = "<group>"; };
+		4E8144E52ADDE1EF00925EBA /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		4E8144E82ADDE51400925EBA /* TimestampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampView.swift; sourceTree = "<group>"; };
+		4E8144EA2ADDE62600925EBA /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		4E8144EC2ADEB14D00925EBA /* MessageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageList.swift; sourceTree = "<group>"; };
+		4E8144EE2ADEB1AF00925EBA /* MessageBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubbleView.swift; sourceTree = "<group>"; };
+		4E8144F02ADEB22600925EBA /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
+		4E8144F22ADEB28A00925EBA /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		4E8144F52ADEB36700925EBA /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
+		4E8144F72ADEB4AD00925EBA /* EditContactIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditContactIcon.swift; sourceTree = "<group>"; };
 		4EB553502ADC3B5C00E7F194 /* ImageData+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageData+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4EB553512ADC3B5C00E7F194 /* ImageData+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageData+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4EB553592ADD95A700E7F194 /* AiBuddy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AiBuddy.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +174,8 @@
 		4E599D242AD1EDC700221393 /* AiBuddy */ = {
 			isa = PBXGroup;
 			children = (
+				4E8144DF2ADDDFF000925EBA /* View */,
+				4EB553592ADD95A700E7F194 /* AiBuddy.entitlements */,
 				4E599D252AD1EDC700221393 /* AiBuddyApp.swift */,
 				4E599D272AD1EDC700221393 /* ContentView.swift */,
 				4E599D292AD1EDCE00221393 /* Assets.xcassets */,
@@ -194,6 +219,48 @@
 				4E599D482AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift */,
 			);
 			path = AiBuddyUITests;
+			sourceTree = "<group>";
+		};
+		4E8144DF2ADDDFF000925EBA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4E8144F42ADEB32D00925EBA /* NewCharacterScreenSubViews */,
+				4E8144E72ADDE4F900925EBA /* MessageScreenSubViews */,
+				4E8144E42ADDE1BB00925EBA /* HomeScreenSubViews */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		4E8144E42ADDE1BB00925EBA /* HomeScreenSubViews */ = {
+			isa = PBXGroup;
+			children = (
+				4E8144E02ADDE02E00925EBA /* ContactIcon.swift */,
+				4E8144E22ADDE19500925EBA /* CharacterRow.swift */,
+				4E8144E52ADDE1EF00925EBA /* SearchBar.swift */,
+			);
+			path = HomeScreenSubViews;
+			sourceTree = "<group>";
+		};
+		4E8144E72ADDE4F900925EBA /* MessageScreenSubViews */ = {
+			isa = PBXGroup;
+			children = (
+				4E8144E82ADDE51400925EBA /* TimestampView.swift */,
+				4E8144EA2ADDE62600925EBA /* Triangle.swift */,
+				4E8144EC2ADEB14D00925EBA /* MessageList.swift */,
+				4E8144EE2ADEB1AF00925EBA /* MessageBubbleView.swift */,
+				4E8144F02ADEB22600925EBA /* MessageBubble.swift */,
+				4E8144F22ADEB28A00925EBA /* NavigationBar.swift */,
+			);
+			path = MessageScreenSubViews;
+			sourceTree = "<group>";
+		};
+		4E8144F42ADEB32D00925EBA /* NewCharacterScreenSubViews */ = {
+			isa = PBXGroup;
+			children = (
+				4E8144F52ADEB36700925EBA /* ImagePickerView.swift */,
+				4E8144F72ADEB4AD00925EBA /* EditContactIcon.swift */,
+			);
+			path = NewCharacterScreenSubViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -336,20 +403,31 @@
 				4E599D2F2AD1EDCE00221393 /* Persistence.swift in Sources */,
 				4E599D6D2AD34BBF00221393 /* Constants.swift in Sources */,
 				4E599D792AD4924200221393 /* NewCharacterScreen.swift in Sources */,
+				4E8144F12ADEB22600925EBA /* MessageBubble.swift in Sources */,
+				4E8144F82ADEB4AD00925EBA /* EditContactIcon.swift in Sources */,
+				4E8144E92ADDE51400925EBA /* TimestampView.swift in Sources */,
 				4E599D5E2AD1F5C700221393 /* MessageScreen.swift in Sources */,
 				4E599D6A2AD340E100221393 /* Character+CoreDataProperties.swift in Sources */,
 				4E599D282AD1EDC700221393 /* ContentView.swift in Sources */,
 				4E599D732AD48ED100221393 /* NewMessageScreen.swift in Sources */,
 				4E599D5B2AD1F44700221393 /* HomeScreen.swift in Sources */,
+				4E8144F32ADEB28A00925EBA /* NavigationBar.swift in Sources */,
+				4E8144ED2ADEB14D00925EBA /* MessageList.swift in Sources */,
+				4E8144E62ADDE1EF00925EBA /* SearchBar.swift in Sources */,
+				4E8144E12ADDE02E00925EBA /* ContactIcon.swift in Sources */,
 				4E599D592AD1EEC400221393 /* APIHandler.swift in Sources */,
 				4E599D662AD340E100221393 /* Message+CoreDataProperties.swift in Sources */,
+				4E8144F62ADEB36700925EBA /* ImagePickerView.swift in Sources */,
 				4EB553522ADC3B5C00E7F194 /* ImageData+CoreDataClass.swift in Sources */,
+				4E8144EB2ADDE62600925EBA /* Triangle.swift in Sources */,
 				4E599D322AD1EDCE00221393 /* AiBuddy.xcdatamodeld in Sources */,
+				4E8144EF2ADEB1AF00925EBA /* MessageBubbleView.swift in Sources */,
 				4E599D7F2AD6FF3200221393 /* SpeechRecognition.swift in Sources */,
 				4E599D262AD1EDC700221393 /* AiBuddyApp.swift in Sources */,
 				4E599D642AD340E100221393 /* Message+CoreDataClass.swift in Sources */,
 				4E599D682AD340E100221393 /* Character+CoreDataClass.swift in Sources */,
 				4E599D7C2AD5D47400221393 /* SearchResultsScreen.swift in Sources */,
+				4E8144E32ADDE19500925EBA /* CharacterRow.swift in Sources */,
 				4EB553542ADC3B5C00E7F194 /* ImageData+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -520,6 +598,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AiBuddy/AiBuddy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AiBuddy/Preview Content\"";
@@ -549,6 +628,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AiBuddy/AiBuddy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AiBuddy/Preview Content\"";

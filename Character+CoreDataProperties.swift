@@ -45,6 +45,18 @@ extension Character {
         return []
     }
     
+    func deleteAllMessages(completion: @escaping () -> Void) {
+        // Delete messages associated with the character
+        if self.messages != nil {
+            for message in self.messages! {
+                let message = message as! Message
+                Constants.context.delete(message)
+            }
+            self.lastText = ""
+        }
+        completion() // Call the completion handler
+    }
+    
 //    func promptFrom(_ messageText: String) -> String {
 //
 //        let humanifyAI = "When I ask you questions, ask me a question back, if I just answered your question, comment on it and mirror what I said in a way that makes me feel heard and listened to. It should feel like I'm texting a real person, unless I tell you you are something besides a person."
