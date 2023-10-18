@@ -64,6 +64,7 @@ struct MessageScreen: View {
                     .padding(.horizontal, 25)
                     HStack(alignment: .bottom) {
                         TextField("Type a message...", text: $messageText, axis: .vertical)
+                            .font(.caption)
                             .padding(.bottom, 10)
                             .padding(.horizontal, 10)
 //                            .background(Color(.clear))
@@ -73,10 +74,6 @@ struct MessageScreen: View {
                             }
                             .background(GeometryReader { geo in
                                                 Color.clear
-                                                    .onAppear {
-                                                        // Update the editor height when it appears
-//                                                        textFieldHeight = geo.size.height + 30
-                                                    }
                                                     .onChange(of: geo.size.height) { newHeight in
                                                         // Respond to changes in height
                                                             textFieldHeight = newHeight + 30

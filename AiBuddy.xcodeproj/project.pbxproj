@@ -174,6 +174,7 @@
 		4E599D242AD1EDC700221393 /* AiBuddy */ = {
 			isa = PBXGroup;
 			children = (
+				4E8144F92ADF62B000925EBA /* ViewModel */,
 				4E8144DF2ADDDFF000925EBA /* View */,
 				4EB553592ADD95A700E7F194 /* AiBuddy.entitlements */,
 				4E599D252AD1EDC700221393 /* AiBuddyApp.swift */,
@@ -261,6 +262,13 @@
 				4E8144F72ADEB4AD00925EBA /* EditContactIcon.swift */,
 			);
 			path = NewCharacterScreenSubViews;
+			sourceTree = "<group>";
+		};
+		4E8144F92ADF62B000925EBA /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

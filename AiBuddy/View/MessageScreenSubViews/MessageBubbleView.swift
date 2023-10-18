@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct MessageBubbleView: View {
+    
+    @State private var hasPerformedInitialSetup = false
+    
     var message: Message
     var index: Int
     var messageIndexToScrollTo: Int?
@@ -32,14 +35,20 @@ struct MessageBubbleView: View {
                 GeometryReader { geometry in
                     Color.clear
                         .onAppear {
-                            //scroll to selected message from prior search
-                            if let scrollToIndex = messageIndexToScrollTo, index == scrollToIndex {
-                                let minY = geometry.frame(in: .global).minY
-                                let height = geometry.size.height
-                                proxy.scrollTo(index, anchor: .top)
-                            } else {
-                                //scroll to bottom (most recent message) if no selectedIndex
-                                scrollToBottom(with: proxy)
+                            if !hasPerformedInitialSetup {
+                                
+                                //Set has performed initial setup to true
+                                hasPerformedInitialSetup = true
+                                
+                                //scroll to selected message from prior search
+                                if let scrollToIndex = messageIndexToScrollTo, index == scrollToIndex {
+                                    let minY = geometry.frame(in: .global).minY
+                                    let height = geometry.size.height
+                                    proxy.scrollTo(index, anchor: .top)
+                                } else {
+                                    //scroll to bottom (most recent message) if no selectedIndex
+                                    scrollToBottom(with: proxy)
+                                }
                             }
                         }
                 }

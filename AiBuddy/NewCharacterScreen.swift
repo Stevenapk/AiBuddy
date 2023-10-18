@@ -49,11 +49,11 @@ class NewCharacterViewModel: ObservableObject {
             character.promptPrefix = aboutMe
             character.isRecognizableName = isNameRecognizable
             
+            // Create Image Object and assign character
             let imgData = ImageData(context: Constants.context)
             imgData.imageData = contactImageData
-            
-            character.imageData = imgData
-            
+            imgData.character = character
+
             PersistenceController.shared.saveContext()
             
             completion(true) // Needs refresh
@@ -64,17 +64,16 @@ class NewCharacterViewModel: ObservableObject {
             newChar.promptPrefix = aboutMe
             newChar.isRecognizableName = isNameRecognizable
             
+            // Create Image Object and assign character
             let imgData = ImageData(context: Constants.context)
             imgData.imageData = contactImageData
-            
-            newChar.imageData = imgData
-            
+            imgData.character = newChar
+
             sendGreetingText(from: newChar, completion: { needsRefresh in
                 completion(needsRefresh)
             })
         }
     }
-
     
     
 //    func saveCharacter(existingCharacter: Character?) {
@@ -155,19 +154,18 @@ class NewCharacterViewModel: ObservableObject {
         }
     }
     
-    func prefillFields(for character: Character?) {
-        //if editing, pre-fill fields
-        if let character {
+    func prefillFields(for character: Character) {
+            //set name
             name = character.name
+            //set isFamousCharacter
             isNameRecognizable = character.isRecognizableName
             
-            //set image if character image is not nil
+            //set image if applicable
             if let image = character.image {
                 contactImage = image
                 contactImageData = character.imgData
             }
             aboutMe = character.promptPrefix
-        }
     }
     
 }
@@ -196,8 +194,6 @@ struct EditContactIconView: View {
             if viewModel.isCameraAvailable() {
                 buttons.insert(.default(Text("Camera"), action: {
                     // Handle taking a new photo
-                    //                        self.selectPhoto(source: .camera)
-                    //                        ImagePickerView(image: self.$contactImage)
                     viewModel.showCapturePhoto = true
                 }), at: 1)
             }
@@ -256,13 +252,14 @@ struct AboutMeView: View {
             .padding(.horizontal)
             
             TextEditor(text: $aboutMe)
+                .font(.caption)
                 .frame(height: 157.5)
                 .overlay(
                     Text("\(aboutMe.count)/350")
                         .foregroundColor(aboutMe.count <= 350 ? .black : .red)
                         .padding(.top, 4)
                         .padding(.horizontal, 12)
-                        .font(Font.caption)
+                        .font(Font.caption2)
                         .bold()
                         .background(Color.white.opacity(0.7))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -414,6 +411,8 @@ extension UIImage {
 
 struct NewCharacterScreen: View {
     
+    @State private var hasPerformedInitialSetup = false
+    
     @Binding var refreshID: UUID
     var character: Character?
 
@@ -469,8 +468,16 @@ struct NewCharacterScreen: View {
         }
         .padding()
         .onAppear {
-            //Prefill fields for a character if they exist (character passed will be nil if they don't exist)
-            viewModel.prefillFields(for: character)
+            if !hasPerformedInitialSetup {
+                
+                //set has performedInitialSetup to true
+                hasPerformedInitialSetup = true
+                
+                //Prefill fields if overwriting previous character
+                if let character {
+                    viewModel.prefillFields(for: character)
+                }
+            }
         }
         //present Show Photo library sheet when toggled
         .sheet(isPresented: $viewModel.showPhotoLibrary) {
@@ -486,6 +493,19 @@ struct NewCharacterScreen: View {
     
 }
 
+struct NewCharacterScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            let refreshID = Binding<UUID>(get: {
+                // Set random UUID as initial value
+                return UUID()
+            }, set: { newValue in
+                // Handle the updated value here
+            })
+            NewCharacterScreen(refreshID: refreshID)
+        }
+    }
+}
 
 //struct NewCharacterScreen: View {
 //
@@ -788,18 +808,4 @@ struct NewCharacterScreen: View {
 //        }
 //    }
 //}
-   
-struct NewCharacterScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            let refreshID = Binding<UUID>(get: {
-                // Set random UUID as initial value
-                return UUID()
-            }, set: { newValue in
-                // Handle the updated value here
-            })
-            NewCharacterScreen(refreshID: refreshID)
-        }
-    }
-}
     

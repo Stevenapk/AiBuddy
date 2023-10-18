@@ -57,6 +57,61 @@ extension Character {
         completion() // Call the completion handler
     }
     
+    func formattedSinglePrompt(from messageText: String) -> String {
+            if isRecognizableName {
+                if !promptPrefix.isEmpty {
+                    return "Act as \(name). Additionally, you are \(promptPrefix). \(messageText)"
+                } else {
+                    return "Act as \(name). \(messageText)"
+                }
+            } else {
+                if !promptPrefix.isEmpty {
+                    return "Act as \(promptPrefix). If I ask, your name is \(name). \(messageText)"
+                } else {
+                    return "If I ask, your name is \(name). \(messageText)"
+                }
+            }
+    }
+    
+    func receiveRandomMessage(completion: @escaping (Bool) -> Void) {
+        
+        let randomAdjective: String = [
+            "random",
+            "funny",
+            "serious",
+            "thoughtful",
+            "cool",
+            "weird"
+        ].randomElement()!
+        
+        let prompt = "Send me a \(randomAdjective) question only you would ask."
+        
+        let formattedPrompt = formattedSinglePrompt(from: prompt)
+        
+        APIHandler.shared.getResponse(input: formattedPrompt) { result in
+            switch result {
+            case .success(let output):
+                
+                //format string output to remove empty first line
+                let formattedOutput =  output.trimmingCharacters(in: .newlines)
+                
+                //create message object from string output
+                let message = Message(context: Constants.context)
+                message.content = formattedOutput
+                message.set(self)
+                
+                //save changes to core data
+                PersistenceController.shared.saveContext()
+
+                completion(true) // Indicates success
+                
+            case .failure(let error):
+                print("RESPONSE failed: \(error)")
+                completion(false) // Indicates failure
+            }
+        }
+    }
+    
 //    func promptFrom(_ messageText: String) -> String {
 //
 //        let humanifyAI = "When I ask you questions, ask me a question back, if I just answered your question, comment on it and mirror what I said in a way that makes me feel heard and listened to. It should feel like I'm texting a real person, unless I tell you you are something besides a person."

@@ -17,7 +17,32 @@ import SwiftUI
 //    var lastMessaged: Date = Date()
 //}
 
+class HomeScreenViewModel: ObservableObject {
+    
+    init() {
+    }
+    
+    func rollForRandomNewMessage(from character: Character, completion: @escaping (Bool) -> Void) {
+        
+//        let probability = Int.random(in: 0..<9)
+        
+        let probability = 1
+        
+        if probability == 1 {
+            // Select a random character
+            character.receiveRandomMessage(completion: { success in
+                completion(success)
+            })
+        }
+    }
+    
+}
+
 struct HomeScreen: View {
+    
+    @State private var hasPerformedInitialSetup = false
+    
+    @ObservedObject var viewModel = HomeScreenViewModel()
     
     // Enum for different action sheet types
     enum ActionSheetType: Identifiable {
@@ -162,6 +187,24 @@ struct HomeScreen: View {
                 }
             }
             .navigationTitle("Message Hub") // Set navigation title
+            .onAppear {
+                //Only on first screen setup
+                if !hasPerformedInitialSetup {
+                    //set has performedInitialSetup to true
+                    hasPerformedInitialSetup = true
+                    
+                    //roll for a random new message from a character random character
+                    if let randomCharacter = characters.randomElement() {
+                        viewModel.rollForRandomNewMessage(from: randomCharacter) { success in
+                            //if successfully received new message from character,
+                            if success {
+                                //refresh to update for unreadMessage blip
+                                refreshID = UUID()
+                            }
+                        }
+                    }
+                }
+            }
         }
         .id(refreshID) // Ensure view refreshes when refreshID changes
     }
@@ -172,7 +215,7 @@ struct HomeScreen_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        return HomeScreen()
+        return HomeScreen(viewModel: HomeScreenViewModel())
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }
