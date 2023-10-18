@@ -13,6 +13,8 @@ import AVFoundation
 
 struct MessageScreen: View {
     
+    @State private var hasPerformedInitialSetup = false
+    
     @State var selectedMessage: Message? = nil
     @Binding var refreshID: UUID
     @State private var isRecording = false
@@ -43,6 +45,11 @@ struct MessageScreen: View {
     
     @State private var textFieldHeight: CGFloat = 70
     
+    func resetTextFieldHeight() {
+        let defaultTextFieldHeight: CGFloat = 70
+        textFieldHeight = defaultTextFieldHeight
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // Navigation Bar
@@ -64,7 +71,7 @@ struct MessageScreen: View {
                     .padding(.horizontal, 25)
                     HStack(alignment: .bottom) {
                         TextField("Type a message...", text: $messageText, axis: .vertical)
-                            .font(.caption)
+                            .font(Font.subheadline)
                             .padding(.bottom, 10)
                             .padding(.horizontal, 10)
 //                            .background(Color(.clear))
@@ -76,8 +83,7 @@ struct MessageScreen: View {
                                                 Color.clear
                                                     .onChange(of: geo.size.height) { newHeight in
                                                         // Respond to changes in height
-                                                            textFieldHeight = newHeight + 30
-                                                        
+                                                            textFieldHeight = newHeight + 40
                                                     }
                                             })
                         if                         // make label transparent when blank
@@ -90,7 +96,7 @@ struct MessageScreen: View {
                             } label: {
                                 ZStack {
                                     Circle()
-                                        .frame(width: 30)
+                                        .frame(width: 20)
                                         .foregroundColor(.white)
                                         .padding(.bottom, 5)
                                         .padding(.trailing, 5)
@@ -102,12 +108,6 @@ struct MessageScreen: View {
                             }
                             //                .disabled(messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) // disabled when blaul
                         }
-                        
-                        //
-                        //            Button(action: sendAction) {
-                        //                Image(systemName: "paperplane")
-                        //                    .font(.headline)
-                        //            }
                     }
                     .padding(.bottom, 17.5)
                     .padding(.horizontal, 25)
@@ -117,7 +117,6 @@ struct MessageScreen: View {
                             if value.translation.height > 0 {
                                 //then, dismiss keyboard
                                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                                
                             }
                         }
                     )
@@ -127,6 +126,21 @@ struct MessageScreen: View {
 
             
             //            TextInputFieldView(text: $messageText, sendAction: sendMessage)
+        }
+        .onAppear {
+            //Only on first screen setup
+            if !hasPerformedInitialSetup {
+                
+                //set has performedInitialSetup to true
+                hasPerformedInitialSetup = true
+                
+                if character.hasUnreadMessage {
+                    //set character has unread message to false
+                    character.hasUnreadMessage = false
+                    //save changes to context
+                    PersistenceController.shared.saveContext()
+                }
+            }
         }
 //        .padding(.bottom, isTextFieldFocused ? getKeyboardHeight() : 0)
 //        .animation(.easeInOut(duration: 0.3))

@@ -25,6 +25,7 @@ extension Character {
     @NSManaged public var lastText: String
     @NSManaged public var messages: NSSet?
     @NSManaged public var imageData: ImageData?
+    @NSManaged public var hasUnreadMessage: Bool
     
     var imgData: Data? {
         return imageData?.imageData
@@ -99,6 +100,9 @@ extension Character {
                 let message = Message(context: Constants.context)
                 message.content = formattedOutput
                 message.set(self)
+                
+                //set character hasUnreadMessage to true
+                self.hasUnreadMessage = true
                 
                 //save changes to core data
                 PersistenceController.shared.saveContext()

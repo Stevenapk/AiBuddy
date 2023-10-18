@@ -142,6 +142,9 @@ class NewCharacterViewModel: ObservableObject {
                 message.content = formattedOutput
                 message.set(newChar)
                 
+                //set character hasUnreadMessage to true
+                newChar.hasUnreadMessage = true
+                
                 //save changes to core data
                 PersistenceController.shared.saveContext()
 

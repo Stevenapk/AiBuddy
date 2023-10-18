@@ -12,8 +12,15 @@ struct CharacterRow: View {
     
     var body: some View {
         HStack {
+            
+            // Display unread message blip if applicable
+            Circle()
+                .foregroundColor(character.hasUnreadMessage ? .blue : .clear)
+                .frame(width: 10, height: 10)
+                .padding(.leading, -5)
+            
             // Display the character's contact icon
-            ContactIcon(character: $character, width: 50)
+            ContactIcon(character: $character, width: 40)
             
             VStack(alignment: .leading) {
                 HStack {

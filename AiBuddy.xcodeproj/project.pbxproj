@@ -245,12 +245,12 @@
 		4E8144E72ADDE4F900925EBA /* MessageScreenSubViews */ = {
 			isa = PBXGroup;
 			children = (
+				4E8144F22ADEB28A00925EBA /* NavigationBar.swift */,
 				4E8144E82ADDE51400925EBA /* TimestampView.swift */,
 				4E8144EA2ADDE62600925EBA /* Triangle.swift */,
 				4E8144EC2ADEB14D00925EBA /* MessageList.swift */,
 				4E8144EE2ADEB1AF00925EBA /* MessageBubbleView.swift */,
 				4E8144F02ADEB22600925EBA /* MessageBubble.swift */,
-				4E8144F22ADEB28A00925EBA /* NavigationBar.swift */,
 			);
 			path = MessageScreenSubViews;
 			sourceTree = "<group>";
