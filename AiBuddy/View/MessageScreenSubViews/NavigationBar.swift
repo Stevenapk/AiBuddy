@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NavigationBar: View {
     
-    var dismiss: () -> Void
+    @Environment(\.dismiss) var dismiss
     
     @State var character: Character
     @Binding var refreshID: UUID

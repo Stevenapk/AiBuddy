@@ -130,7 +130,12 @@ struct HomeScreen: View {
                     SearchResultsScreen(refreshID: $refreshID) // Show search results screen
                 }
                 .fullScreenCover(item: $selectedCharacter) { character in
-                    MessageScreen(refreshID: $refreshID, character: character, messages: character.sortedMessages) // Show message screen for selected character
+                    
+                    // Initialize messageScreen's view model passing the character's sorted messages
+                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+                    
+                    // Show the Message Screen for selected character
+                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
                 }
                 .fullScreenCover(item: $characterToEdit) { character in
                     NewCharacterScreen(refreshID: $refreshID, character: character) // Show new character screen for editing

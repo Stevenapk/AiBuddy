@@ -17,7 +17,8 @@ struct CharacterRow: View {
             Circle()
                 .foregroundColor(character.hasUnreadMessage ? .blue : .clear)
                 .frame(width: 10, height: 10)
-                .padding(.leading, -5)
+                .padding(.leading, -7.5)
+                .padding(.trailing, -2.5)
             
             // Display the character's contact icon
             ContactIcon(character: $character, width: 40)

@@ -68,7 +68,11 @@ struct SearchResultsScreen: View {
             }
             Spacer()
                 .fullScreenCover(item: $selectedCharacter) { character in
-                    MessageScreen(refreshID: $refreshID, character: character, messages: character.sortedMessages)
+                    
+                    // Initialize message screen's view model
+                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+                    
+                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
 //                        .transition(.move(edge: .trailing))
                 }
                 .fullScreenCover(item: $selectedMessage) { message in
@@ -76,10 +80,12 @@ struct SearchResultsScreen: View {
                     let messages = character.sortedMessages
                     let indexToScrollTo = messages.firstIndex(of: message)
                     
+                    // Initialize message screen's view model
+                    let messageScreenViewModel = MessageScreenViewModel(messages: messages)
+                    
                     //present message screen passing optional index variable
                     MessageScreen(
-                        refreshID: $refreshID, character: character,
-                        messages: messages,
+                        viewModel: messageScreenViewModel, refreshID: $refreshID, character: character,
                         messageIndexToScrollTo: indexToScrollTo
                     )
                 }

@@ -9,13 +9,12 @@ import SwiftUI
 
 struct MessageList: View {
     
-    @Binding var isTextFieldFocused: Bool
-    @Binding var messages: [Message]
-    @Binding var selectedMessage: Message?
-    @Binding var textFieldHeight: CGFloat
+    @ObservedObject var viewModel: MessageScreenViewModel
+    
     @State private var scrollOffset: CGFloat = 0
+    
     var messageIndexToScrollTo: Int?
-    var bottomMessageIndex: Int { messages.indices.last ?? 0 }
+    var bottomMessageIndex: Int { viewModel.messages.indices.last ?? 0 }
     var character: Character // does this need to be binding var?
     
     func scrollToBottom(with proxy: ScrollViewProxy) {
@@ -32,18 +31,18 @@ struct MessageList: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    ForEach(messages.indices, id: \.self) { index in
-                        if index == 0 || messages[index].timestamp.timeIntervalSince(messages[index-1].timestamp) >= 3600 {
+                    ForEach(viewModel.messages.indices, id: \.self) { index in
+                        if index == 0 || viewModel.messages[index].timestamp.timeIntervalSince(viewModel.messages[index-1].timestamp) >= 3600 {
                             
-                            TimestampView(date: messages[index].timestamp)
+                            TimestampView(date: viewModel.messages[index].timestamp)
                         }
                         MessageBubbleView(
-                            message: messages[index],
+                            message: viewModel.messages[index],
                             index: index,
                             messageIndexToScrollTo: messageIndexToScrollTo,
-                            selectedMessage: $selectedMessage,
-                            isTextFieldFocused: $isTextFieldFocused,
-                            messages: $messages,
+                            selectedMessage: $viewModel.selectedMessage,
+                            isTextFieldFocused: $viewModel.isTextFieldFocused,
+                            messages: $viewModel.messages,
                             proxy: proxy,
                             character: character
                         )
@@ -52,7 +51,7 @@ struct MessageList: View {
                 .padding(.horizontal)
                 .offset(y: scrollOffset)
                 .allowsHitTesting(false) // Allow gestures to pass through
-                .onChange(of: isTextFieldFocused) { focused in
+                .onChange(of: viewModel.isTextFieldFocused) { focused in
                     print("changedddddddd")
                     if focused {
                         UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
@@ -63,8 +62,6 @@ struct MessageList: View {
             .gesture(DragGesture()
                 .onChanged { gesture in
                         // Detect scroll position
-                print("gesture is CHANGGINGGGG")
-                    print("Y POINT: \(gesture.location.y)")
                     print("end point prediction: \(gesture.predictedEndLocation.y)")
                         let offset = gesture.translation.height
                         let predictedEndLocation = gesture.predictedEndLocation.y
@@ -72,7 +69,7 @@ struct MessageList: View {
                         scrollOffset = offset
                         print(scrollOffset)
                         // Dismiss keyboard when scrolling downward past keyboard height
-                    if offset > 0 && predictedEndLocation > (getKeyboardHeight() - textFieldHeight) {
+                    if offset > 0 && predictedEndLocation > (getKeyboardHeight() - viewModel.textFieldHeight) {
                         print("CHAHAHAHANGED")
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }

@@ -141,4 +141,69 @@ final class APIHandler {
             print("ERROR GETTING RESULT \(error)")
         }
     }
+    
+    func sendMessage(_ prompt: String, to character: Character, completion: @escaping (Message?) -> Void) {
+        APIHandler.shared.getResponse(input: prompt) { result in
+            switch result {
+            case .success(let output):
+                
+                //removes blank lines and "." lines and returns output
+                func removeUnwantedLines(from input: String) -> String {
+                    
+                    // Split the input string into an array of lines
+                    let lines = input.split(separator: "\n")
+                    // Create an empty string to store the result
+                    var result = ""
+                    // Create a flag to track whether text has been found
+                    var foundText = false
+
+                    for line in lines {
+                        // Trim leading and trailing whitespaces from the line
+                        let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+
+                        // Check if the trimmed line is not empty and not just a period
+                        if !trimmedLine.isEmpty && trimmedLine != "." {
+                            // If text is found, set the flag to true and append the line to the result
+                            foundText = true
+                            result += "\(line)\n"
+                        } else if foundText {
+                            // If text has been found previously, append the line to the result
+                            result += "\(line)\n"
+                        }
+                    }
+
+                    // Remove the last line if it is blank
+                    if result.last == "\n" {
+                        result.removeLast()
+                    }
+
+                    // Return the properly formatted result
+                    return result
+                }
+
+                let formattedOutput = removeUnwantedLines(from: output)
+
+                //create message object from string output
+                let message = Message(context: Constants.context)
+                if !formattedOutput.isEmpty {
+                    message.content = formattedOutput
+                } else {
+                    message.content = "..."
+                }
+                message.set(character)
+
+                //save changes to core data
+                PersistenceController.shared.saveContext()
+                
+                // Call the completion handler with the created message
+                completion(message)
+
+//                        self.models.append(output)
+//                        responseText = models.joined(separator: " ")
+            case .failure(let error):
+                print("RESPONSE failed")
+                completion(nil)
+            }
+        }
+    }
 }
