@@ -421,7 +421,7 @@ struct NewCharacterScreen: View {
 
     @Environment(\.dismiss) var dismiss
     
-    @ObservedObject private var viewModel = NewCharacterViewModel()
+    @ObservedObject var viewModel: NewCharacterViewModel
 
     var body: some View {
         NavigationView {
@@ -505,7 +505,7 @@ struct NewCharacterScreen_Previews: PreviewProvider {
             }, set: { newValue in
                 // Handle the updated value here
             })
-            NewCharacterScreen(refreshID: refreshID)
+            NewCharacterScreen(refreshID: refreshID, viewModel: NewCharacterViewModel())
         }
     }
 }

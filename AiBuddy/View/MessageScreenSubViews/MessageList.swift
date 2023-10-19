@@ -13,6 +13,8 @@ struct MessageList: View {
     
     @State private var scrollOffset: CGFloat = 0
     
+    @Binding var keyboardDismissed: Bool
+    
     var messageIndexToScrollTo: Int?
     var bottomMessageIndex: Int { viewModel.messages.indices.last ?? 0 }
     var character: Character // does this need to be binding var?
@@ -50,7 +52,7 @@ struct MessageList: View {
                 }
                 .padding(.horizontal)
                 .offset(y: scrollOffset)
-                .allowsHitTesting(false) // Allow gestures to pass through
+                .allowsHitTesting(keyboardDismissed) // Allow gestures to pass through
                 .onChange(of: viewModel.isTextFieldFocused) { focused in
                     print("changedddddddd")
                     if focused {
@@ -72,6 +74,7 @@ struct MessageList: View {
                     if offset > 0 && predictedEndLocation > (getKeyboardHeight() - viewModel.textFieldHeight) {
                         print("CHAHAHAHANGED")
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        keyboardDismissed = true
                     }
                 }
                 .onEnded { gesture in
@@ -85,6 +88,7 @@ struct MessageList: View {
                     if offset > 0 && offset > getKeyboardHeight() {
                         print("ENDINNGGGG")
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        keyboardDismissed = true
                     }
                 }
 

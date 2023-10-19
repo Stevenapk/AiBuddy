@@ -7,15 +7,86 @@
 
 import SwiftUI
 
+class SearchResultsViewModel: ObservableObject {
+
+    @Published var searchText = ""
+    @Published var selectedCharacter: Character? = nil
+    @Published var selectedMessage: Message? = nil
+
+}
+
+struct SearchBarView: View {
+    @ObservedObject var viewModel: SearchResultsViewModel
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        HStack {
+            TextField("Search", text: $viewModel.searchText)
+                .padding(10)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+
+            Button("Cancel") {
+                print("SHOULD DISMISS PARENT VIEW")
+                // Dismiss view
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+        .padding()
+    }
+}
+
+struct MessageSearchResultsList: View {
+    var messages: FetchedResults<Message>
+    @Binding var searchText: String
+    @Binding var selectedMessage: Message?
+    
+    var body: some View {
+        // Use Core Data fetch request to filter messages
+        // Iterate through results and display CharacterRow for each
+        List(messages.filter {
+            $0.content.localizedCaseInsensitiveContains(searchText)
+        }) { message in
+            MessageRow(message: message, lettersToHighlight: searchText) { message in
+                selectedMessage = message
+            }
+        }
+    }
+}
+
+struct ContactIconsOrMessageSearchResultsView: View {
+    @Binding var searchText: String
+    @Binding var selectedCharacter: Character?
+    @Binding var selectedMessage: Message?
+
+    var characters: FetchedResults<Character>
+    var messages: FetchedResults<Message>
+
+    var body: some View {
+        if searchText.isEmpty {
+            // Display four contact icons
+            ContactIconsRow(characters: characters, searchText: $searchText, onTapCharacter: { character in
+                selectedCharacter = character
+            })
+            Divider()
+        } else {
+            // Display filtered messages list
+            // Use Core Data fetch request to filter messages
+            // Iterate through results and display CharacterRow for each
+            MessageSearchResultsList(messages: messages, searchText: $searchText, selectedMessage: $selectedMessage)
+        }
+    }
+}
+
+
 struct SearchResultsScreen: View {
     
+    @Environment(\.presentationMode) var presentationMode
     @Binding var refreshID: UUID
     
-    @State var selectedCharacter: Character? = nil
-    @State var selectedMessage: Message? = nil
+    @State private var hasPerformedInitialSetup = false
     
-    @State var searchText: String = ""
-    @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var viewModel: SearchResultsViewModel
     
     @FetchRequest(
         entity: Message.entity(),
@@ -29,53 +100,28 @@ struct SearchResultsScreen: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                TextField("Search", text: $searchText)
-                    .padding(10)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
-                
-                Button("Cancel") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            }
-            .padding()
-            Divider()
             
-            if searchText.isEmpty {
-                // Display four contact icons
-                ContactIconsRow(characters: characters, searchText: $searchText, onTapCharacter: { character in
-                    self.selectedCharacter = character
-                })
-                Divider()
-            } else {
-                // Display four contact icons
-                ContactIconsRow(characters: characters, searchText: $searchText, onTapCharacter: { character in
-                    self.selectedCharacter = character
-                })
-                Divider()
+            SearchBarView(viewModel: viewModel)
+            Divider()
+            // Display four contact icons
+            ContactIconsRow(characters: characters, searchText: $viewModel.searchText, onTapCharacter: { character in
+                viewModel.selectedCharacter = character
+            })
+            Divider()
+            // If there is typed in search text
+            if !viewModel.searchText.isEmpty {
                 // Display filtered messages list
-                // Use Core Data fetch request to filter messages
-                // Iterate through results and display CharacterRow for each
-                List(messages.filter {
-                    $0.content.localizedCaseInsensitiveContains(searchText)
-                }) { message in
-                    MessageRow(message: message, lettersToHighlight: searchText) { message in
-                        self.selectedMessage = message
-                    }
-                }
-                
+                MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage)
             }
             Spacer()
-                .fullScreenCover(item: $selectedCharacter) { character in
+                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
                     
                     // Initialize message screen's view model
                     let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                     
                     MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
-//                        .transition(.move(edge: .trailing))
                 }
-                .fullScreenCover(item: $selectedMessage) { message in
+                .fullScreenCover(item: $viewModel.selectedMessage) { message in
                     let character = message.character
                     let messages = character.sortedMessages
                     let indexToScrollTo = messages.firstIndex(of: message)
@@ -91,8 +137,18 @@ struct SearchResultsScreen: View {
                 }
         }
         .navigationBarHidden(true)
+        .onAppear {
+            if !hasPerformedInitialSetup {
+                hasPerformedInitialSetup = true
+                // Automatically open the keyboard when the view appears
+                DispatchQueue.main.async {
+                    UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+                }
+            }
+        }
     }
 }
+
 
 extension View {
     func withoutAnimation(action: @escaping () -> Void) {
@@ -161,67 +217,6 @@ struct MessageRow: View {
     }
 }
 
-//struct HighlightedText: View {
-//    var messageContent: String
-//    var lettersToHighlight: String
-//
-//    var body: some View {
-//        let highlightedText = messageContent.map { char -> Text in
-//            if lettersToHighlight.lowercased().contains(char.lowercased()) {
-//                return Text(String(char)).foregroundColor(.black)
-//            } else {
-//                return Text(String(char)).foregroundColor(.secondary)
-//            }
-//        }
-//        return HStack {
-//            ForEach(0..<highlightedText.count, id: \.self) { index in
-//                highlightedText[index]
-//            }
-//        }
-//    }
-//}
-
-//struct HighlightedText: ViewModifier {
-//    var messageContent: String
-//    var lettersToHighlight: String
-//
-//    func body(content: Content) -> some View {
-//
-//        let originalString = messageContent
-//        let highlightedString = NSMutableAttributedString(string: originalString)
-//
-//        let range = originalString.range(of: lettersToHighlight, options: .caseInsensitive)
-//        if range != nil {
-//            highlightedString.addAttribute(.foregroundColor, value: UIColor.black, range: NSRange(range!, in: originalString))
-//        }
-//
-//        return Text(AttributedString(highlightedString))
-//    }
-//}
-//
-//extension View {
-//    func highlight(messageContent: String, lettersToHighlight: String) -> some View {
-//        self.modifier(HighlightedText(messageContent: messageContent, lettersToHighlight: lettersToHighlight))
-//    }
-//}
-
-
-//struct ContactIconsRow: View {
-//    var body: some View {
-//        HStack(spacing: 20) {
-//            ForEach(0..<4, id: \.self) { _ in
-//                VStack {
-//                    Circle()
-//                        .foregroundColor(Color.blue) // Adjust color as needed
-//                        .frame(width: 60, height: 60)
-//                    Text("Name")
-//                        .font(.caption)
-//                }
-//            }
-//            .padding()
-//        }
-//    }
-//}
 
 struct ContactIconsRow: View {
     
@@ -309,7 +304,7 @@ struct SearchResultsScreen_Previews: PreviewProvider {
                 }, set: { newValue in
                     // Handle the updated value here
                 })
-        return SearchResultsScreen(refreshID: refreshID)
+        return SearchResultsScreen(refreshID: refreshID, viewModel: SearchResultsViewModel())
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

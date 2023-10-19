@@ -12,7 +12,6 @@ struct AboutTipsScreen: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-//        NavigationView {
         VStack {
             ZStack {
                 Color(.white)
@@ -61,15 +60,6 @@ struct AboutTipsScreen: View {
             )
             .navigationTitle("\"About\" Tips")
             .navigationBarTitleDisplayMode(.inline)
-//            .navigationBarBackButtonHidden(true)
-//            .navigationBarItems(leading: Button(action: {
-//                // Dismiss or navigate back action
-//                dismiss()
-//            }) {
-//                Image(systemName: "chevron.left")
-//                    .foregroundColor(.blue)
-//            })
-//        }
     }
 }
 

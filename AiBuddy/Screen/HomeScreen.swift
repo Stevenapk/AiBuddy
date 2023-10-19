@@ -7,78 +7,21 @@
 
 import SwiftUI
 
-//struct CharacterSwift: Identifiable {
-//    var id = UUID()
-//    var name = ""
-//    //the prompt prefix goes at beginning of every prompt so the ai knows to act like this character before responding.
-//    var promptPrefix = ""
-//    var lastMessage = ""
-//    var messages: NSSet = NSSet()
-//    var lastMessaged: Date = Date()
-//}
-
-class HomeScreenViewModel: ObservableObject {
-    
-    init() {
-    }
-    
-    func rollForRandomNewMessage(from character: Character, completion: @escaping (Bool) -> Void) {
-        
-//        let probability = Int.random(in: 0..<9)
-        
-        let probability = 1
-        
-        if probability == 1 {
-            // Select a random character
-            character.receiveRandomMessage(completion: { success in
-                completion(success)
-            })
-        }
-    }
-    
-}
-
 struct HomeScreen: View {
     
-    @State private var hasPerformedInitialSetup = false
-    
     @ObservedObject var viewModel = HomeScreenViewModel()
-    
-    // Enum for different action sheet types
-    enum ActionSheetType: Identifiable {
-        case deleteMessages(Character)
-        case deleteCharacter(Character)
-        
-        var id: Int {
-            // Generate a unique identifier for each case
-            switch self {
-            case .deleteMessages:
-                return 1
-            case .deleteCharacter:
-                return 2
-            }
-        }
-    }
-    
+
     // MARK: - State Properties
     
     @State private var refreshID = UUID() // Unique identifier for view refreshing
-    
-    @State private var selectedActionSheet: ActionSheetType? // Selected action sheet type
+    @State private var hasPerformedInitialSetup = false
     
     // Fetch characters using Core Data
     @FetchRequest(
         entity: Character.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
     ) var characters: FetchedResults<Character>
-    
-    @State private var searchText = "" // Text for searching characters
-    
-    @State private var selectedCharacter: Character? = nil // Selected character for detailed view
-    @State private var characterToEdit: Character? = nil // Character to edit
-    
-    @State private var showingNewCharacterScreen = false // Flag to show new character screen
-    @State private var showingSearchResultsScreen = false // Flag to show search results screen
+
     
     // MARK: - Body
     
@@ -86,9 +29,9 @@ struct HomeScreen: View {
         NavigationView {
             VStack {
                 // Search bar for filtering characters
-                SearchBar(text: $searchText)
+                SearchBar(text: $viewModel.searchText)
                     .onTapGesture {
-                        showingSearchResultsScreen = true // Show search results screen on tap
+                        viewModel.showingSearchResultsScreen = true // Show search results screen on tap
                     }
                     .padding(.horizontal)
                     .padding(.bottom)
@@ -97,7 +40,7 @@ struct HomeScreen: View {
                     // List of characters with context menu
                     
                     Button(action: {
-                        selectedCharacter = character // Select character for detailed view
+                        viewModel.selectedCharacter = character // Select character for detailed view
                     }) {
                         CharacterRow(character: character) // Display character information
                     }
@@ -105,31 +48,31 @@ struct HomeScreen: View {
                         // Context menu options
                         
                         Button(action: {
-                            characterToEdit = character // Edit character action
+                            viewModel.characterToEdit = character // Edit character action
                         }) {
                             Text("Edit Character")
                             Image(systemName: "pencil")
                         }
                         
                         Button(action: {
-                            selectedActionSheet = .deleteMessages(character) // Delete messages action
+                            viewModel.selectedActionSheet = .deleteMessages(character) // Delete messages action
                         }) {
                             Text("Delete Messages")
                             Image(systemName: "trash")
                         }
                         
                         Button(action: {
-                            selectedActionSheet = .deleteCharacter(character) // Delete character action
+                            viewModel.selectedActionSheet = .deleteCharacter(character) // Delete character action
                         }) {
                             Text("Delete Character")
                             Image(systemName: "trash.fill")
                         }
                     }
                 }
-                .fullScreenCover(isPresented: $showingSearchResultsScreen) {
-                    SearchResultsScreen(refreshID: $refreshID) // Show search results screen
+                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
+                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
                 }
-                .fullScreenCover(item: $selectedCharacter) { character in
+                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
                     
                     // Initialize messageScreen's view model passing the character's sorted messages
                     let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
@@ -137,13 +80,13 @@ struct HomeScreen: View {
                     // Show the Message Screen for selected character
                     MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
                 }
-                .fullScreenCover(item: $characterToEdit) { character in
-                    NewCharacterScreen(refreshID: $refreshID, character: character) // Show new character screen for editing
+                .fullScreenCover(item: $viewModel.characterToEdit) { character in
+                    NewCharacterScreen(refreshID: $refreshID, character: character, viewModel: NewCharacterViewModel()) // Show new character screen for editing
                 }
-                .sheet(isPresented: $showingNewCharacterScreen) {
-                    NewCharacterScreen(refreshID: $refreshID) // Show new character screen for creating
+                .sheet(isPresented: $viewModel.showingNewCharacterScreen) {
+                    NewCharacterScreen(refreshID: $refreshID, viewModel: NewCharacterViewModel()) // Show new character screen for creating
                 }
-                .actionSheet(item: $selectedActionSheet) { actionSheetType in
+                .actionSheet(item: $viewModel.selectedActionSheet) { actionSheetType in
                     switch actionSheetType {
                     case .deleteMessages(let character):
                         return ActionSheet(
@@ -182,7 +125,7 @@ struct HomeScreen: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        showingNewCharacterScreen = true // Show new character screen on button tap
+                        viewModel.showingNewCharacterScreen = true // Show new character screen on button tap
                     }) {
                         Image(systemName: "person.crop.circle.badge.plus")
                             .font(.title2)
