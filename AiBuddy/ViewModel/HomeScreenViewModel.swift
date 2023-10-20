@@ -37,9 +37,7 @@ class HomeScreenViewModel: ObservableObject {
     
     func rollForRandomNewMessage(from character: Character, completion: @escaping (Bool) -> Void) {
         
-//        let probability = Int.random(in: 0..<9)
-        
-        let probability = 1
+        let probability = Int.random(in: 0...5)
         
         if probability == 1 {
             // Select a random character

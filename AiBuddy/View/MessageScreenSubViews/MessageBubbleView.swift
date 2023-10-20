@@ -41,10 +41,10 @@ struct MessageBubbleView: View {
                                 hasPerformedInitialSetup = true
                                 
                                 //scroll to selected message from prior search
-                                if let scrollToIndex = messageIndexToScrollTo, index == scrollToIndex {
+                                if let scrollToIndex = messageIndexToScrollTo {
                                     let minY = geometry.frame(in: .global).minY
                                     let height = geometry.size.height
-                                    proxy.scrollTo(index, anchor: .top)
+                                    proxy.scrollTo(scrollToIndex, anchor: .top)
                                 } else {
                                     //scroll to bottom (most recent message) if no selectedIndex
                                     scrollToBottom(with: proxy)

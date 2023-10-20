@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Combine
+import CoreData
 
 struct HomeScreen: View {
     
-    @ObservedObject var viewModel = HomeScreenViewModel()
+    @ObservedObject var viewModel: HomeScreenViewModel
 
     // MARK: - State Properties
     
@@ -151,11 +153,29 @@ struct HomeScreen: View {
                             }
                         }
                     }
+//                    DispatchQueue.main.async { [self] in
+//                        NotificationCenter.default.addObserver(self, selector: #selector(self.cloudKitSyncCompleted), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: PersistenceController.shared.container .persistentStoreCoordinator)
+//                    }
                 }
             }
         }
         .id(refreshID) // Ensure view refreshes when refreshID changes
     }
+    
+    init(viewModel: HomeScreenViewModel) {
+        
+        self.viewModel = viewModel
+        
+        cancellable = NotificationCenter.default.publisher(for: NSNotification.Name.NSPersistentStoreRemoteChange)
+            .sink { _ in
+                print("CALLED: Core Data changes from CloudKit have been merged.")
+                // Add your handling code here
+            }
+    }
+    
+    private var cancellable: AnyCancellable?
+    @Environment(\.managedObjectContext) private var viewContext
+    
 }
 
 

@@ -28,6 +28,8 @@ struct SearchBarView: View {
 
             Button("Cancel") {
                 print("SHOULD DISMISS PARENT VIEW")
+                //Remove Keyboard from view
+                UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
                 // Dismiss view
                 presentationMode.wrappedValue.dismiss()
             }
@@ -137,6 +139,10 @@ struct SearchResultsScreen: View {
                 }
         }
         .navigationBarHidden(true)
+        .onTapGesture {
+                    // Resign first responder (dismiss keyboard) when tapped outside of the text field
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
         .onAppear {
             if !hasPerformedInitialSetup {
                 hasPerformedInitialSetup = true
@@ -209,7 +215,7 @@ struct MessageRow: View {
         //highlight in black the letters which were searched
         let range = originalString.range(of: lettersToHighlight, options: .caseInsensitive)
         if range != nil {
-            highlightedString.addAttribute(.foregroundColor, value: UIColor.black, range: NSRange(range!, in: originalString))
+            highlightedString.addAttribute(.foregroundColor, value: UIColor.label, range: NSRange(range!, in: originalString))
         }
 
         //Return AttributedString for use in Text()

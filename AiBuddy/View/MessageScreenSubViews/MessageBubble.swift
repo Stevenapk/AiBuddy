@@ -31,7 +31,7 @@ struct MessageBubble: View {
                         
                     }
                     Text(text)
-                        .foregroundColor(isSentByUser ? .white : .black)
+                        .foregroundColor(isSentByUser ? .white : .primary)
                         .padding(10)
                         .background(isSentByUser ? Color.blue : Color(.systemGray3))
                         .clipShape(RoundedRectangle(cornerRadius: 12))

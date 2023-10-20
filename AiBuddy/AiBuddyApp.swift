@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import CloudKit
 
 @main
 struct AiBuddyApp: App {
@@ -17,7 +18,7 @@ struct AiBuddyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            return HomeScreen()
+            return HomeScreen(viewModel: HomeScreenViewModel())
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 //                .environment(\.managedObjectContext, (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext)
 //            ContentView()
@@ -43,19 +44,81 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 //        APIHandler.shared.setup()
-        createDefaultCharactersIfNeeded()
+        
+        // Observe NSPersistentStoreRemoteChange notifications
+//        DispatchQueue.main.async { [self] in
+//            NotificationCenter.default.addObserver(self, selector: #selector(self.cloudKitSyncCompleted), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: self.persistentContainer.persistentStoreCoordinator)
+//        }
+        
+        // Check if iCloud account is logged in
+            let iCloudAccountStatus = FileManager.default.ubiquityIdentityToken
+            
+            if iCloudAccountStatus != nil {
+                // iCloud account is logged in
+                print("CALLED: ACCOUNT EXISTS")
+                // Wait till sync is completed and that should call the create defaults if needed
+            } else {
+            // iCloud account is not logged in
+            // Generate defaults
+                print("CALLED: NO ACCOUNT EXISTS")
+            createDefaultCharactersIfNeeded()
+        }
+        
         return true
+    }
+    
+    @objc func cloudKitSyncCompleted() {
+        // CloudKit sync completed, check if defaults should be generated
+        print("CALLED: SYNC COMPLETED")
+        
+            // Generate defaults
+            createDefaultCharactersIfNeeded()
+            
+            //Remove observer
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: persistentContainer.persistentStoreCoordinator)
+        
+    }
+
+//    func shouldGenerateDefaults() -> Bool {
+//        // Implement the logic to determine if defaults should be generated
+//        // Return true if defaults should be generated, false otherwise
+//        return false
+//    }
+    
+    func hasUserOpenedAppBefore() -> Bool {
+        do {
+            let appStatus = try Constants.context.fetch(AppStatus.fetchRequest())
+            if !appStatus.isEmpty {
+                print("CALLED: has opened app before: ALREADY EXIST")
+                return true
+            } else {
+                print("CALLED: has not opened before; is EMPTTTTTYYYYY")
+                let appStatus = AppStatus(context: Constants.context)
+                appStatus.hasBeenOpenedBefore = true
+                PersistenceController.shared.saveContext()
+                return false
+            }
+        } catch {
+            // Handle the error here (if any)
+            print("Called: has not opened before, Error fetching AppStatus: \(error)")
+            let appStatus = AppStatus(context: Constants.context)
+            appStatus.hasBeenOpenedBefore = true
+            PersistenceController.shared.saveContext()
+            return false
+        }
     }
     
     func createDefaultCharactersIfNeeded() {
         let context = persistentContainer.viewContext
         
-        if let characters = try? context.fetch(Character.fetchRequest()) {
-            if !characters.isEmpty {
-                print("ALREADY EXIST")
-                return // Characters already exist, no need to create them again
-            }
-        }
+        guard !hasUserOpenedAppBefore() else { return }
+        
+//        if let characters = try? context.fetch(Character.fetchRequest()) {
+//            if !characters.isEmpty {
+//                print("ALREADY EXIST")
+//                return // Characters already exist, no need to create them again
+//            }
+//        }
         
         let charactersData: [(name: String, promptPrefix: String, lastText: String, isFamous: Bool)] = [
             ("That 70's Guy", "a 17 year old friend from the era of the 1970's who responds in slang and loves to go dancing and to the movies", "Hey dude", false),
