@@ -33,13 +33,15 @@ struct CharacterRow: View {
                     // Display the last modified timestamp
                     Text(character.modified.formattedString)
                         .font(.caption) // Use caption font size
+                        .padding(.trailing, 5)
                 }
                 
                 // Display the last message text
                 Text(character.lastText)
                     .foregroundColor(.secondary) // Use secondary text color
-                    .font(.caption) // Use caption font size
+                    .font(.system(size: 15))
                     .lineLimit(2) // Limit text to 2 lines
+                    .padding(.trailing, 5)
                 
                 Spacer()
             }

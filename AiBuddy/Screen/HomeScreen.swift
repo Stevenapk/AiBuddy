@@ -31,12 +31,14 @@ struct HomeScreen: View {
         NavigationView {
             VStack {
                 // Search bar for filtering characters
-                SearchBar(text: $viewModel.searchText)
+                SearchBar(isTextFieldDisabled: true, text: $viewModel.searchText)
                     .onTapGesture {
                         viewModel.showingSearchResultsScreen = true // Show search results screen on tap
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 10)
+                
+                Divider()
                 
                 List(characters) { character in
                     // List of characters with context menu
@@ -71,6 +73,7 @@ struct HomeScreen: View {
                         }
                     }
                 }
+                .listStyle(PlainListStyle()) // Use .plain style
                 .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
                     SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
                 }
@@ -131,12 +134,12 @@ struct HomeScreen: View {
                     }) {
                         Image(systemName: "person.crop.circle.badge.plus")
                             .font(.title2)
-                            .padding(8)
+                            .padding(.top, 8)
                             .dynamicTypeSize(.xSmall)
                     }
                 }
             }
-            .navigationTitle("Message Hub") // Set navigation title
+            .navigationTitle("Messages") // Set navigation title
             .onAppear {
                 //Only on first screen setup
                 if !hasPerformedInitialSetup {

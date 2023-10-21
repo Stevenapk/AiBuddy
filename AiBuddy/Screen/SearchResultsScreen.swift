@@ -21,15 +21,12 @@ struct SearchBarView: View {
 
     var body: some View {
         HStack {
-            TextField("Search", text: $viewModel.searchText)
-                .padding(10)
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
+            SearchBar(text: $viewModel.searchText)
 
             Button("Cancel") {
                 print("SHOULD DISMISS PARENT VIEW")
                 //Remove Keyboard from view
-                UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 // Dismiss view
                 presentationMode.wrappedValue.dismiss()
             }
@@ -230,14 +227,14 @@ struct ContactIconsRow: View {
     
     @Binding var searchText: String
     
-    let diameter = (UIScreen.main.bounds.width-100) / 4
+    let diameter = (UIScreen.main.bounds.width-160) / 4
     
     var onTapCharacter: (Character) -> Void //define a callback
     
     var body: some View {
         
         let filteredCharacters = characters.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-            HStack(spacing: 20) {
+            HStack(spacing: 30) {
                 
                 if !filteredCharacters.isEmpty {
                     
@@ -278,7 +275,9 @@ struct ContactIconsRow: View {
                     .padding(.vertical)
                 }
             }
-            .padding()
+            .padding(.top, 10)
+            .padding(.bottom, 30)
+            .padding(.horizontal, 30)
     }
     
     func partiallyHighlightedString(_ originalString: String) -> AttributedString {

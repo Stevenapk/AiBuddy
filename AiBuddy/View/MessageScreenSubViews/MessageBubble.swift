@@ -32,6 +32,7 @@ struct MessageBubble: View {
                     }
                     Text(text)
                         .foregroundColor(isSentByUser ? .white : .primary)
+                        .font(.system(size: 16))
                         .padding(10)
                         .background(isSentByUser ? Color.blue : Color(.systemGray3))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -75,5 +76,19 @@ struct MessageBubble: View {
                 showTimestamp.toggle()
             }
         }
+    }
+}
+
+struct MessageBubble_Previews: PreviewProvider {
+    static var previews: some View {
+        
+        let refreshID = Binding<UUID>(get: {
+            // Return your initial value here
+            return UUID()
+        }, set: { newValue in
+            // Handle the updated value here
+        })
+        
+        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext))
     }
 }

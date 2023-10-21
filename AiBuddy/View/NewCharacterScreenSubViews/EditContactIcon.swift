@@ -30,6 +30,7 @@ struct EditContactIcon: View {
                 } else {
                     Image(uiImage: contactImage ?? UIImage(systemName: "person.crop.circle")!)
                         .resizable()
+                        .foregroundColor(.primary)
                         .clipShape(Circle())
                 }
             }

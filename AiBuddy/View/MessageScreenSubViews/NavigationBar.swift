@@ -27,8 +27,10 @@ struct NavigationBar: View {
                 dismiss()
             }) {
                 Image(systemName: "chevron.left")
-                    .offset(y: -17.5)
+                    .offset(y: -12.5)
+                    .font(.system(size: 23))
                     .bold()
+                    .frame(width: 20, height: 50)
             }
             Spacer()
             VStack(spacing: 0) {
@@ -37,11 +39,27 @@ struct NavigationBar: View {
                     .font(.caption2)
                     .padding(4)
             }
+            .offset(x:-10)
             Spacer()
             EmptyView() // Add a placeholder for any additional buttons/icons
         }
         .padding(.horizontal)
         .padding(.vertical, 5)
         .background(Color(.systemGray6))
+    }
+}
+
+
+struct NavigationBar_Previews: PreviewProvider {
+    static var previews: some View {
+        
+        let refreshID = Binding<UUID>(get: {
+            // Return your initial value here
+            return UUID()
+        }, set: { newValue in
+            // Handle the updated value here
+        })
+        
+        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext))
     }
 }
