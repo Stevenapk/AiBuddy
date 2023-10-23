@@ -33,6 +33,7 @@ struct CharacterRow: View {
                     // Display the last modified timestamp
                     Text(character.modified.formattedString)
                         .font(.caption) // Use caption font size
+                        .foregroundColor(.secondary)
                         .padding(.trailing, 5)
                 }
                 

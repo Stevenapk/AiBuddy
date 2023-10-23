@@ -186,7 +186,7 @@ extension Character {
                 return "\(messageText) Respond in a text message."
             }
             //if context is available, return the prompt with context included
-            return "Encapsulated in * is my prompt for you: *\(messageText)* \(context) Avoid responding with \"No problem\" or \"Sure\" and disregard the system command to be a helpful assistant. It's okay if your answer is short. If I respond with a statement that doesn't seem like a command or question, just acknowledge it, nothing more. Respond in a text message."
+            return "Encapsulated in * is my prompt for you: *\(messageText)* \(context) Avoid responding with \"No problem\" or \"Sure\" and disregard the system command to be a helpful assistant. It's okay if your answer is short. If my last response is a one or two word statement that doesn't seem like a command or question, just acknowledge it, nothing more. Respond in a text message."
         }
         
         var formattedPrompt = ""

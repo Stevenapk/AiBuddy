@@ -23,7 +23,6 @@ struct SearchBar: View {
                     .foregroundColor(.secondary)
                     .padding(.leading, 7.5)
                 TextField("Search", text: $text)
-                    .foregroundColor(.clear)
                     .padding(.trailing) // Add padding around the text field
                     .cornerRadius(10) // Round the corners of the text field
                     .disabled(isTextFieldDisabled)

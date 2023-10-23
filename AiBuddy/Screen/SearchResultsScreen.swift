@@ -50,6 +50,7 @@ struct MessageSearchResultsList: View {
                 selectedMessage = message
             }
         }
+        .listStyle(PlainListStyle()) // Use .plain style
     }
 }
 
@@ -191,7 +192,7 @@ struct MessageRow: View {
                 Text(message.character.name)
                     .font(.headline)
                 Text(partiallyHighlightedString(message.content))
-                    .font(.caption)
+                    .font(.system(size: 15))
             }
         }
         .onTapGesture {
@@ -275,8 +276,7 @@ struct ContactIconsRow: View {
                     .padding(.vertical)
                 }
             }
-            .padding(.top, 10)
-            .padding(.bottom, 30)
+            .padding(.bottom, 10)
             .padding(.horizontal, 30)
     }
     

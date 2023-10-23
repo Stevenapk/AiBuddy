@@ -162,6 +162,11 @@ struct HomeScreen: View {
                 }
             }
         }
+        .onAppear {
+            if characters.isEmpty {
+                viewModel.createDefaultCharactersIfNeeded()
+            }
+        }
         .id(refreshID) // Ensure view refreshes when refreshID changes
     }
     
