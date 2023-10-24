@@ -469,7 +469,8 @@ struct NewCharacterScreen: View {
             // Make the navigation bar title smaller and centered at the top
             .navigationBarTitleDisplayMode(.inline)
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.top)
         .onAppear {
             if !hasPerformedInitialSetup {
                 

@@ -10,6 +10,8 @@ import SwiftUI
 struct SearchBar: View {
     @State var isTextFieldDisabled = false
     @Binding var text: String // Bind to a text property of the parent
+    @FocusState var showKeyboard: Bool
+
     
     var body: some View {
         // Add text field for searching with a placeholder text
@@ -26,6 +28,7 @@ struct SearchBar: View {
                     .padding(.trailing) // Add padding around the text field
                     .cornerRadius(10) // Round the corners of the text field
                     .disabled(isTextFieldDisabled)
+                    .focused($showKeyboard)
             }
         }
     }

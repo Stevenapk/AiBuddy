@@ -91,6 +91,6 @@ struct MessageScreen_Previews: PreviewProvider {
             // Handle the updated value here
         })
         
-        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext))
+        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshID: refreshID, character: Character(context: Constants.context))
     }
 }

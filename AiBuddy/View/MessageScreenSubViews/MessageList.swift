@@ -60,6 +60,7 @@ struct MessageList: View {
                     print("changedddddddd")
                     if focused {
                         UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+                        scrollToBottom(with: proxy)
                     }
                 }
             }

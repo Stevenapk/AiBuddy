@@ -7,6 +7,29 @@
 
 import SwiftUI
 
+extension String {
+    
+    func highlighted(letters: String) -> AttributedString {
+        
+        //convert original string to NSMutableAttributedString
+        let highlightedString = NSMutableAttributedString(string: self)
+        
+        //set original gray color
+        let entireRange = NSRange(location: 0, length: highlightedString.length)
+        highlightedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: entireRange)
+        
+        //highlight in black the letters which were searched
+        let range = self.range(of: letters, options: .caseInsensitive)
+        if range != nil {
+            highlightedString.addAttribute(.foregroundColor, value: UIColor.label, range: NSRange(range!, in: self))
+        }
+
+        //Return AttributedString for use in Text()
+        return AttributedString(highlightedString)
+    }
+    
+}
+
 class SearchResultsViewModel: ObservableObject {
 
     @Published var searchText = ""
@@ -18,15 +41,14 @@ class SearchResultsViewModel: ObservableObject {
 struct SearchBarView: View {
     @ObservedObject var viewModel: SearchResultsViewModel
     @Environment(\.presentationMode) var presentationMode
+    @FocusState var showKeyboard: Bool
 
     var body: some View {
         HStack {
-            SearchBar(text: $viewModel.searchText)
+            SearchBar(text: $viewModel.searchText, showKeyboard: _showKeyboard)
 
             Button("Cancel") {
                 print("SHOULD DISMISS PARENT VIEW")
-                //Remove Keyboard from view
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 // Dismiss view
                 presentationMode.wrappedValue.dismiss()
             }
@@ -46,38 +68,14 @@ struct MessageSearchResultsList: View {
         List(messages.filter {
             $0.content.localizedCaseInsensitiveContains(searchText)
         }) { message in
-            MessageRow(message: message, lettersToHighlight: searchText) { message in
-                selectedMessage = message
-            }
+            MessageRow(message: message, lettersToHighlight: searchText)
+                .onTapGesture {
+                    selectedMessage = message
+                }
         }
         .listStyle(PlainListStyle()) // Use .plain style
     }
 }
-
-struct ContactIconsOrMessageSearchResultsView: View {
-    @Binding var searchText: String
-    @Binding var selectedCharacter: Character?
-    @Binding var selectedMessage: Message?
-
-    var characters: FetchedResults<Character>
-    var messages: FetchedResults<Message>
-
-    var body: some View {
-        if searchText.isEmpty {
-            // Display four contact icons
-            ContactIconsRow(characters: characters, searchText: $searchText, onTapCharacter: { character in
-                selectedCharacter = character
-            })
-            Divider()
-        } else {
-            // Display filtered messages list
-            // Use Core Data fetch request to filter messages
-            // Iterate through results and display CharacterRow for each
-            MessageSearchResultsList(messages: messages, searchText: $searchText, selectedMessage: $selectedMessage)
-        }
-    }
-}
-
 
 struct SearchResultsScreen: View {
     
@@ -85,6 +83,8 @@ struct SearchResultsScreen: View {
     @Binding var refreshID: UUID
     
     @State private var hasPerformedInitialSetup = false
+    
+    @FocusState var showKeyboard: Bool
     
     @ObservedObject var viewModel: SearchResultsViewModel
     
@@ -101,7 +101,7 @@ struct SearchResultsScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             
-            SearchBarView(viewModel: viewModel)
+            SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
             Divider()
             // Display four contact icons
             ContactIconsRow(characters: characters, searchText: $viewModel.searchText, onTapCharacter: { character in
@@ -112,8 +112,19 @@ struct SearchResultsScreen: View {
             if !viewModel.searchText.isEmpty {
                 // Display filtered messages list
                 MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage)
+            } else {
+                ZStack {
+                    Spacer()
+                        .background(Color(uiColor: .systemBackground))
+                }
+                .background(Color(uiColor: .systemBackground))
+                .onTapGesture {
+                    showKeyboard = false
+                    // Handle tap here
+                    print("Spacer tapped")
+                }
             }
-            Spacer()
+            Divider()
                 .fullScreenCover(item: $viewModel.selectedCharacter) { character in
                     
                     // Initialize message screen's view model
@@ -137,20 +148,35 @@ struct SearchResultsScreen: View {
                 }
         }
         .navigationBarHidden(true)
-        .onTapGesture {
-                    // Resign first responder (dismiss keyboard) when tapped outside of the text field
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }
         .onAppear {
             if !hasPerformedInitialSetup {
                 hasPerformedInitialSetup = true
                 // Automatically open the keyboard when the view appears
-                DispatchQueue.main.async {
-                    UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
-                }
+                print("APPEARING")
+                showKeyboard = true
+//                DispatchQueue.main.async {
+//                    UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+//                }
             }
         }
     }
+}
+
+extension UIApplication {
+    
+    var keyWindow: UIWindow? {
+        // Get connected scenes
+        return self.connectedScenes
+            // Keep only active scenes, onscreen and visible to the user
+            .filter { $0.activationState == .foregroundActive }
+            // Keep only the first `UIWindowScene`
+            .first(where: { $0 is UIWindowScene })
+            // Get its associated windows
+            .flatMap({ $0 as? UIWindowScene })?.windows
+            // Finally, keep only the key window
+            .first(where: \.isKeyWindow)
+    }
+    
 }
 
 
@@ -168,8 +194,7 @@ struct MessageRow: View {
     
     var message: Message
     var lettersToHighlight: String
-    var onTapMessage: (Message) -> Void //define a callback
-    
+
     var body: some View {
         HStack {
             //display letters if they have no contact image, but have a name
@@ -191,33 +216,10 @@ struct MessageRow: View {
             VStack(alignment: .leading) {
                 Text(message.character.name)
                     .font(.headline)
-                Text(partiallyHighlightedString(message.content))
+                Text(message.content.highlighted(letters: lettersToHighlight))
                     .font(.system(size: 15))
             }
         }
-        .onTapGesture {
-            //trigger callback
-            onTapMessage(message)
-        }
-    }
-    
-    func partiallyHighlightedString(_ originalString: String) -> AttributedString {
-        
-        //convert original string to NSMutableAttributedString
-        let highlightedString = NSMutableAttributedString(string: originalString)
-        
-        //set original gray color
-        let entireRange = NSRange(location: 0, length: highlightedString.length)
-        highlightedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: entireRange)
-        
-        //highlight in black the letters which were searched
-        let range = originalString.range(of: lettersToHighlight, options: .caseInsensitive)
-        if range != nil {
-            highlightedString.addAttribute(.foregroundColor, value: UIColor.label, range: NSRange(range!, in: originalString))
-        }
-
-        //Return AttributedString for use in Text()
-        return AttributedString(highlightedString)
     }
 }
 
@@ -245,7 +247,7 @@ struct ContactIconsRow: View {
                                 .foregroundColor(Color.blue) // Adjust color as needed
                                 .frame(width: diameter)
                                 .overlay(Text(character.firstInitial).foregroundColor(.white))
-                            Text(partiallyHighlightedString(character.name))
+                            Text(character.name.highlighted(letters: searchText))
                                 .font(.caption2)
                                 .lineLimit(1)
                                 .frame(maxWidth: diameter)
@@ -278,25 +280,6 @@ struct ContactIconsRow: View {
             }
             .padding(.bottom, 10)
             .padding(.horizontal, 30)
-    }
-    
-    func partiallyHighlightedString(_ originalString: String) -> AttributedString {
-        
-        //convert original string to NSMutableAttributedString
-        let highlightedString = NSMutableAttributedString(string: originalString)
-        
-        //set original gray color
-        let entireRange = NSRange(location: 0, length: highlightedString.length)
-        highlightedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: entireRange)
-        
-        //highlight in black the letters which were searched
-        let range = originalString.range(of: searchText, options: .caseInsensitive)
-        if range != nil {
-            highlightedString.addAttribute(.foregroundColor, value: UIColor.black, range: NSRange(range!, in: originalString))
-        }
-
-        //Return AttributedString for use in Text()
-        return AttributedString(highlightedString)
     }
 }
 
