@@ -25,9 +25,7 @@ struct MessageScreen: View {
 //
 //    @Environment(\.dismiss) var dismiss
 //
-    
-    @Environment(\.presentationMode) var presentationMode
-    
+
     var character: Character
     
     // Fetch Messages from Core Data and sort by timestamp
@@ -52,7 +50,7 @@ struct MessageScreen: View {
         VStack(spacing: 0) {
             // Navigation Bar
             NavigationBar(character: character, refreshID: $refreshID, isTextFieldFocused: $viewModel.isTextFieldFocused)
-            
+                        
             // Message List
             MessageList(viewModel: viewModel, keyboardDismissed: $keyboardDismissed, messageIndexToScrollTo: messageIndexToScrollTo, character: character)
  
@@ -60,6 +58,7 @@ struct MessageScreen: View {
             MessageInputField(character: character, viewModel: viewModel, keyboardDismissed: $keyboardDismissed)
 
         }
+        .navigationBarHidden(true)
         .onAppear {
             //On only first screen setup
             if !hasPerformedInitialSetup {

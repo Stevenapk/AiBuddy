@@ -39,8 +39,8 @@ class SearchResultsViewModel: ObservableObject {
 }
 
 struct SearchBarView: View {
+    @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: SearchResultsViewModel
-    @Environment(\.presentationMode) var presentationMode
     @FocusState var showKeyboard: Bool
 
     var body: some View {
@@ -50,7 +50,7 @@ struct SearchBarView: View {
             Button("Cancel") {
                 print("SHOULD DISMISS PARENT VIEW")
                 // Dismiss view
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             }
         }
         .padding()
@@ -61,6 +61,7 @@ struct MessageSearchResultsList: View {
     var messages: FetchedResults<Message>
     @Binding var searchText: String
     @Binding var selectedMessage: Message?
+    @Binding var refreshID: UUID
     
     var body: some View {
         // Use Core Data fetch request to filter messages
@@ -68,10 +69,26 @@ struct MessageSearchResultsList: View {
         List(messages.filter {
             $0.content.localizedCaseInsensitiveContains(searchText)
         }) { message in
-            MessageRow(message: message, lettersToHighlight: searchText)
-                .onTapGesture {
-                    selectedMessage = message
-                }
+            
+            NavigationLink {
+                let character = message.character
+                let messages = character.sortedMessages
+                let indexToScrollTo = messages.firstIndex(of: message)
+                
+                // Initialize message screen's view model
+                let messageScreenViewModel = MessageScreenViewModel(messages: messages)
+                
+                //present message screen passing optional index variable
+                MessageScreen(
+                    viewModel: messageScreenViewModel, refreshID: $refreshID, character: character,
+                    messageIndexToScrollTo: indexToScrollTo
+                )
+            } label: {
+                MessageRow(message: message, lettersToHighlight: searchText)
+    //                .onTapGesture {
+    //                    selectedMessage = message
+    //                }
+            }
         }
         .listStyle(PlainListStyle()) // Use .plain style
     }
@@ -79,7 +96,6 @@ struct MessageSearchResultsList: View {
 
 struct SearchResultsScreen: View {
     
-    @Environment(\.presentationMode) var presentationMode
     @Binding var refreshID: UUID
     
     @State private var hasPerformedInitialSetup = false
@@ -99,54 +115,52 @@ struct SearchResultsScreen: View {
     ) var characters: FetchedResults<Character>
     
     var body: some View {
-        VStack(spacing: 0) {
-            
-            SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
-            Divider()
-            // Display four contact icons
-            ContactIconsRow(characters: characters, searchText: $viewModel.searchText, onTapCharacter: { character in
-                viewModel.selectedCharacter = character
-            })
-            Divider()
-            // If there is typed in search text
-            if !viewModel.searchText.isEmpty {
-                // Display filtered messages list
-                MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage)
-            } else {
-                ZStack {
-                    Spacer()
-                        .background(Color(uiColor: .systemBackground))
+            VStack(spacing: 0) {
+                
+                SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
+                Divider()
+                // Display four contact icons
+                ContactIconsRow(characters: characters, searchText: $viewModel.searchText, refreshID: $refreshID)
+                Divider()
+                // If there is typed in search text
+                if !viewModel.searchText.isEmpty {
+                    // Display filtered messages list
+                    MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID)
+                } else {
+                    ZStack {
+                        Spacer()
+                            .background(Color(uiColor: .systemBackground))
+                    }
+                    .background(Color(uiColor: .systemBackground))
+                    .onTapGesture {
+                        showKeyboard = false
+                        // Handle tap here
+                        print("Spacer tapped")
+                    }
                 }
-                .background(Color(uiColor: .systemBackground))
-                .onTapGesture {
-                    showKeyboard = false
-                    // Handle tap here
-                    print("Spacer tapped")
-                }
-            }
-            Divider()
-                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
-                    
-                    // Initialize message screen's view model
-                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
-                    
-                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
-                }
-                .fullScreenCover(item: $viewModel.selectedMessage) { message in
-                    let character = message.character
-                    let messages = character.sortedMessages
-                    let indexToScrollTo = messages.firstIndex(of: message)
-                    
-                    // Initialize message screen's view model
-                    let messageScreenViewModel = MessageScreenViewModel(messages: messages)
-                    
-                    //present message screen passing optional index variable
-                    MessageScreen(
-                        viewModel: messageScreenViewModel, refreshID: $refreshID, character: character,
-                        messageIndexToScrollTo: indexToScrollTo
-                    )
-                }
-        }
+                Divider()
+    //                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
+    //
+    //                    // Initialize message screen's view model
+    //                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+    //
+    //                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+    //                }
+//                    .fullScreenCover(item: $viewModel.selectedMessage) { message in
+//                        let character = message.character
+//                        let messages = character.sortedMessages
+//                        let indexToScrollTo = messages.firstIndex(of: message)
+//
+//                        // Initialize message screen's view model
+//                        let messageScreenViewModel = MessageScreenViewModel(messages: messages)
+//
+//                        //present message screen passing optional index variable
+//                        MessageScreen(
+//                            viewModel: messageScreenViewModel, refreshID: $refreshID, character: character,
+//                            messageIndexToScrollTo: indexToScrollTo
+//                        )
+//                    }
+            } 
         .navigationBarHidden(true)
         .onAppear {
             if !hasPerformedInitialSetup {
@@ -230,9 +244,11 @@ struct ContactIconsRow: View {
     
     @Binding var searchText: String
     
+    @Binding var refreshID: UUID
+    
     let diameter = (UIScreen.main.bounds.width-160) / 4
     
-    var onTapCharacter: (Character) -> Void //define a callback
+//    var onTapCharacter: (Character) -> Void //define a callback
     
     var body: some View {
         
@@ -242,37 +258,56 @@ struct ContactIconsRow: View {
                 if !filteredCharacters.isEmpty {
                     
                     ForEach(filteredCharacters.prefix(4), id: \.id) { character in
-                        VStack {
-                            Circle()
-                                .foregroundColor(Color.blue) // Adjust color as needed
-                                .frame(width: diameter)
-                                .overlay(Text(character.firstInitial).foregroundColor(.white))
-                            Text(character.name.highlighted(letters: searchText))
-                                .font(.caption2)
-                                .lineLimit(1)
-                                .frame(maxWidth: diameter)
+                        
+                        NavigationLink {
+                            // Initialize message screen's view model
+                            let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+                            
+                            MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                        } label: {
+                            VStack {
+                                Circle()
+                                    .foregroundColor(character.colorForFirstInitial) // Adjust color as needed
+                                    .frame(width: diameter)
+                                    .overlay(Text(character.firstInitial).foregroundColor(.white))
+                                Text(character.name.highlighted(letters: searchText))
+                                    .font(.caption2)
+                                    .lineLimit(1)
+                                    .frame(maxWidth: diameter)
+                            }
+    //                        .onTapGesture {
+    //                            //trigger callback
+    //                            onTapCharacter(character)
+    //                        }
                         }
-                        .onTapGesture {
-                            //trigger callback
-                            onTapCharacter(character)
-                        }
+
+                        
+
                     }
                     .padding(.vertical)
                 } else {
                     ForEach(characters.prefix(4), id: \.id) { character in
-                        VStack {
-                            Circle()
-                                .foregroundColor(Color.blue) // Adjust color as needed
-                                .frame(width: diameter)
-                                .overlay(Text(character.firstInitial).foregroundColor(.white))
-                            Text(character.name)
-                                .font(.caption2)
-                                .lineLimit(1)
-                                .frame(maxWidth: diameter)
-                        }
-                        .onTapGesture {
-                            //trigger callback
-                            onTapCharacter(character)
+                        NavigationLink {
+                            // Initialize message screen's view model
+                            let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+                            
+                            MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                        } label: {
+                            VStack {
+                                Circle()
+                                    .foregroundColor(character.colorForFirstInitial) // Adjust color as needed
+                                    .frame(width: diameter)
+                                    .overlay(Text(character.firstInitial).foregroundColor(.white))
+                                Text(character.name)
+                                    .font(.caption2)
+                                    .lineLimit(1)
+                                    .frame(maxWidth: diameter)
+                                    .foregroundColor(.primary)
+                            }
+    //                        .onTapGesture {
+    //                            //trigger callback
+    //                            onTapCharacter(character)
+    //                        }
                         }
                     }
                     .padding(.vertical)

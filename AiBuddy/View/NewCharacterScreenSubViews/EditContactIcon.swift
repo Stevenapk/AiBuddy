@@ -11,6 +11,7 @@ struct EditContactIcon: View {
     
     @Binding var contactImage: UIImage?
     @Binding var name: String
+    @Binding var isKeyboardShowing: Bool
     
     var body: some View {
         VStack {
@@ -28,14 +29,21 @@ struct EditContactIcon: View {
                             .font(.headline)
                     }
                 } else {
-                    Image(uiImage: contactImage ?? UIImage(systemName: "person.crop.circle")!)
-                        .resizable()
-                        .foregroundColor(.primary)
-                        .clipShape(Circle())
+                    if let contactImage {
+                        Image(uiImage: contactImage)
+                            .resizable()
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.crop.circle")
+                            .resizable()
+                            .foregroundColor(.primary)
+                            .clipShape(Circle())
+                    }
                 }
             }
-            .frame(width: 100, height: 100)
-            Text(contactImage != nil ? "Edit" : "Add")
+            .frame(width: isKeyboardShowing ? 50 : 150,
+                   height: isKeyboardShowing ? 50 : 150)
+            Text(contactImage != nil ? "Edit Photo" : "Add Photo")
                 .font(.caption)
                 .padding(4)
         }
@@ -60,6 +68,20 @@ struct EditContactIcon: View {
             return Color(hue: 0.0, saturation: 0.0, brightness: 0.3)
         default:
             return Color.black
+        }
+    }
+}
+
+struct EditContactIcon_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            let refreshID = Binding<UUID>(get: {
+                // Set random UUID as initial value
+                return UUID()
+            }, set: { newValue in
+                // Handle the updated value here
+            })
+            NewCharacterScreen(refreshID: refreshID, viewModel: NewCharacterViewModel())
         }
     }
 }

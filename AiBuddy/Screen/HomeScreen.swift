@@ -30,61 +30,71 @@ struct HomeScreen: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Search bar for filtering characters
-                SearchBar(isTextFieldDisabled: true, text: $viewModel.searchText)
-                    .onTapGesture {
-                        viewModel.showingSearchResultsScreen = true // Show search results screen on tap
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 10)
-                
+                NavigationLink {
+                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
+                } label: {
+                    // Search bar for filtering characters
+                    SearchBar(isTextFieldDisabled: true, text: $viewModel.searchText)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 10)
+                }
                 Divider()
                 
                 List(characters) { character in
                     // List of characters with context menu
                     
-                    Button(action: {
-                        viewModel.selectedCharacter = character // Select character for detailed view
-                    }) {
+//                    Button(action: {
+//                        viewModel.selectedCharacter = character // Select character for detailed view
+//                    }) {
+//
+//                    }
+                    
+                    NavigationLink {
+                        // Initialize messageScreen's view model passing the character's sorted messages
+                        let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+                        
+                        // Show the Message Screen for selected character
+                        MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                    } label: {
                         CharacterRow(character: character) // Display character information
-                    }
-                    .contextMenu {
-                        // Context menu options
-                        
-                        Button(action: {
-                            viewModel.characterToEdit = character // Edit character action
-                        }) {
-                            Text("Edit Character")
-                            Image(systemName: "pencil")
-                        }
-                        
-                        Button(action: {
-                            viewModel.selectedActionSheet = .deleteMessages(character) // Delete messages action
-                        }) {
-                            Text("Delete Messages")
-                            Image(systemName: "trash")
-                        }
-                        
-                        Button(action: {
-                            viewModel.selectedActionSheet = .deleteCharacter(character) // Delete character action
-                        }) {
-                            Text("Delete Character")
-                            Image(systemName: "trash.fill")
-                        }
+                            .contextMenu {
+                                // Context menu options
+                                
+                                Button(action: {
+                                    viewModel.characterToEdit = character // Edit character action
+                                }) {
+                                    Text("Edit Character")
+                                    Image(systemName: "pencil")
+                                }
+                                
+                                Button(action: {
+                                    viewModel.selectedActionSheet = .deleteMessages(character) // Delete messages action
+                                }) {
+                                    Text("Delete Messages")
+                                    Image(systemName: "trash")
+                                }
+                                
+                                Button(action: {
+                                    viewModel.selectedActionSheet = .deleteCharacter(character) // Delete character action
+                                }) {
+                                    Text("Delete Character")
+                                    Image(systemName: "trash.fill")
+                                }
+                            }
                     }
                 }
                 .listStyle(PlainListStyle()) // Use .plain style
-                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
-                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
-                }
-                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
-                    
-                    // Initialize messageScreen's view model passing the character's sorted messages
-                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
-                    
-                    // Show the Message Screen for selected character
-                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
-                }
+//                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
+//                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
+//                }
+//                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
+//
+//                    // Initialize messageScreen's view model passing the character's sorted messages
+//                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+//
+//                    // Show the Message Screen for selected character
+//                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+//                }
                 .fullScreenCover(item: $viewModel.characterToEdit) { character in
                     NewCharacterScreen(refreshID: $refreshID, character: character, viewModel: NewCharacterViewModel()) // Show new character screen for editing
                 }

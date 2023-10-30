@@ -178,12 +178,14 @@ struct EditContactIconView: View {
     @ObservedObject var viewModel: NewCharacterViewModel
     
     @State private var showEditImageActionSheet = false
+    
+    @Binding var isKeyboardShowing: Bool
 
     var body: some View {
         Button {
             self.showEditImageActionSheet.toggle()
         } label: {
-            EditContactIcon(contactImage: $viewModel.contactImage, name: $viewModel.name)
+            EditContactIcon(contactImage: $viewModel.contactImage, name: $viewModel.name, isKeyboardShowing: $isKeyboardShowing)
         }
         .actionSheet(isPresented: $showEditImageActionSheet) {
             var buttons: [ActionSheet.Button] = [
@@ -219,8 +221,14 @@ struct NameTextField: View {
 
     var body: some View {
         TextField("Name", text: $name)
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+            .padding(7.5)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.clear)
+            )
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.secondary, lineWidth: 1)
+            )
             .padding(.horizontal)
             .padding(.top)
             .padding(.bottom, 5)
@@ -230,6 +238,7 @@ struct NameTextField: View {
 struct AboutMeView: View {
     @Binding var aboutMe: String
     @Binding var isNameRecognizable: Bool
+    @Binding var isKeyboardShowing: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -255,23 +264,28 @@ struct AboutMeView: View {
             .padding(.horizontal)
             
             TextEditor(text: $aboutMe)
-                .font(.caption)
-                .frame(height: 157.5)
+                .frame(height: 165)
+                .animation(.easeInOut)
                 .overlay(
                     Text("\(aboutMe.count)/350")
-                        .foregroundColor(aboutMe.count <= 350 ? .black : .red)
+                        .foregroundColor(Color(uiColor: .systemBackground))
+                        .offset(y: -2.5)
                         .padding(.top, 4)
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, 6)
                         .font(Font.caption2)
                         .bold()
-                        .background(Color.white.opacity(0.7))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .offset(x: 0, y: -5)
-                        .opacity(aboutMe.isEmpty ? 0.5 : 1)
-                        .animation(.easeInOut)
+                        .background(Color.secondary
+                            .cornerRadius(8))
+                            .offset(x: -5, y: -5)
+                        .opacity(aboutMe.isEmpty ? 0 : 1)
                     , alignment: .bottomTrailing)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.secondary, lineWidth: 1))
                 .padding(.horizontal)
+        }
+        .onChange(of: aboutMe) { newText in
+            if newText.count > 350 {
+                aboutMe = String(newText.prefix(350))
+            }
         }
     }
 }
@@ -422,15 +436,29 @@ struct NewCharacterScreen: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var viewModel: NewCharacterViewModel
+    
+    @State var isKeyboardShowing: Bool = false
 
     var body: some View {
         NavigationView {
             VStack {
-                EditContactIconView(viewModel: viewModel)
+                    EditContactIconView(viewModel: viewModel, isKeyboardShowing: $isKeyboardShowing)
+                        .animation(.easeInOut)
                 NameTextField(name: $viewModel.name)
+                    .animation(.easeInOut)
                 ToggleFamousCharacterView(isNameRecognizable: $viewModel.isNameRecognizable, name: $viewModel.name)
-                AboutMeView(aboutMe: $viewModel.aboutMe, isNameRecognizable: $viewModel.isNameRecognizable)
+                    .animation(.easeInOut)
+                AboutMeView(aboutMe: $viewModel.aboutMe, isNameRecognizable: $viewModel.isNameRecognizable, isKeyboardShowing: $isKeyboardShowing)
+                    .animation(.easeInOut)
                 Spacer()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidHideNotification)) { _ in
+                isKeyboardShowing = false
+                print("Keyboard is hidden")
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+                isKeyboardShowing = true
+                print("Keyboard is shown")
             }
             //Cancel Toolbar Item
             .toolbar {
