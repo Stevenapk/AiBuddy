@@ -23,7 +23,7 @@ struct HomeScreen: View {
     @State private var refreshID = UUID() // Unique identifier for view refreshing
     @State private var hasPerformedInitialSetup = false
     
-    @State private var shouldUpdate = true
+    @State private var shouldUpdate = false
     
     // Fetch characters using Core Data
     @FetchRequest(
@@ -166,14 +166,6 @@ struct HomeScreen: View {
             .navigationTitle("Messages") // Set navigation title
             .onAppear {
                 print("CALLED ON APPEAR HOME")
-                //                if shouldUpdate {
-                //                    //getting shouldUpdate is like calling a function, so once the UI is updated, this could potentially fix it
-                //                    //refreshID = UUID()
-                //                }
-                if shouldUpdate {
-                    shouldUpdate = false
-                        refreshID = UUID()
-                }
                 //Only on first screen setup
                 if !hasPerformedInitialSetup {
                     //set has performedInitialSetup to true
@@ -195,9 +187,11 @@ struct HomeScreen: View {
                     //only on re-appears, not on first launch
                 } else {
                     //if needs to be refreshed, refresh screen
-                    if refreshManager.shouldRefresh {
-                        refreshManager.shouldRefresh = false
-                        refreshID = UUID()
+                    DispatchQueue.main.asyncAfter(deadline: .now()+0.25) {
+                        if refreshManager.shouldRefresh {
+                            refreshManager.shouldRefresh = false
+                            refreshID = UUID()
+                        }
                     }
                 }
             }
