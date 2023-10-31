@@ -27,13 +27,13 @@ final class APIHandler {
 //    }
     
     //Send first single message -> called when creating a character or when character.sortedMessages.isEmpty
-    public func getResponse(input: String, completion: @escaping (Result<String, Error>) -> Void) {
+    public func getResponse(input: String, isAIBuddy: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         
         getO { result in
             if let gO = result {
                 // Use gO
                 print("CALLED5 KEY --  \(gO)")
-                var client = OpenAISwift(config: .init(baseURL: "https://api.openai.com", endpointPrivider: OpenAIEndpointProvider(source: .openAI), session: .shared, authorizeRequest: { request in
+                let client = OpenAISwift(config: .init(baseURL: "https://api.openai.com", endpointPrivider: OpenAIEndpointProvider(source: .openAI), session: .shared, authorizeRequest: { request in
                     request.setValue("Bearer \(gO)", forHTTPHeaderField: "Authorization")
             }))
                 
@@ -41,7 +41,10 @@ final class APIHandler {
                 
                 let responseLengths = [75, 100, 200, 400]
                 
-                client.sendCompletion(with: input,  maxTokens: responseLengths.randomElement()!, completionHandler: { result in // Result<OpenAI, OpenAIError>
+                //always make longer response if it's the AI Buddy character
+                let maxTokens = isAIBuddy ? 800 : responseLengths.randomElement()!
+                
+                client.sendCompletion(with: input,  maxTokens: maxTokens, completionHandler: { result in // Result<OpenAI, OpenAIError>
                         switch result {
                         case .success(let model):
                             let output = model.choices?.first?.text ?? ""
@@ -50,7 +53,7 @@ final class APIHandler {
                             completion(.success(output))
                         case .failure(let error):
                             print(error.localizedDescription)
-                            print("CALLED5 DIDN'T WORK \(error)")
+                            print("CALLED5 RESPONSE DIDN'T WORK \(error)")
                             completion(.failure(error))
                         }
                 })
@@ -195,7 +198,8 @@ final class APIHandler {
 //    }
     
     func sendMessage(_ prompt: String, to character: Character, completion: @escaping (Message?) -> Void) {
-        APIHandler.shared.getResponse(input: prompt) { result in
+        APIHandler.shared.getResponse(input: prompt, isAIBuddy: character.name == "AI Buddy") { result in
+            print("IS THIS AI BUDDY? \(character.name == "AI Buddy")")
             switch result {
             case .success(let output):
                 
@@ -206,20 +210,18 @@ final class APIHandler {
                     let lines = input.split(separator: "\n")
                     // Create an empty string to store the result
                     var result = ""
-                    // Create a flag to track whether text has been found
-                    var foundText = false
-
+                    
                     for line in lines {
                         // Trim leading and trailing whitespaces from the line
                         let trimmedLine = line.trimmingCharacters(in: .whitespaces)
 
-                        // Check if the trimmed line is not empty and not just a period
-                        if !trimmedLine.isEmpty && trimmedLine != "." {
-                            // If text is found, set the flag to true and append the line to the result
-                            foundText = true
+                        // If the response has no characters yet, and the proposed line isn't empty or a period
+                        if result.isEmpty && !trimmedLine.isEmpty && trimmedLine != "." {
+                            // Append the line to the result string!
                             result += "\(line)\n"
-                        } else if foundText {
-                            // If text has been found previously, append the line to the result
+                        // If the result is not empty and the proposed line isn't a period
+                        } else if trimmedLine != "." {
+                            // Append the line to the result string!
                             result += "\(line)\n"
                         }
                     }
@@ -244,8 +246,8 @@ final class APIHandler {
                 }
                 message.set(character)
 
-                //save changes to core data
-                PersistenceController.shared.saveContext()
+//                //save changes to core data
+//                PersistenceController.shared.saveContext() //TODO: Uncomment this if weird sending message behavior :)
                 
                 // Call the completion handler with the created message
                 completion(message)
@@ -253,7 +255,7 @@ final class APIHandler {
 //                        self.models.append(output)
 //                        responseText = models.joined(separator: " ")
             case .failure(let error):
-                print("RESPONSE failed")
+                print("CALLED5 RESPONSE failed \(error)")
                 completion(nil)
             }
         }

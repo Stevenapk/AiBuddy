@@ -54,6 +54,8 @@ class MessageScreenViewModel: ObservableObject {
         //send message
         APIHandler.shared.sendMessage(prompt, to: character) { response in
             if let response {
+                //save changes to core data
+                PersistenceController.shared.saveContext() //TODO: REMOVE THIS IF WEIRD SEND MESSAGE BEHAVIOR
                 //append response to messages array
                 self.messages.append(response)
             }

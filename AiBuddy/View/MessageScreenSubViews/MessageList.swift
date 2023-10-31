@@ -52,12 +52,12 @@ struct MessageList: View {
                         )
                         .padding(.top, topPadding)
                     }
+                    Spacer().frame(height: 50)
                 }
                 .padding(.horizontal)
                 .offset(y: scrollOffset)
                 .allowsHitTesting(keyboardDismissed) // Allow gestures to pass through
                 .onChange(of: viewModel.isTextFieldFocused) { focused in
-                    print("changedddddddd")
                     if focused {
                         UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
                         scrollToBottom(with: proxy)

@@ -9,29 +9,36 @@ import SwiftUI
 import Combine
 import CoreData
 
+class RefreshManager: ObservableObject {
+    @Published var shouldRefresh = false
+}
+
 struct HomeScreen: View {
     
     @ObservedObject var viewModel: HomeScreenViewModel
-
+    @ObservedObject var refreshManager: RefreshManager
+    
     // MARK: - State Properties
     
     @State private var refreshID = UUID() // Unique identifier for view refreshing
     @State private var hasPerformedInitialSetup = false
+    
+    @State private var shouldUpdate = true
     
     // Fetch characters using Core Data
     @FetchRequest(
         entity: Character.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
     ) var characters: FetchedResults<Character>
-
+    
     
     // MARK: - Body
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 NavigationLink {
-                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
+                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel(), refreshManager: refreshManager) // Show search results screen
                 } label: {
                     // Search bar for filtering characters
                     SearchBar(isTextFieldDisabled: true, text: $viewModel.searchText)
@@ -43,28 +50,30 @@ struct HomeScreen: View {
                 List(characters) { character in
                     // List of characters with context menu
                     
-//                    Button(action: {
-//                        viewModel.selectedCharacter = character // Select character for detailed view
-//                    }) {
-//
-//                    }
+                    //                    Button(action: {
+                    //                        viewModel.selectedCharacter = character // Select character for detailed view
+                    //                    }) {
+                    //
+                    //                    }
                     
                     NavigationLink {
                         // Initialize messageScreen's view model passing the character's sorted messages
                         let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                         
                         // Show the Message Screen for selected character
-                        MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                        MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character)
                     } label: {
                         CharacterRow(character: character) // Display character information
                             .contextMenu {
                                 // Context menu options
-                                
-                                Button(action: {
-                                    viewModel.characterToEdit = character // Edit character action
-                                }) {
-                                    Text("Edit Character")
-                                    Image(systemName: "pencil")
+                                //add edit character button if it's not AI Buddy
+                                if character.name != "AI Buddy" {
+                                    Button(action: {
+                                        viewModel.characterToEdit = character // Edit character action
+                                    }) {
+                                        Text("Edit Character")
+                                        Image(systemName: "pencil")
+                                    }
                                 }
                                 
                                 Button(action: {
@@ -74,27 +83,30 @@ struct HomeScreen: View {
                                     Image(systemName: "trash")
                                 }
                                 
-                                Button(action: {
-                                    viewModel.selectedActionSheet = .deleteCharacter(character) // Delete character action
-                                }) {
-                                    Text("Delete Character")
-                                    Image(systemName: "trash.fill")
+                                //add delete character button if it's not AI Buddy
+                                if character.name != "AI Buddy" {
+                                    Button(action: {
+                                        viewModel.selectedActionSheet = .deleteCharacter(character) // Delete character action
+                                    }) {
+                                        Text("Delete Character")
+                                        Image(systemName: "trash.fill")
+                                    }
                                 }
                             }
                     }
                 }
                 .listStyle(PlainListStyle()) // Use .plain style
-//                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
-//                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
-//                }
-//                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
-//
-//                    // Initialize messageScreen's view model passing the character's sorted messages
-//                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
-//
-//                    // Show the Message Screen for selected character
-//                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
-//                }
+                //                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
+                //                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
+                //                }
+                //                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
+                //
+                //                    // Initialize messageScreen's view model passing the character's sorted messages
+                //                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
+                //
+                //                    // Show the Message Screen for selected character
+                //                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                //                }
                 .fullScreenCover(item: $viewModel.characterToEdit) { character in
                     NewCharacterScreen(refreshID: $refreshID, character: character, viewModel: NewCharacterViewModel()) // Show new character screen for editing
                 }
@@ -128,6 +140,8 @@ struct HomeScreen: View {
                                 .destructive(Text("Delete"), action: {
                                     // Delete character (associated messages are deleted thanks to the cascade property in Character Data Model)
                                     Constants.context.delete(character)
+                                    // Trigger view update
+                                    refreshID = UUID()
                                     // Save changes to core data
                                     PersistenceController.shared.saveContext()
                                 }),
@@ -151,6 +165,15 @@ struct HomeScreen: View {
             }
             .navigationTitle("Messages") // Set navigation title
             .onAppear {
+                print("CALLED ON APPEAR HOME")
+                //                if shouldUpdate {
+                //                    //getting shouldUpdate is like calling a function, so once the UI is updated, this could potentially fix it
+                //                    //refreshID = UUID()
+                //                }
+                if shouldUpdate {
+                    shouldUpdate = false
+                        refreshID = UUID()
+                }
                 //Only on first screen setup
                 if !hasPerformedInitialSetup {
                     //set has performedInitialSetup to true
@@ -166,9 +189,16 @@ struct HomeScreen: View {
                             }
                         }
                     }
-//                    DispatchQueue.main.async { [self] in
-//                        NotificationCenter.default.addObserver(self, selector: #selector(self.cloudKitSyncCompleted), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: PersistenceController.shared.container .persistentStoreCoordinator)
-//                    }
+                    //                    DispatchQueue.main.async { [self] in
+                    //                        NotificationCenter.default.addObserver(self, selector: #selector(self.cloudKitSyncCompleted), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: PersistenceController.shared.container .persistentStoreCoordinator)
+                    //                    }
+                    //only on re-appears, not on first launch
+                } else {
+                    //if needs to be refreshed, refresh screen
+                    if refreshManager.shouldRefresh {
+                        refreshManager.shouldRefresh = false
+                        refreshID = UUID()
+                    }
                 }
             }
         }
@@ -180,9 +210,10 @@ struct HomeScreen: View {
         .id(refreshID) // Ensure view refreshes when refreshID changes
     }
     
-    init(viewModel: HomeScreenViewModel) {
+    init(viewModel: HomeScreenViewModel, refreshManager: RefreshManager) {
         
         self.viewModel = viewModel
+        self.refreshManager = refreshManager
         
         cancellable = NotificationCenter.default.publisher(for: NSNotification.Name.NSPersistentStoreRemoteChange)
             .sink { _ in
@@ -201,7 +232,7 @@ struct HomeScreen_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        return HomeScreen(viewModel: HomeScreenViewModel())
+        return HomeScreen(viewModel: HomeScreenViewModel(), refreshManager: RefreshManager())
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

@@ -47,13 +47,24 @@ struct MessageBubbleView: View {
                                     proxy.scrollTo(scrollToIndex, anchor: .bottom)
                                 } else {
                                     //scroll to bottom (most recent message) if no selectedIndex
+//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                                        
+//                                                            }
                                     scrollToBottom(with: proxy)
+//                                    let yOffset = geometry.frame(in: .named("scrollview")).origin.y - 30
+//                                    proxy.scrollTo(bottomMessageIndex, anchor: UnitPoint(x: 0.5, y: yOffset / geometry.size.height))
                                 }
                             }
                         }
                 }
             )
             .contextMenu {
+                Button(action: {
+                    copyTextToClipboard(text: message.content)
+                }) {
+                    Text("Copy")
+                    Image(systemName: "doc.on.doc")
+                }
                 Button(action: {
                     // Delete character action
                     selectedMessage = message
@@ -79,6 +90,10 @@ struct MessageBubbleView: View {
                     ]
                 )
             }
+    }
+    
+    func copyTextToClipboard(text: String) {
+        UIPasteboard.general.string = text
     }
     
     func handleDeleteMessage(_ message: Message) {

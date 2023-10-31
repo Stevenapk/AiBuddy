@@ -9,22 +9,24 @@ import SwiftUI
 
 struct NavigationBar: View {
     
-    @Environment(\.dismiss) var dismiss
-    
     @State var character: Character
     @Binding var refreshID: UUID
     @Binding var isTextFieldFocused: Bool
+    @ObservedObject var refreshManager: RefreshManager
+    
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         HStack {
             Button(action: {
                 // Handle back button action
                 // Refresh HomeScreen for most recent message preview
-                refreshID = UUID()
+//                refreshID = UUID()
+                refreshManager.shouldRefresh = true
                 // Set the text field to not be focused
-                isTextFieldFocused = false
-                // Dismiss current screen
-                dismiss()
+//                isTextFieldFocused = false
+                // Dismiss back to previous screen
+                presentationMode.wrappedValue.dismiss()
             }) {
                 Image(systemName: "chevron.left")
                     .offset(y: -12.5)
@@ -60,6 +62,6 @@ struct NavigationBar_Previews: PreviewProvider {
             // Handle the updated value here
         })
         
-        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext))
+        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext))
     }
 }

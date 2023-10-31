@@ -63,6 +63,8 @@ struct MessageSearchResultsList: View {
     @Binding var selectedMessage: Message?
     @Binding var refreshID: UUID
     
+    @ObservedObject var refreshManager: RefreshManager
+    
     var body: some View {
         // Use Core Data fetch request to filter messages
         // Iterate through results and display CharacterRow for each
@@ -80,7 +82,7 @@ struct MessageSearchResultsList: View {
                 
                 //present message screen passing optional index variable
                 MessageScreen(
-                    viewModel: messageScreenViewModel, refreshID: $refreshID, character: character,
+                    viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character,
                     messageIndexToScrollTo: indexToScrollTo
                 )
             } label: {
@@ -103,6 +105,7 @@ struct SearchResultsScreen: View {
     @FocusState var showKeyboard: Bool
     
     @ObservedObject var viewModel: SearchResultsViewModel
+    @ObservedObject var refreshManager: RefreshManager
     
     @FetchRequest(
         entity: Message.entity(),
@@ -120,12 +123,12 @@ struct SearchResultsScreen: View {
                 SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
                 Divider()
                 // Display four contact icons
-                ContactIconsRow(characters: characters, searchText: $viewModel.searchText, refreshID: $refreshID)
+                ContactIconsRow(characters: characters, searchText: $viewModel.searchText, refreshID: $refreshID, refreshManager: refreshManager)
                 Divider()
                 // If there is typed in search text
                 if !viewModel.searchText.isEmpty {
                     // Display filtered messages list
-                    MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID)
+                    MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID, refreshManager: refreshManager)
                 } else {
                     ZStack {
                         Spacer()
@@ -245,6 +248,7 @@ struct ContactIconsRow: View {
     @Binding var searchText: String
     
     @Binding var refreshID: UUID
+    @ObservedObject var refreshManager: RefreshManager
     
     let diameter = (UIScreen.main.bounds.width-160) / 4
     
@@ -263,7 +267,7 @@ struct ContactIconsRow: View {
                             // Initialize message screen's view model
                             let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                             
-                            MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                            MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character)
                         } label: {
                             VStack {
                                 Circle()
@@ -291,7 +295,7 @@ struct ContactIconsRow: View {
                             // Initialize message screen's view model
                             let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                             
-                            MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
+                            MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character)
                         } label: {
                             VStack {
                                 Circle()
@@ -327,7 +331,7 @@ struct SearchResultsScreen_Previews: PreviewProvider {
                 }, set: { newValue in
                     // Handle the updated value here
                 })
-        return SearchResultsScreen(refreshID: refreshID, viewModel: SearchResultsViewModel())
+        return SearchResultsScreen(refreshID: refreshID, viewModel: SearchResultsViewModel(), refreshManager: RefreshManager())
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

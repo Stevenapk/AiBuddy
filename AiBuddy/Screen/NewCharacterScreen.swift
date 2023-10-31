@@ -21,7 +21,7 @@ class NewCharacterViewModel: ObservableObject {
     @Published var showCapturePhoto = false
 
     func isValidForSave(existingCharacter: Character?) -> Bool {
-        guard !name.isEmpty else { return false }
+        guard !name.isEmpty && name != "AI Buddy" else { return false }
 
         if let character = existingCharacter {
             if character.name != name || character.promptPrefix != aboutMe || character.isRecognizableName != isNameRecognizable || character.imgData != contactImageData {
@@ -130,7 +130,7 @@ class NewCharacterViewModel: ObservableObject {
             }
         }
         
-        APIHandler.shared.getResponse(input: prompt) { result in
+        APIHandler.shared.getResponse(input: prompt, isAIBuddy: false) { result in
             switch result {
             case .success(let output):
                 

@@ -89,7 +89,7 @@ extension Character {
         
         let formattedPrompt = formattedSinglePrompt(from: prompt)
         
-        APIHandler.shared.getResponse(input: formattedPrompt) { result in
+        APIHandler.shared.getResponse(input: formattedPrompt, isAIBuddy: self.name == "AI Buddy") { result in
             switch result {
             case .success(let output):
                 

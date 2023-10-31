@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E3F9B792AF07E3800292E0C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D272AD1EDC700221393 /* ContentView.swift */; };
 		4E599D262AD1EDC700221393 /* AiBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D252AD1EDC700221393 /* AiBuddyApp.swift */; };
 		4E599D282AD1EDC700221393 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D272AD1EDC700221393 /* ContentView.swift */; };
 		4E599D2A2AD1EDCE00221393 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E599D292AD1EDCE00221393 /* Assets.xcassets */; };
@@ -208,7 +209,6 @@
 				4EB553592ADD95A700E7F194 /* AiBuddy.entitlements */,
 				4E599D302AD1EDCE00221393 /* AiBuddy.xcdatamodeld */,
 				4E599D252AD1EDC700221393 /* AiBuddyApp.swift */,
-				4E599D272AD1EDC700221393 /* ContentView.swift */,
 				4E599D7E2AD6FF3200221393 /* SpeechRecognition.swift */,
 				4E599D292AD1EDCE00221393 /* Assets.xcassets */,
 				4E8145112AE487FA00925EBA /* GoogleService-Info.plist */,
@@ -301,6 +301,7 @@
 		4E8144FA2ADF827F00925EBA /* Screen */ = {
 			isa = PBXGroup;
 			children = (
+				4E599D272AD1EDC700221393 /* ContentView.swift */,
 				4E599D5A2AD1F44700221393 /* HomeScreen.swift */,
 				4E599D5D2AD1F5C700221393 /* MessageScreen.swift */,
 				4E599D722AD48ED100221393 /* NewMessageScreen.swift */,
@@ -541,6 +542,7 @@
 				4E599D9D2AD7469B00221393 /* AboutTipsScreen.swift in Sources */,
 				4E8145032AE036E600925EBA /* MessageScreenViewModel.swift in Sources */,
 				4E81453D2AE5C88A00925EBA /* LoginScreen.swift in Sources */,
+				4E3F9B792AF07E3800292E0C /* ContentView.swift in Sources */,
 				4E599D692AD340E100221393 /* Character+CoreDataClass.swift in Sources */,
 				4E599D7D2AD5D47400221393 /* SearchResultsScreen.swift in Sources */,
 				4E599D5C2AD1F44700221393 /* HomeScreen.swift in Sources */,

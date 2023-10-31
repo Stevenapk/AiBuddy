@@ -28,6 +28,7 @@ struct MessageInputField: View {
                 HStack(alignment: .bottom) {
                     TextField("Type a message...", text: $viewModel.messageText, axis: .vertical)
                         .font(Font.subheadline)
+                        .padding(.top, 10)
                         .padding(.bottom, 10)
                         .padding(.horizontal, 10)
                     //                            .background(Color(.clear))
