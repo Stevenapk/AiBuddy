@@ -135,7 +135,8 @@ class NewCharacterViewModel: ObservableObject {
             case .success(let output):
                 
                 //format string output to remove empty first line
-                let formattedOutput =  output.trimmingCharacters(in: .newlines)
+//                let formattedOutput =  output.trimmingCharacters(in: .newlines)
+                let formattedOutput = output.removeUnwantedLines
                 
                 //create message object from string output
                 let message = Message(context: Constants.context)

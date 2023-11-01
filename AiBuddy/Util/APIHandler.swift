@@ -203,39 +203,7 @@ final class APIHandler {
             switch result {
             case .success(let output):
                 
-                //removes blank lines and "." lines and returns output
-                func removeUnwantedLines(from input: String) -> String {
-                    
-                    // Split the input string into an array of lines
-                    let lines = input.split(separator: "\n")
-                    // Create an empty string to store the result
-                    var result = ""
-                    
-                    for line in lines {
-                        // Trim leading and trailing whitespaces from the line
-                        let trimmedLine = line.trimmingCharacters(in: .whitespaces)
-
-                        // If the response has no characters yet, and the proposed line isn't empty or a period
-                        if result.isEmpty && !trimmedLine.isEmpty && trimmedLine != "." {
-                            // Append the line to the result string!
-                            result += "\(line)\n"
-                        // If the result is not empty and the proposed line isn't a period
-                        } else if trimmedLine != "." {
-                            // Append the line to the result string!
-                            result += "\(line)\n"
-                        }
-                    }
-
-                    // Remove the last line if it is blank
-                    if result.last == "\n" {
-                        result.removeLast()
-                    }
-
-                    // Return the properly formatted result
-                    return result
-                }
-
-                let formattedOutput = removeUnwantedLines(from: output)
+                let formattedOutput = output.removeUnwantedLines
 
                 //create message object from string output
                 let message = Message(context: Constants.context)
@@ -259,5 +227,39 @@ final class APIHandler {
                 completion(nil)
             }
         }
+    }
+}
+
+extension String {
+    
+    //removes blank lines and "." lines and returns output
+    var removeUnwantedLines: String {
+        // Split the input string into an array of lines
+        let lines = self.split(separator: "\n")
+        // Create an empty string to store the result
+        var result = ""
+        
+        for line in lines {
+            // Trim leading and trailing whitespaces from the line
+            let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+
+            // If the response has no characters yet, and the proposed line isn't empty or a period
+            if result.isEmpty && !trimmedLine.isEmpty && trimmedLine != "." {
+                // Append the line to the result string!
+                result += "\(line)\n"
+            // If the result is not empty and the proposed line isn't a period
+            } else if trimmedLine != "." {
+                // Append the line to the result string!
+                result += "\(line)\n"
+            }
+        }
+
+        // Remove the last line if it is blank
+        if result.last == "\n" {
+            result.removeLast()
+        }
+
+        // Return the properly formatted result
+        return result
     }
 }
