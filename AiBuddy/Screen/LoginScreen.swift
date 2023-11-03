@@ -14,10 +14,21 @@ struct LoginScreen: View {
     @StateObject var loginModel: LoginViewModel = .init()
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Image(systemName: "triangle")
-                .font(.system(size: 38))
-                .foregroundColor(.indigo)
-            (Text("Welcome,").foregroundColor(.black) + Text("\nLogin to continue").foregroundColor(.gray))
+            Spacer()
+                .frame(height: 40)
+            ZStack {
+                Image(systemName: "gear")
+                    .foregroundColor(.indigo)
+                    .offset(x: 12, y: -15)
+                    .font(.system(size: 20))
+                Image(systemName: "message.fill")
+                    .font(.system(size: 42))
+                    .foregroundColor(Color(uiColor: .systemBackground))
+                Image(systemName: "message")
+                    .font(.system(size: 42))
+                    .foregroundColor(.indigo)
+            }
+            (Text("Welcome to DigiBud\nA.I. Messenger,").foregroundColor(.black) + Text("\nLogin to continue").foregroundColor(.gray))
                 .font(.title)
                 .fontWeight(.semibold)
                 .lineSpacing(10)
