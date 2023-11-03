@@ -13,6 +13,8 @@ struct MessageList: View {
     
     @State private var scrollOffset: CGFloat = 0
     
+    @State private var messageDeleted: Bool = false
+    
     @Binding var keyboardDismissed: Bool
     
     var messageIndexToScrollTo: Int?
@@ -47,6 +49,7 @@ struct MessageList: View {
                             selectedMessage: $viewModel.selectedMessage,
                             isTextFieldFocused: $viewModel.isTextFieldFocused,
                             messages: $viewModel.messages,
+                            messageDeleted: $messageDeleted,
                             proxy: proxy,
                             character: character
                         )
@@ -61,6 +64,17 @@ struct MessageList: View {
                     if focused {
                         UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
                         scrollToBottom(with: proxy)
+                    }
+                }
+                .onChange(of: viewModel.messages) { _ in
+                    print("called10 MESSAGES CHANGED, SHOULD SCROLL IF APPLICABLE :)")
+                    //if the change to messages was anything but one being removed (a message was added, etc.)
+                    if !messageDeleted {
+                        //scroll to the bottom of the message list
+                        scrollToBottom(with: proxy)
+                    } else {
+                        //reset flag
+                        messageDeleted = false
                     }
                 }
             }

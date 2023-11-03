@@ -14,7 +14,7 @@ struct AboutTipsScreen: View {
     var body: some View {
         VStack {
             ZStack {
-                Color(.white)
+                Color(uiColor: .systemBackground)
                     .opacity(0.9) // Semi-transparent background
                 
                 VStack(alignment: .leading, spacing: 20) {

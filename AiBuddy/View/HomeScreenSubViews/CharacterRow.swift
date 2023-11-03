@@ -21,7 +21,7 @@ struct CharacterRow: View {
                 .padding(.trailing, -2.5)
             
             // Display the character's contact icon
-            ContactIcon(character: $character, width: 40)
+            ContactIcon(character: $character, width: 45)
             
             VStack(alignment: .leading) {
                 HStack {

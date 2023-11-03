@@ -17,6 +17,7 @@ struct MessageBubbleView: View {
     @Binding var selectedMessage: Message?
     @Binding var isTextFieldFocused: Bool
     @Binding var messages: [Message]
+    @Binding var messageDeleted: Bool
     var proxy: ScrollViewProxy // Include proxy property
     var character: Character
     
@@ -73,11 +74,12 @@ struct MessageBubbleView: View {
                     Image(systemName: "trash.fill")
                 }
             }
-            .onChange(of: isTextFieldFocused) { isFocused in
-                if isFocused {
-                    scrollToBottom(with: proxy)
-                }
-            }
+        // TODO: IF it STOPPED scrolling to bottom when tapping the text field, re-comment this and maybe comment the one in message list instead :)
+//            .onChange(of: isTextFieldFocused) { isFocused in
+//                if isFocused {
+//                    scrollToBottom(with: proxy)
+//                }
+//            }
             .actionSheet(item: $selectedMessage) { message in
                 ActionSheet(
                     title: Text(""),
@@ -85,6 +87,7 @@ struct MessageBubbleView: View {
                     buttons: [
                         .destructive(Text("Delete"), action: {
                             handleDeleteMessage(message)
+                            messageDeleted = true
                         }),
                         .cancel(Text("Cancel"))
                     ]
