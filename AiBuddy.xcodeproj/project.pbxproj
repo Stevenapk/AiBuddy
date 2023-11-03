@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4E3F9B792AF07E3800292E0C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D272AD1EDC700221393 /* ContentView.swift */; };
+		4E3F9B7B2AF4B61300292E0C /* LogoCreateScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3F9B7A2AF4B61200292E0C /* LogoCreateScreen.swift */; };
+		4E3F9B7D2AF4D8E800292E0C /* GradientBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3F9B7C2AF4D8E700292E0C /* GradientBackgroundView.swift */; };
 		4E599D262AD1EDC700221393 /* AiBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D252AD1EDC700221393 /* AiBuddyApp.swift */; };
 		4E599D282AD1EDC700221393 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D272AD1EDC700221393 /* ContentView.swift */; };
 		4E599D2A2AD1EDCE00221393 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E599D292AD1EDCE00221393 /* Assets.xcassets */; };
@@ -96,6 +98,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4E3F9B7A2AF4B61200292E0C /* LogoCreateScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoCreateScreen.swift; sourceTree = "<group>"; };
+		4E3F9B7C2AF4D8E700292E0C /* GradientBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackgroundView.swift; sourceTree = "<group>"; };
 		4E599D222AD1EDC700221393 /* AiBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AiBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E599D252AD1EDC700221393 /* AiBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiBuddyApp.swift; sourceTree = "<group>"; };
 		4E599D272AD1EDC700221393 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -309,6 +313,8 @@
 				4E599D7B2AD5D47400221393 /* SearchResultsScreen.swift */,
 				4E599D9B2AD7469A00221393 /* AboutTipsScreen.swift */,
 				4E81453B2AE5C88900925EBA /* LoginScreen.swift */,
+				4E3F9B7A2AF4B61200292E0C /* LogoCreateScreen.swift */,
+				4E3F9B7C2AF4D8E700292E0C /* GradientBackgroundView.swift */,
 			);
 			path = Screen;
 			sourceTree = "<group>";
@@ -489,7 +495,9 @@
 				4E599D2F2AD1EDCE00221393 /* Persistence.swift in Sources */,
 				4E599D6D2AD34BBF00221393 /* Constants.swift in Sources */,
 				4E599D792AD4924200221393 /* NewCharacterScreen.swift in Sources */,
+				4E3F9B7D2AF4D8E800292E0C /* GradientBackgroundView.swift in Sources */,
 				4E8144F12ADEB22600925EBA /* MessageBubble.swift in Sources */,
+				4E3F9B7B2AF4B61300292E0C /* LogoCreateScreen.swift in Sources */,
 				4E8144F82ADEB4AD00925EBA /* EditContactIcon.swift in Sources */,
 				4E8144E92ADDE51400925EBA /* TimestampView.swift in Sources */,
 				4E599D5E2AD1F5C700221393 /* MessageScreen.swift in Sources */,
