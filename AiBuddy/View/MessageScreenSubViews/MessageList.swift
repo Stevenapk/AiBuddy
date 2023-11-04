@@ -67,7 +67,6 @@ struct MessageList: View {
                     }
                 }
                 .onChange(of: viewModel.messages) { _ in
-                    print("called10 MESSAGES CHANGED, SHOULD SCROLL IF APPLICABLE :)")
                     //if the change to messages was anything but one being removed (a message was added, etc.)
                     if !messageDeleted {
                         //scroll to the bottom of the message list

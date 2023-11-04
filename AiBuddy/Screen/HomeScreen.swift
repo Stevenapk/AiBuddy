@@ -36,14 +36,14 @@ struct HomeScreen: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 NavigationLink {
                     SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel(), refreshManager: refreshManager) // Show search results screen
                 } label: {
                     // Search bar for filtering characters
                     SearchBar(isTextFieldDisabled: true, text: $viewModel.searchText)
                         .padding(.horizontal, 20)
-                        .padding(.bottom, 10)
+                        .padding(.bottom, 12.5)
                 }
                 Divider()
                 
@@ -94,6 +94,7 @@ struct HomeScreen: View {
                                 }
                             }
                     }
+                    .listRowInsets(EdgeInsets(top: 12.5, leading: 20, bottom: 12.5, trailing: -20))
                 }
                 .listStyle(PlainListStyle()) // Use .plain style
                 //                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {

@@ -22,6 +22,7 @@ struct AboutTipsScreen: View {
                         Text("At a glance:")
                             .font(.headline)
                             .fontWeight(.bold)
+                            .foregroundColor(.blue)
                         Text("The about section is where you describe additional aspects of the character.")
                     }
                     
@@ -29,6 +30,7 @@ struct AboutTipsScreen: View {
                         Text("When to include:")
                             .font(.headline)
                             .fontWeight(.bold)
+                            .foregroundColor(.blue)
                         Text("If they’re famous (real or fictional), you do not need to type anything here, unless you wish to modify aspects of their personality or how they respond to you. If they're just a random jo, the AI will only know their name and no further details. In this case, including \"About\" details is required.")
                     }
                     
@@ -36,6 +38,7 @@ struct AboutTipsScreen: View {
                         Text("What to include:")
                             .font(.headline)
                             .fontWeight(.bold)
+                            .foregroundColor(.blue)
                         Text("You can include anything from personal details (job or interests), to how they know or talk to you. You can also include anything you can imagine. This is where you train the AI who to be and how to talk to you. This can be as little as a couple words: “Licensed Therapist” or their whole life story. The choice is yours.")
                     }
                     
