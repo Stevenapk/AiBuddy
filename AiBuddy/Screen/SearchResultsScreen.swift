@@ -48,17 +48,18 @@ struct SearchBarView: View {
             SearchBar(text: $viewModel.searchText, showKeyboard: _showKeyboard)
 
             Button("Cancel") {
-                print("SHOULD DISMISS PARENT VIEW")
-                // Dismiss view
+                // Dismiss to HomeScreen
                 dismiss()
             }
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.vertical, 15)
     }
 }
 
 struct MessageSearchResultsList: View {
     var messages: FetchedResults<Message>
+    var unreadMessageCount: Int
     @Binding var searchText: String
     @Binding var selectedMessage: Message?
     @Binding var refreshID: UUID
@@ -83,7 +84,8 @@ struct MessageSearchResultsList: View {
                 //present message screen passing optional index variable
                 MessageScreen(
                     viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character,
-                    messageIndexToScrollTo: indexToScrollTo
+                    messageIndexToScrollTo: indexToScrollTo,
+                    unreadMessageCount: unreadMessageCount
                 )
             } label: {
                 MessageRow(message: message, lettersToHighlight: searchText)
@@ -117,18 +119,25 @@ struct SearchResultsScreen: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
     ) var characters: FetchedResults<Character>
     
+    var unreadMessageCount: Int
+    
     var body: some View {
             VStack(spacing: 0) {
                 
                 SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
                 Divider()
                 // Display four contact icons
-                ContactIconsRow(characters: characters, searchText: $viewModel.searchText, refreshID: $refreshID, refreshManager: refreshManager)
+                ContactIconsRow(
+                    characters: characters,
+                    unreadMessageCount: unreadMessageCount,
+                    searchText: $viewModel.searchText,
+                    refreshID: $refreshID,
+                    refreshManager: refreshManager)
                 Divider()
                 // If there is typed in search text
                 if !viewModel.searchText.isEmpty {
                     // Display filtered messages list
-                    MessageSearchResultsList(messages: messages, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID, refreshManager: refreshManager)
+                    MessageSearchResultsList(messages: messages, unreadMessageCount: unreadMessageCount, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID, refreshManager: refreshManager)
                 } else {
                     ZStack {
                         Spacer()
@@ -244,6 +253,7 @@ struct MessageRow: View {
 struct ContactIconsRow: View {
     
     var characters: FetchedResults<Character>
+    var unreadMessageCount: Int
     
     @Binding var searchText: String
     
@@ -267,7 +277,7 @@ struct ContactIconsRow: View {
                             // Initialize message screen's view model
                             let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                             
-                            MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character)
+                            MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character, unreadMessageCount: unreadMessageCount)
                         } label: {
                             VStack {
                                 Circle()
@@ -295,7 +305,7 @@ struct ContactIconsRow: View {
                             // Initialize message screen's view model
                             let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                             
-                            MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character)
+                            MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character, unreadMessageCount: unreadMessageCount)
                         } label: {
                             VStack {
                                 Circle()
@@ -317,7 +327,6 @@ struct ContactIconsRow: View {
                     .padding(.vertical)
                 }
             }
-            .padding(.bottom, 10)
             .padding(.horizontal, 30)
     }
 }
@@ -331,7 +340,7 @@ struct SearchResultsScreen_Previews: PreviewProvider {
                 }, set: { newValue in
                     // Handle the updated value here
                 })
-        return SearchResultsScreen(refreshID: refreshID, viewModel: SearchResultsViewModel(), refreshManager: RefreshManager())
+        return SearchResultsScreen(refreshID: refreshID, viewModel: SearchResultsViewModel(), refreshManager: RefreshManager(), unreadMessageCount: 0)
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

@@ -7,12 +7,31 @@
 
 import SwiftUI
 
+struct NumberCircleView: View {
+    let number: Int
+    let diameter: CGFloat
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .foregroundColor(.blue) // Customize the circle color
+            
+            Text("\(number)")
+                .foregroundColor(.white) // Customize the text color
+                .font(.caption) // Adjust the font size if needed
+        }
+        .frame(width: diameter, height: diameter)
+    }
+}
+
 struct NavigationBar: View {
     
     @State var character: Character
     @Binding var refreshID: UUID
     @Binding var isTextFieldFocused: Bool
     @ObservedObject var refreshManager: RefreshManager
+    
+    var unreadMessageCount: Int
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -28,11 +47,17 @@ struct NavigationBar: View {
                 // Dismiss back to previous screen
                 presentationMode.wrappedValue.dismiss()
             }) {
-                Image(systemName: "chevron.left")
-                    .offset(y: -12.5)
-                    .font(.system(size: 23))
-                    .bold()
-                    .frame(width: 20, height: 50)
+                HStack(spacing: -5) {
+                    Image(systemName: "chevron.left")
+                        .offset(y: -12.5)
+                        .font(.system(size: 23))
+                        .fontWeight(.semibold)
+                        .frame(width: 20, height: 50)
+                    if unreadMessageCount != 0 {
+                        NumberCircleView(number: unreadMessageCount, diameter: 20)
+                            .offset(y: -12.5)
+                    }
+                }
             }
             Spacer()
             VStack(spacing: 0) {
@@ -62,6 +87,6 @@ struct NavigationBar_Previews: PreviewProvider {
             // Handle the updated value here
         })
         
-        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext))
+        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext), unreadMessageCount: 0)
     }
 }

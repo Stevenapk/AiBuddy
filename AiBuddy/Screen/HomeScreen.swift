@@ -31,6 +31,13 @@ struct HomeScreen: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
     ) var characters: FetchedResults<Character>
     
+    var unreadMessageCount: Int {
+        let total = characters.reduce(0) { result, character in
+            return result + (character.hasUnreadMessage ? 1 : 0)
+        }
+        return total
+    }
+    
     
     // MARK: - Body
     
@@ -38,7 +45,7 @@ struct HomeScreen: View {
         NavigationStack {
             VStack(spacing: 0) {
                 NavigationLink {
-                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel(), refreshManager: refreshManager) // Show search results screen
+                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel(), refreshManager: refreshManager, unreadMessageCount: unreadMessageCount) // Show search results screen
                 } label: {
                     // Search bar for filtering characters
                     SearchBar(isTextFieldDisabled: true, text: $viewModel.searchText)
@@ -61,7 +68,7 @@ struct HomeScreen: View {
                         let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
                         
                         // Show the Message Screen for selected character
-                        MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character)
+                        MessageScreen(viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character, unreadMessageCount: unreadMessageCount)
                     } label: {
                         CharacterRow(character: character) // Display character information
                             .contextMenu {

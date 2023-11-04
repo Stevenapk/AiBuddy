@@ -38,6 +38,7 @@ struct MessageScreen: View {
 //    @State var messages: [Message]
     
     var messageIndexToScrollTo: Int?
+    var unreadMessageCount: Int
     
 //    @State private var models: [String] = []
 //
@@ -50,7 +51,7 @@ struct MessageScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             // Navigation Bar
-            NavigationBar(character: character, refreshID: $refreshID, isTextFieldFocused: $viewModel.isTextFieldFocused, refreshManager: refreshManager)
+            NavigationBar(character: character, refreshID: $refreshID, isTextFieldFocused: $viewModel.isTextFieldFocused, refreshManager: refreshManager, unreadMessageCount: unreadMessageCount)
                         
             // Message List
             MessageList(viewModel: viewModel, keyboardDismissed: $keyboardDismissed, messageIndexToScrollTo: messageIndexToScrollTo, character: character)
@@ -93,6 +94,6 @@ struct MessageScreen_Previews: PreviewProvider {
             // Handle the updated value here
         })
         
-        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: Constants.context))
+        MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: Constants.context), unreadMessageCount: 0)
     }
 }
