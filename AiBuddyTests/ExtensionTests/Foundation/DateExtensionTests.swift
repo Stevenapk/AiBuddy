@@ -81,5 +81,3 @@ class DateExtensionsTests: XCTestCase {
     }
     
 }
-
-// Note: Replace YourModuleName with the actual name of your module.

@@ -63,8 +63,6 @@
 		4E599D2F2AD1EDCE00221393 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D2E2AD1EDCE00221393 /* Persistence.swift */; };
 		4E599D322AD1EDCE00221393 /* AiBuddy.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D302AD1EDCE00221393 /* AiBuddy.xcdatamodeld */; };
 		4E599D3D2AD1EDCF00221393 /* AiBuddyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D3C2AD1EDCF00221393 /* AiBuddyTests.swift */; };
-		4E599D472AD1EDCF00221393 /* AiBuddyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D462AD1EDCF00221393 /* AiBuddyUITests.swift */; };
-		4E599D492AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D482AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift */; };
 		4E599D572AD1EE7C00221393 /* OpenAISwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4E599D562AD1EE7C00221393 /* OpenAISwift */; };
 		4E599D592AD1EEC400221393 /* APIHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D582AD1EEC400221393 /* APIHandler.swift */; };
 		4E599D5B2AD1F44700221393 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E599D5A2AD1F44700221393 /* HomeScreen.swift */; };
@@ -129,13 +127,6 @@
 			remoteGlobalIDString = 4E599D212AD1EDC700221393;
 			remoteInfo = AiBuddy;
 		};
-		4E599D432AD1EDCF00221393 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4E599D1A2AD1EDC700221393 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4E599D212AD1EDC700221393;
-			remoteInfo = AiBuddy;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -182,9 +173,6 @@
 		4E599D332AD1EDCE00221393 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4E599D382AD1EDCF00221393 /* AiBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AiBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E599D3C2AD1EDCF00221393 /* AiBuddyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiBuddyTests.swift; sourceTree = "<group>"; };
-		4E599D422AD1EDCF00221393 /* AiBuddyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AiBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4E599D462AD1EDCF00221393 /* AiBuddyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiBuddyUITests.swift; sourceTree = "<group>"; };
-		4E599D482AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiBuddyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4E599D582AD1EEC400221393 /* APIHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandler.swift; sourceTree = "<group>"; };
 		4E599D5A2AD1F44700221393 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		4E599D5D2AD1F5C700221393 /* MessageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageScreen.swift; sourceTree = "<group>"; };
@@ -234,13 +222,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4E599D352AD1EDCF00221393 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4E599D3F2AD1EDCF00221393 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -414,7 +395,6 @@
 			children = (
 				4E599D242AD1EDC700221393 /* AiBuddy */,
 				4E599D3B2AD1EDCF00221393 /* AiBuddyTests */,
-				4E599D452AD1EDCF00221393 /* AiBuddyUITests */,
 				4E599D232AD1EDC700221393 /* Products */,
 				4E3F9BCA2AFD57E500292E0C /* Frameworks */,
 			);
@@ -425,7 +405,6 @@
 			children = (
 				4E599D222AD1EDC700221393 /* AiBuddy.app */,
 				4E599D382AD1EDCF00221393 /* AiBuddyTests.xctest */,
-				4E599D422AD1EDCF00221393 /* AiBuddyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -460,21 +439,12 @@
 		4E599D3B2AD1EDCF00221393 /* AiBuddyTests */ = {
 			isa = PBXGroup;
 			children = (
-				4E3F9BEA2AFD810C00292E0C /* UtilTests */,
 				4E3F9BE62AFD7FCA00292E0C /* ExtensionTests */,
+				4E3F9BEA2AFD810C00292E0C /* UtilTests */,
 				4E3F9BE52AFD7FAC00292E0C /* ViewModelTests */,
 				4E599D3C2AD1EDCF00221393 /* AiBuddyTests.swift */,
 			);
 			path = AiBuddyTests;
-			sourceTree = "<group>";
-		};
-		4E599D452AD1EDCF00221393 /* AiBuddyUITests */ = {
-			isa = PBXGroup;
-			children = (
-				4E599D462AD1EDCF00221393 /* AiBuddyUITests.swift */,
-				4E599D482AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift */,
-			);
-			path = AiBuddyUITests;
 			sourceTree = "<group>";
 		};
 		4E8144DF2ADDDFF000925EBA /* View */ = {
@@ -628,24 +598,6 @@
 			productReference = 4E599D382AD1EDCF00221393 /* AiBuddyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		4E599D412AD1EDCF00221393 /* AiBuddyUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4E599D522AD1EDCF00221393 /* Build configuration list for PBXNativeTarget "AiBuddyUITests" */;
-			buildPhases = (
-				4E599D3E2AD1EDCF00221393 /* Sources */,
-				4E599D3F2AD1EDCF00221393 /* Frameworks */,
-				4E599D402AD1EDCF00221393 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4E599D442AD1EDCF00221393 /* PBXTargetDependency */,
-			);
-			name = AiBuddyUITests;
-			productName = AiBuddyUITests;
-			productReference = 4E599D422AD1EDCF00221393 /* AiBuddyUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -660,10 +612,6 @@
 						CreatedOnToolsVersion = 14.2;
 					};
 					4E599D372AD1EDCF00221393 = {
-						CreatedOnToolsVersion = 14.2;
-						TestTargetID = 4E599D212AD1EDC700221393;
-					};
-					4E599D412AD1EDCF00221393 = {
 						CreatedOnToolsVersion = 14.2;
 						TestTargetID = 4E599D212AD1EDC700221393;
 					};
@@ -688,7 +636,6 @@
 			targets = (
 				4E599D212AD1EDC700221393 /* AiBuddy */,
 				4E599D372AD1EDCF00221393 /* AiBuddyTests */,
-				4E599D412AD1EDCF00221393 /* AiBuddyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -705,13 +652,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4E599D362AD1EDCF00221393 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4E599D402AD1EDCF00221393 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -839,15 +779,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4E599D3E2AD1EDCF00221393 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4E599D472AD1EDCF00221393 /* AiBuddyUITests.swift in Sources */,
-				4E599D492AD1EDCF00221393 /* AiBuddyUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -855,11 +786,6 @@
 			isa = PBXTargetDependency;
 			target = 4E599D212AD1EDC700221393 /* AiBuddy */;
 			targetProxy = 4E599D392AD1EDCF00221393 /* PBXContainerItemProxy */;
-		};
-		4E599D442AD1EDCF00221393 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4E599D212AD1EDC700221393 /* AiBuddy */;
-			targetProxy = 4E599D432AD1EDCF00221393 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1078,42 +1004,6 @@
 			};
 			name = Release;
 		};
-		4E599D532AD1EDCF00221393 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WL567A3598;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = stevenapk.AiBuddyUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = AiBuddy;
-			};
-			name = Debug;
-		};
-		4E599D542AD1EDCF00221393 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WL567A3598;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = stevenapk.AiBuddyUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = AiBuddy;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1140,15 +1030,6 @@
 			buildConfigurations = (
 				4E599D502AD1EDCF00221393 /* Debug */,
 				4E599D512AD1EDCF00221393 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4E599D522AD1EDCF00221393 /* Build configuration list for PBXNativeTarget "AiBuddyUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4E599D532AD1EDCF00221393 /* Debug */,
-				4E599D542AD1EDCF00221393 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
