@@ -32,7 +32,7 @@ struct CustomAppleSigninButton: View {
                                 return
                             }
                             loginModel.appleAuthenticate(credential: credential)
-                        case .failure(let error):
+                        case .failure:
                             return
                         }
                     }

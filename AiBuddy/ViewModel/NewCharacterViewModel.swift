@@ -116,7 +116,7 @@ class NewCharacterViewModel: ObservableObject {
 
                 completion(true) // Indicates success
                 
-            case .failure(let error):
+            case .failure:
                 completion(false) // Indicates failure
             }
         }

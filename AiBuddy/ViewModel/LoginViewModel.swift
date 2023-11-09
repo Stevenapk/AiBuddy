@@ -7,19 +7,21 @@
 
 import Foundation
 import SwiftUI
+#if !TEST_TARGET
 import Firebase
 import FirebaseAuth
 import CryptoKit
 import AuthenticationServices
+#endif
 
-class LoginViewModel: ObservableObject {
-    //MARK: View Properties
+class LoginViewModel: ObservableObject, LoginViewModelProtocol {
     
-    @Published var mobileNo: String = ""
-    @Published var otpCode: String = ""
+    static let shared = LoginViewModel()
+    let loginViewModel: LoginViewModelProtocol
     
-    @Published var CLIENT_CODE: String = ""
-    @Published var showOTPField: Bool = false
+    init(loginViewModel: LoginViewModelProtocol = shared) {
+        self.loginViewModel = loginViewModel
+    }
     
     //MARK: Error Properties
     @Published var showError: Bool = false

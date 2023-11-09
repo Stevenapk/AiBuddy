@@ -72,10 +72,8 @@ class MessageScreenViewModel: ObservableObject {
                 // Present an error alert in MessageScreen with the error
                 // Set the alert message according to the specific error
                 self.alertManager.activateAlert("It looks like there was an issue. \(error.localizedDescription)")
-               
             }
         }
-
     }
 
     func getKeyboardHeight() -> CGFloat {

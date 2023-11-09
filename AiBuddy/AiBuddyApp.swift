@@ -8,7 +8,9 @@
 import SwiftUI
 import CoreData
 import CloudKit
+#if !TEST_TARGET
 import FirebaseCore
+#endif
 
 @main
 struct AiBuddyApp: App {
