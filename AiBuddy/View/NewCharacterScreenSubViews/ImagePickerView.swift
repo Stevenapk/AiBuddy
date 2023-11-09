@@ -41,7 +41,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
                 let resizedImage = uiImage.resizeToContactIconSize
                 
                 // Compress recursively to limit required storage space
-                let compressedResizedImage = resizedImage?.toCompressedData                     // Image should now be 240x240 and less than 100kb
+                let compressedResizedImage = resizedImage?.toCompressedData // Image should now be 240x240 and less than 100kb
                 
                 //set parent image to selectedImage
                 parent.image = uiImage

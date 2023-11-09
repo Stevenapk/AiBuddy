@@ -13,13 +13,19 @@ class MessageScreenViewModel: ObservableObject {
         self.messages = messages
     }
     
-    // Properties
+    @EnvironmentObject var alertManager: ErrorAlertManager
+    
+    // MARK: View Properties
     @Published var selectedMessage: Message? = nil
     @Published var messages: [Message]
     @Published var messageText = ""
     @Published var responseText = ""
     @Published var isTextFieldFocused = false
     @Published var textFieldHeight: CGFloat = 70
+    
+    // MARK: Error Properties
+//    @Published var alertMessage: String = ""
+//    @Published var showAlertMessage: Bool = false
 
     // Functions
     func unmarkUnreadMessage(for character: Character) {
@@ -53,11 +59,20 @@ class MessageScreenViewModel: ObservableObject {
         
         //send message
         APIHandler.shared.sendMessage(prompt, to: character) { response in
-            if let response {
+            switch response {
+            case .success(let message):
                 //save changes to core data
                 PersistenceController.shared.saveContext() //TODO: REMOVE THIS IF WEIRD SEND MESSAGE BEHAVIOR
                 //append response to messages array
-                self.messages.append(response)
+                self.messages.append(message)
+                //TODO: delete these two things below after you've tested that the alert works :)
+                self.alertManager.activateAlert("The message was succesful!!")
+                print("SUCCESS SHOULD SHOW ALERT!!!")
+            case .failure(let error):
+                // Present an error alert in MessageScreen with the error
+                // Set the alert message according to the specific error
+                self.alertManager.activateAlert("It looks like there was an issue. \(error.localizedDescription)")
+               
             }
         }
 

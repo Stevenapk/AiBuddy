@@ -109,57 +109,16 @@ extension Character {
 
                 completion(true) // Indicates success
                 
-            case .failure(let error):
-                print("RESPONSE failed: \(error)")
+            case .failure:
                 completion(false) // Indicates failure
             }
         }
     }
-    
-//    func promptFrom(_ messageText: String) -> String {
-//
-//        let humanifyAI = "When I ask you questions, ask me a question back, if I just answered your question, comment on it and mirror what I said in a way that makes me feel heard and listened to. It should feel like I'm texting a real person, unless I tell you you are something besides a person."
-//
-//        let formattedPrompt = "Act as \(promptPrefix). \(humanifyAI) \(messageText)"
-//
-//        return formattedPrompt
-//    }
-    
-//    func promptFrom(_ messageText: String) -> String {
-//
-////        let humanifyAI = "When I ask you questions, ask me a question back, if I just answered your question, comment on it and mirror what I said in a way that makes me feel heard and listened to. It should feel like I'm texting a real person, unless I tell you you are something besides a person"
-//
-//        let humanifyAI = ""
-//
-//        var formattedPrompt = ""
-//
-//        if isRecognizableName {
-//            if !promptPrefix.isEmpty {
-//                formattedPrompt = "Act as \(name). Additionally, you are \(promptPrefix). \(humanifyAI). \(messageText)."
-//            } else {
-//                formattedPrompt = "Act as \(name). \(humanifyAI). \(messageText)"
-//            }
-//        } else {
-//            if !promptPrefix.isEmpty {
-//                formattedPrompt = "Act as \(promptPrefix). \(humanifyAI). if I ask, your name is \(name). \(messageText)."
-//            } else {
-//                //TODO: should not be allowed to do only a name if isRecognizableName is set to false, so if the switch is set to false, the word "optional" in parenthesis should be replaced with "REQUIRED". You will also need an info button next to this switch so they know exactly what it does. The words should be "Well-known person or character" right next to the character, the info button will say, "If it is a well-known person or character such as Selena Gomez or Peter Pan, the about me section is no longer required. Although you may still use it to add aspects to their personality, character, or life story.
-//                formattedPrompt = "\(humanifyAI). if I ask, your name is \(name). \(messageText)."
-//            }
-//        }
-//
-//        return formattedPrompt
-//    }
 
     func promptWithContextFrom(_ messageText: String) -> String {
         
         let relevantMessages = self.sortedMessages.suffix(5)
-        
-        //remove new prompt from context array
-//        if !relevantMessages.isEmpty {
-//            relevantMessages.removeLast()
-//        }
-        
+
         var context = ""
         
         //add string data to context

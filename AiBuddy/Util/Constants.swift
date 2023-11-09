@@ -10,8 +10,6 @@ import SwiftUI
 import CoreData
 
 class Constants {
-//    static let ad = UIApplication.shared.delegate as! AppDelegate
-//    static let context = ad.persistentContainer.viewContext
     lazy var persistentContainer: NSPersistentCloudKitContainer = PersistenceController.shared.container
     static let context = PersistenceController.shared.container.viewContext
 }

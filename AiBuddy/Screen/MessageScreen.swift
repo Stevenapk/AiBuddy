@@ -8,24 +8,18 @@
 import SwiftUI
 import Combine
 import CoreData
-//import Speech
-//import AVFoundation
 
 struct MessageScreen: View {
     
-    @State private var hasPerformedInitialSetup = false
+    @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var alertManager: ErrorAlertManager
     
+    @State private var hasPerformedInitialSetup = false
     @State private var keyboardDismissed = true
     
     @ObservedObject var viewModel: MessageScreenViewModel
     @ObservedObject var refreshManager: RefreshManager
-    
-//    @State var selectedMessage: Message? = nil
     @Binding var refreshID: UUID
-//    @State private var isRecording = false
-//
-//    @Environment(\.dismiss) var dismiss
-//
 
     var character: Character
     
@@ -39,14 +33,6 @@ struct MessageScreen: View {
     
     var messageIndexToScrollTo: Int?
     var unreadMessageCount: Int
-    
-//    @State private var models: [String] = []
-//
-//    @State private var messageText = ""
-//    @State private var responseText = ""
-//    @State private var isTextFieldFocused = false
-//
-//    @State private var textFieldHeight: CGFloat = 70
 
     var body: some View {
         VStack(spacing: 0) {
@@ -62,6 +48,21 @@ struct MessageScreen: View {
             MessageInputField(character: character, viewModel: viewModel, keyboardDismissed: $keyboardDismissed)
 
         }
+        .alert(isPresented: $alertManager.showAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(alertManager.message),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+        .alert(item: $persistenceController.saveError) { saveError in
+            // Present an alert based on the error
+            Alert(
+                title: Text("Error"),
+                message: Text(saveError.error.localizedDescription),
+                dismissButton: .default(Text("OK"))
+            )
+        }
         .navigationBarHidden(true)
         .onAppear {
             //On only first screen setup
@@ -74,14 +75,10 @@ struct MessageScreen: View {
                 viewModel.unmarkUnreadMessage(for: character)
             }
         }
-//        .padding(.bottom, isTextFieldFocused ? getKeyboardHeight() : 0)
-//        .animation(.easeInOut(duration: 0.3))
         .onReceive(Publishers.keyboardHeight) { height in
             viewModel.isTextFieldFocused = height > 0
         }
-//        .keyboardAdaptive() // Automatically adjust view position for keyboard
     }
-    
 }
 
 struct MessageScreen_Previews: PreviewProvider {

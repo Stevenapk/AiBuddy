@@ -95,10 +95,8 @@ extension HomeScreenViewModel {
         do {
             let appStatus = try Constants.context.fetch(AppStatus.fetchRequest())
             if !appStatus.isEmpty {
-                print("CALLED: has opened app before: ALREADY EXIST")
                 return true
             } else {
-                print("CALLED: has not opened before; is EMPTTTTTYYYYY")
                 let appStatus = AppStatus(context: Constants.context)
                 appStatus.hasBeenOpenedBefore = true
                 PersistenceController.shared.saveContext()

@@ -22,6 +22,9 @@ struct MessageList: View {
     var character: Character // does this need to be binding var?
     
     func scrollToBottom(with proxy: ScrollViewProxy) {
+        guard viewModel.messages.indices.contains(bottomMessageIndex) else {
+            return // Message index is out of bounds, do not scroll
+        }
         withAnimation {
             proxy.scrollTo(bottomMessageIndex, anchor: .bottom)
         }
@@ -81,15 +84,11 @@ struct MessageList: View {
             .gesture(DragGesture()
                 .onChanged { gesture in
                         // Detect scroll position
-                    print("end point prediction: \(gesture.predictedEndLocation.y)")
                         let offset = gesture.translation.height
                         let predictedEndLocation = gesture.predictedEndLocation.y
-//                    let textfieldViewHeight = 100.0
                         scrollOffset = offset
-                        print(scrollOffset)
                         // Dismiss keyboard when scrolling downward past keyboard height
                     if offset > 0 && predictedEndLocation > (getKeyboardHeight() - viewModel.textFieldHeight) {
-                        print("CHAHAHAHANGED")
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                         keyboardDismissed = true
                     }
@@ -97,20 +96,15 @@ struct MessageList: View {
                 .onEnded { gesture in
                     // Additional code to run when dragging ends, if needed
                     // Detect scroll position
-                    print("gesture is ENDINGGGGG")
                     let offset = gesture.translation.height
                     scrollOffset = offset
-                    print(scrollOffset)
                     // Dismiss keyboard when scrolling downward past keyboard height
                     if offset > 0 && offset > getKeyboardHeight() {
-                        print("ENDINNGGGG")
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                         keyboardDismissed = true
                     }
                 }
-
             )
         }
-        
     }
 }

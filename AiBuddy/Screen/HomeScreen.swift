@@ -14,7 +14,9 @@ class RefreshManager: ObservableObject {
 }
 
 struct HomeScreen: View {
-    
+ 
+    @EnvironmentObject var persistenceController: PersistenceController
+//    @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var viewModel: HomeScreenViewModel
     @ObservedObject var refreshManager: RefreshManager
     
@@ -40,7 +42,6 @@ struct HomeScreen: View {
     
     
     // MARK: - Body
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -55,14 +56,6 @@ struct HomeScreen: View {
                 Divider()
                 
                 List(characters) { character in
-                    // List of characters with context menu
-                    
-                    //                    Button(action: {
-                    //                        viewModel.selectedCharacter = character // Select character for detailed view
-                    //                    }) {
-                    //
-                    //                    }
-                    
                     NavigationLink {
                         // Initialize messageScreen's view model passing the character's sorted messages
                         let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
@@ -73,7 +66,7 @@ struct HomeScreen: View {
                         CharacterRow(character: character) // Display character information
                             .contextMenu {
                                 // Context menu options
-                                //add edit character button if it's not AI Buddy
+                                // add edit character button if it's not AI Buddy
                                 if character.name != "AI Buddy" {
                                     Button(action: {
                                         viewModel.characterToEdit = character // Edit character action
@@ -104,17 +97,6 @@ struct HomeScreen: View {
                     .listRowInsets(EdgeInsets(top: 12.5, leading: 20, bottom: 12.5, trailing: -20))
                 }
                 .listStyle(PlainListStyle()) // Use .plain style
-                //                .fullScreenCover(isPresented: $viewModel.showingSearchResultsScreen) {
-                //                    SearchResultsScreen(refreshID: $refreshID, viewModel: SearchResultsViewModel()) // Show search results screen
-                //                }
-                //                .fullScreenCover(item: $viewModel.selectedCharacter) { character in
-                //
-                //                    // Initialize messageScreen's view model passing the character's sorted messages
-                //                    let messageScreenViewModel = MessageScreenViewModel(messages: character.sortedMessages)
-                //
-                //                    // Show the Message Screen for selected character
-                //                    MessageScreen(viewModel: messageScreenViewModel, refreshID: $refreshID, character: character)
-                //                }
                 .fullScreenCover(item: $viewModel.characterToEdit) { character in
                     NewCharacterScreen(refreshID: $refreshID, character: character, viewModel: NewCharacterViewModel()) // Show new character screen for editing
                 }
@@ -173,7 +155,6 @@ struct HomeScreen: View {
             }
             .navigationTitle("Messages") // Set navigation title
             .onAppear {
-                print("CALLED ON APPEAR HOME")
                 //Only on first screen setup
                 if !hasPerformedInitialSetup {
                     //set has performedInitialSetup to true
@@ -189,9 +170,6 @@ struct HomeScreen: View {
                             }
                         }
                     }
-                    //                    DispatchQueue.main.async { [self] in
-                    //                        NotificationCenter.default.addObserver(self, selector: #selector(self.cloudKitSyncCompleted), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: PersistenceController.shared.container .persistentStoreCoordinator)
-                    //                    }
                     //only on re-appears, not on first launch
                 } else {
                     //if needs to be refreshed, refresh screen
@@ -203,6 +181,14 @@ struct HomeScreen: View {
                     }
                 }
             }
+            .alert(item: $persistenceController.persistentStoreError) { persistentStoreError in
+                // Present an alert based on the error
+                Alert(
+                    title: Text("Error"),
+                    message: Text(persistentStoreError.error.localizedDescription),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
         .onAppear {
             if characters.isEmpty {
@@ -213,27 +199,14 @@ struct HomeScreen: View {
     }
     
     init(viewModel: HomeScreenViewModel, refreshManager: RefreshManager) {
-        
         self.viewModel = viewModel
         self.refreshManager = refreshManager
-        
-        cancellable = NotificationCenter.default.publisher(for: NSNotification.Name.NSPersistentStoreRemoteChange)
-            .sink { _ in
-                print("CALLED: Core Data changes from CloudKit have been merged.")
-                // Add your handling code here
-            }
     }
-    
-    private var cancellable: AnyCancellable?
-    @Environment(\.managedObjectContext) private var viewContext
-    
 }
 
 
 struct HomeScreen_Previews: PreviewProvider {
-    
     static var previews: some View {
-        
         return HomeScreen(viewModel: HomeScreenViewModel(), refreshManager: RefreshManager())
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }

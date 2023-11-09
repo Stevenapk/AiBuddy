@@ -74,12 +74,6 @@ struct MessageBubbleView: View {
                     Image(systemName: "trash.fill")
                 }
             }
-        // TODO: IF it STOPPED scrolling to bottom when tapping the text field, re-comment this and maybe comment the one in message list instead :)
-//            .onChange(of: isTextFieldFocused) { isFocused in
-//                if isFocused {
-//                    scrollToBottom(with: proxy)
-//                }
-//            }
             .actionSheet(item: $selectedMessage) { message in
                 ActionSheet(
                     title: Text(""),

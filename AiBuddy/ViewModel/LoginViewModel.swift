@@ -44,26 +44,23 @@ class LoginViewModel: ObservableObject {
         
         //getting token
         guard let token = credential.identityToken else {
-            print("error from firebase (getting token)")
             return
         }
         
         //Token String
         guard let tokenString = String(data: token, encoding: .utf8) else {
-            print("error with token")
             return
         }
         
         let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com", idToken: tokenString, rawNonce: nonce)
         
         Auth.auth().signIn(with: firebaseCredential) { (result, err) in
-            if let error = err {
-                print("LOGIN ERROR\(error.localizedDescription)")
+            if let _ = err {
+                //Login Error
                 return
             }
             
             //User Succesfully logged into firebase
-            print("Login Success!")
             //Directing User to Home Page
             withAnimation(.easeInOut) {
                 self.logStatus = true
@@ -71,23 +68,6 @@ class LoginViewModel: ObservableObject {
         }
     }
 }
-
-//MARK: Extensions
-extension UIApplication {
-    //close keyboard from anywhere with UIApplication.shared.closeKeyboard() :)
-    func closeKeyboard() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
-    //Root Controller
-    func rootController() -> UIViewController {
-        guard let window = connectedScenes.first as? UIWindowScene else {return .init()}
-        guard let viewController = window.windows.last?.rootViewController else {return .init()}
-        
-        return viewController
-    }
-}
-
 
 //MARK: Apple Signin Helpers
 func sha256(_ input: String) -> String {

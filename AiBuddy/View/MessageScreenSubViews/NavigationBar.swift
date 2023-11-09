@@ -54,7 +54,7 @@ struct NavigationBar: View {
                         .fontWeight(.semibold)
                         .frame(width: 20, height: 50)
                     if unreadMessageCount != 0 {
-                        NumberCircleView(number: unreadMessageCount, diameter: 20)
+                        NumberCircleView(number: unreadMessageCount, diameter: 22.5)
                             .offset(y: -12.5)
                     }
                 }
