@@ -40,7 +40,7 @@ extension Character {
     
     var sortedMessages: [Message] {
         if let messages {
-            let unsortedMessageArray = messages.allObjects as! [Message]
+            guard let unsortedMessageArray = messages.allObjects as? [Message] else { return [] }
             return unsortedMessageArray.sorted { $0.timestamp < $1.timestamp }
         }
         return []
@@ -50,7 +50,7 @@ extension Character {
         // Delete messages associated with the character
         if self.messages != nil {
             for message in self.messages! {
-                let message = message as! Message
+                guard let message = message as? Message else { return }
                 Constants.context.delete(message)
             }
             self.lastText = ""

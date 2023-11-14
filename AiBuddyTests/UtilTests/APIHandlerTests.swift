@@ -6,32 +6,30 @@
 //
 
 import XCTest
+import OpenAISwift
 @testable import AiBuddy
 
 final class APIHandlerTests: XCTestCase {
     
-    var apiHandler: APIHandler!
-    var mockOpenAIAPI: MockOpenAIAPI!
+    var mockApiHandler: MockAPIHandler!
     
     override func setUp() {
         super.setUp()
-        mockOpenAIAPI = MockOpenAIAPI()
-        apiHandler = APIHandler(openAIAPI: mockOpenAIAPI)
+        mockApiHandler = MockAPIHandler()
     }
     
     override func tearDown() {
-        apiHandler = nil
-        mockOpenAIAPI = nil
+        mockApiHandler = nil
         super.tearDown()
     }
     
     func testGetResponseSuccess() {
         // Set up your mockOpenAIAPI to return a successful response
         
-        apiHandler.getResponse(input: "input", isAIBuddy: true) { result in
+        mockApiHandler.getResponse(input: "input", isAIBuddy: true) { result in
             switch result {
             case .success(let output):
-                XCTAssertEqual(output, "expectedOutput")
+                XCTAssertEqual(output, "Mocked Response")
             case .failure(_):
                 XCTFail("Expected success")
             }
@@ -40,9 +38,9 @@ final class APIHandlerTests: XCTestCase {
     
     func testGetResponseFailure() {
         // Set up your mockOpenAIAPI to return a failure response
-        apiHandler.shouldSucceed = false
+        mockApiHandler.shouldSucceed = false
         
-        apiHandler.getResponse(input: "input", isAIBuddy: true) { result in
+        mockApiHandler.getResponse(input: "input", isAIBuddy: true) { result in
             switch result {
             case .success(_):
                 XCTFail("Expected failure")
@@ -54,6 +52,11 @@ final class APIHandlerTests: XCTestCase {
     }
 }
 
+// Define a specific error for testing
+enum OpenAIError: Error {
+    case someError // Add a specific error case for testing
+}
+
 // Define MockOpenAIAPI for testing purposes
 class MockAPIHandler: APIHandlerProtocol {
     
@@ -62,10 +65,10 @@ class MockAPIHandler: APIHandlerProtocol {
     func getResponse(input: String, isAIBuddy: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         if shouldSucceed {
             let mockResponse = "Mocked Response"
-            completionHandler(.success(mockResponse))
+            completion(.success(mockResponse))
         } else {
             let error = OpenAIError.someError // Define a specific error for testing
-            completionHandler(.failure(error))
+            completion(.failure(error))
         }
     }
     

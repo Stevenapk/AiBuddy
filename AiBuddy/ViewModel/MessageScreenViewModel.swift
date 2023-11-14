@@ -7,7 +7,25 @@
 
 import SwiftUI
 
+protocol MessageScreenViewModelProtocol {
+    
+    var messages: [Message] { get set }
+    var messageText: String { get set }
+    
+    func unmarkUnreadMessage(for character: Character)
+    func sendMessage(to character: Character)
+    func getKeyboardHeight() -> CGFloat
+}
+
 class MessageScreenViewModel: ObservableObject {
+    
+//    static let shared = MessageScreenViewModel(messages: [])
+//    private let messageScreenViewModel: MessageScreenViewModelProtocol
+//
+//    init(messages: [Message], viewModel: MessageScreenViewModelProtocol = shared) {
+//        self.messageScreenViewModel = viewModel
+//        self.messages = messages
+//    }
     
     init(messages: [Message]) {
         self.messages = messages

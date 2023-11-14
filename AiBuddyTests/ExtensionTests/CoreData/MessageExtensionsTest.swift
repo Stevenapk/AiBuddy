@@ -12,23 +12,24 @@ import CoreData
 class MessageExtensionTests: XCTestCase {
     
     var mockCharacter: Character!
+    var mockMessage: Message!
     
     override func setUp() {
         super.setUp()
         
         // Initialize a mock Character object
-        let context = PersistenceController.shared.container.viewContext
+        let context = Constants.context
         mockCharacter = Character(context: context)
         mockCharacter.name = "Mock Character"
         mockCharacter.promptPrefix = "Hello"
         mockCharacter.isRecognizableName = true
         
         // Create a mock Message object
-        let mockMessage = Message(context: context)
+        mockMessage = Message(context: context)
         mockMessage.content = "Test Message"
         mockMessage.timestamp = Date()
         mockMessage.isSentByUser = true
-        mockMessage.character = mockCharacter
+        mockMessage.set(mockCharacter)
     }
     
     func testSet() {
@@ -49,6 +50,3 @@ class MessageExtensionTests: XCTestCase {
         XCTAssertEqual(newCharacter.modified, mockMessage.timestamp, "Modified date should be updated correctly")
     }
 }
-
-// Note: Replace YourModuleName with the actual name of your module.
-

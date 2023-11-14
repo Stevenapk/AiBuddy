@@ -7,9 +7,9 @@
 
 import Foundation
 protocol LoginViewModelProtocol {
-    var showError: Bool { get set }
-    var errorMessage: String { get set }
-    var logStatus: Bool { get set }
-    var nonce: String { get set }
-    func handleError(error: Error) async
+//    var showError: Bool { get set }
+//    var errorMessage: String { get set }
+//    var logStatus: Bool { get set }
+//    var nonce: String { get set }
+//    func handleError(error: Error) async
 }

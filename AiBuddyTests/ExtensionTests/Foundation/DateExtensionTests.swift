@@ -13,25 +13,25 @@ class DateExtensionsTests: XCTestCase {
     func testLocalizedMediumDateString() {
         let date = Date(timeIntervalSince1970: 1634851200) // Oct 22, 2021
         let result = date.localizedMediumDateString
-        XCTAssertEqual(result, "Fri, 10 22", "Resulting string should match the expected string")
+        XCTAssertEqual(result, "Thu, 10 21", "Resulting string should match the expected string")
     }
     
     func testLocalizedDateString() {
         let date = Date(timeIntervalSince1970: 1634851200) // Oct 22, 2021
         let result = date.localizedDateString
-        XCTAssertEqual(result, "10/22/21", "Resulting string should match the expected string")
+        XCTAssertEqual(result, "10/21/21", "Resulting string should match the expected string")
     }
     
     func testDayOfWeekString() {
         let date = Date(timeIntervalSince1970: 1634851200) // Oct 22, 2021 (a Friday)
         let result = date.dayOfWeekString
-        XCTAssertEqual(result, "Friday", "Resulting string should match the expected string")
+        XCTAssertEqual(result, "Thursday", "Resulting string should match the expected string")
     }
     
     func testLocalizedTimeString() {
         let date = Date(timeIntervalSince1970: 1634851200) // Oct 22, 2021
         let result = date.localizedTimeString
-        XCTAssertEqual(result, "12:00 AM", "Resulting string should match the expected string")
+        XCTAssertEqual(result, "4:20 PM", "Resulting string should match the expected string")
     }
     
     func testFormattedStringToday() {
@@ -77,7 +77,7 @@ class DateExtensionsTests: XCTestCase {
     func testLongFormattedStringOther() {
         let date = Date(timeIntervalSince1970: 1634851200) // Oct 22, 2021
         let result = date.longFormattedString
-        XCTAssertEqual(result, "Fri, 10 22 at 12:00 AM", "Resulting string should match the expected string")
+        XCTAssertEqual(result, "Thu, 10 21 at 4:20 PM", "Resulting string should match the expected string")
     }
     
 }

@@ -12,7 +12,8 @@ import FirebaseAuth
 struct LoginScreen: View {
     
     @EnvironmentObject var persistenceController: PersistenceController
-    @StateObject var loginModel: LoginViewModel = .init()    
+    @StateObject var loginModel: LoginViewModel = .init()
+    
     var bgColor = Color(uiColor: #colorLiteral(red: 0.001054307795, green: 0.2363113165, blue: 0.2041468322, alpha: 1))
     var fgColor = Color(uiColor: #colorLiteral(red: 0.1794910729, green: 0.8994128108, blue: 0.9105356336, alpha: 1))
     

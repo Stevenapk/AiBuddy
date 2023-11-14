@@ -7,18 +7,18 @@
 
 import Foundation
 import SwiftUI
-#if !TEST_TARGET
+//#if !TEST_TARGET
 import Firebase
 import FirebaseAuth
 import CryptoKit
 import AuthenticationServices
-#endif
+//#endif
 
 class LoginViewModel: ObservableObject, LoginViewModelProtocol {
     
     static let shared = LoginViewModel()
-    let loginViewModel: LoginViewModelProtocol
-    
+    private let loginViewModel: LoginViewModelProtocol
+        
     init(loginViewModel: LoginViewModelProtocol = shared) {
         self.loginViewModel = loginViewModel
     }
