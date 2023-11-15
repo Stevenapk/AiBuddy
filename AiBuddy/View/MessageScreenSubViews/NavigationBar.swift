@@ -40,10 +40,7 @@ struct NavigationBar: View {
             Button(action: {
                 // Handle back button action
                 // Refresh HomeScreen for most recent message preview
-//                refreshID = UUID()
                 refreshManager.shouldRefresh = true
-                // Set the text field to not be focused
-//                isTextFieldFocused = false
                 // Dismiss back to previous screen
                 presentationMode.wrappedValue.dismiss()
             }) {
@@ -60,6 +57,7 @@ struct NavigationBar: View {
                 }
             }
             Spacer()
+            // Character icon and name in the center of the navigation bar
             VStack(spacing: 0) {
                 ContactIcon(character: $character, width: 50)
                 Text(character.name)
@@ -68,7 +66,7 @@ struct NavigationBar: View {
             }
             .offset(x:-10)
             Spacer()
-            EmptyView() // Add a placeholder for any additional buttons/icons
+            EmptyView() // Placeholder for any additional buttons/icons on the right side
         }
         .padding(.horizontal)
         .padding(.vertical, 5)
@@ -80,13 +78,13 @@ struct NavigationBar: View {
 struct NavigationBar_Previews: PreviewProvider {
     static var previews: some View {
         
+        // Sample Binding<UUID> for preview
         let refreshID = Binding<UUID>(get: {
-            // Return your initial value here
             return UUID()
         }, set: { newValue in
-            // Handle the updated value here
         })
         
+        // Preview for the NavigationBar with a sample character
         MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext), unreadMessageCount: 0)
     }
 }

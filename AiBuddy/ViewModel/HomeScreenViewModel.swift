@@ -15,6 +15,8 @@ protocol HomeScreenViewModelProtocol {
 
 class HomeScreenViewModel: ObservableObject, HomeScreenViewModelProtocol {
     
+    // MARK: - Properties
+    
     @Published var searchText = "" // Text for searching characters
     @Published var selectedCharacter: Character? = nil // Selected character for detailed view
     @Published var characterToEdit: Character? = nil // Character to edit
@@ -37,27 +39,33 @@ class HomeScreenViewModel: ObservableObject, HomeScreenViewModelProtocol {
             }
         }
     }
+}
+
+// MARK: - Functions
+
+extension HomeScreenViewModel {
     
+    // Roll for a chance of getting a random new message from a random character
     func rollForRandomNewMessage(from character: Character, completion: @escaping (Bool) -> Void) {
         
-        let probability = Int.random(in: 0...5)
+        // 10% chance
+        let probability = Int.random(in: 0...9)
         
         if probability == 1 {
-            // Select a random character
+            // Select a random character (character is already randomized on input)
             character.receiveRandomMessage(completion: { success in
                 completion(success)
             })
         }
     }
-    
-}
 
-extension HomeScreenViewModel {
-
+    // Create default characters if user has not launched app before (determined from core data AppStatus object)
     func createDefaultCharactersIfNeeded() {
         
+        // Ensure user has not opened the app before, thus defaults do need to be created
         guard !hasUserOpenedAppBefore() else { return }
         
+        // Define character data for default characters
         let charactersData: [(name: String, promptPrefix: String, lastText: String, isFamous: Bool)] = [
             ("That 70's Guy", "a 17 year old friend from the era of the 1970's who responds in slang and loves to go dancing and to the movies", "Hey dude", false),
             ("Selena Gomez", "Selena Gomez", "Hey there", true),
@@ -67,6 +75,7 @@ extension HomeScreenViewModel {
             ("AI Buddy", "a helpful assistant", "Hey friend, anything I can do for you today?", false)
         ]
         
+        // Initialize each default character and set properties
         for data in charactersData {
             //create character
             let character = Character(context: Constants.context)
@@ -88,24 +97,28 @@ extension HomeScreenViewModel {
             
             character.addToMessages(message)
             character.addToMessages(response)
-             
         }
         
+        // Save changes to context
         try? Constants.context.save()
     }
     
+    // Check if user has opened app before
     func hasUserOpenedAppBefore() -> Bool {
         do {
             let appStatus = try Constants.context.fetch(AppStatus.fetchRequest())
+            // If appStatus already exists, we know they have opened the app before. Return true.
             if !appStatus.isEmpty {
                 return true
             } else {
+                // If appStatus does not yet exist, create it and save the context
                 let appStatus = AppStatus(context: Constants.context)
                 appStatus.hasBeenOpenedBefore = true
                 PersistenceController.shared.saveContext()
                 return false
             }
         } catch {
+            // If any sort of error occurs, create defaults just in case (better user experience to have to delete a couple, then to be provided with none)
             let appStatus = AppStatus(context: Constants.context)
             appStatus.hasBeenOpenedBefore = true
             PersistenceController.shared.saveContext()

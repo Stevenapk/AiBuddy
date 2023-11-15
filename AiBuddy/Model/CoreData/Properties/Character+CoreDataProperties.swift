@@ -27,6 +27,8 @@ extension Character {
     @NSManaged public var imageData: ImageData?
     @NSManaged public var hasUnreadMessage: Bool
     
+    // MARK: Computed Properties
+    
     var imgData: Data? {
         return imageData?.imageData
     }
@@ -45,6 +47,8 @@ extension Character {
         }
         return []
     }
+    
+    // MARK: Functions
     
     func deleteAllMessages(completion: @escaping () -> Void) {
         // Delete messages associated with the character

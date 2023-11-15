@@ -18,7 +18,7 @@ struct MessageBubble: View {
     var body: some View {
         HStack() {
             if isSentByUser {
-                Spacer() // Add a spacer to push the message bubble to the right edge
+                Spacer() // Add a spacer to push the message bubble to the right edge if message was sent by user
             }
             
             VStack(alignment: isSentByUser ? .trailing : .leading, spacing: 0) {
@@ -49,11 +49,12 @@ struct MessageBubble: View {
                     
                 }
                 if !isSentByUser {
-                    Spacer() // Step 8: Add a spacer to push the message bubble to the left edge
+                    Spacer() // Add a spacer to push the message bubble to the left edge if message is an ai response
                 }
                 if showTimestamp {
                     HStack {
                         if isSentByUser {
+                            // Aligned to right edge
                             Spacer()
                             Text(timestamp.localizedTimeString)
                                 .foregroundColor(.secondary)
@@ -62,6 +63,7 @@ struct MessageBubble: View {
                                 .padding(.bottom, 1)
                         }
                         if !isSentByUser {
+                            // Aligned to left edge
                             Text(timestamp.localizedTimeString)
                                 .foregroundColor(.secondary)
                                 .font(.caption)
@@ -72,6 +74,7 @@ struct MessageBubble: View {
                     }
                 }
             }
+            //show the timestamp below message bubble when message bubble is tapped
             .onTapGesture {
                 showTimestamp.toggle()
             }
@@ -82,11 +85,10 @@ struct MessageBubble: View {
 struct MessageBubble_Previews: PreviewProvider {
     static var previews: some View {
         
+        // Provide random Binding<UUID> for preview
         let refreshID = Binding<UUID>(get: {
-            // Return your initial value here
             return UUID()
         }, set: { newValue in
-            // Handle the updated value here
         })
         
         MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: PersistenceController.shared.container.viewContext), unreadMessageCount: 0)

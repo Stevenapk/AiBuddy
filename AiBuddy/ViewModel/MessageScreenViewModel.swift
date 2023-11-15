@@ -85,9 +85,9 @@ class MessageScreenViewModel: ObservableObject, MessageScreenViewModelProtocol {
         return UIScreen.main.bounds.height > 800 ? 300 : 200
     }
     
+    // Activate alert by setting the alertMessage string and marking the showAlertMessage flag to true 
     func activateAlert(_ message: String) {
         self.alertMessage = message
         self.showAlertMessage = true
     }
-    
 }

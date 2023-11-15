@@ -15,31 +15,40 @@ protocol NewCharacterViewModelProtocol {
 
 class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
     
+    // MARK: - Properties
+    
     @Published var name = ""
     @Published var aboutMe = ""
     @Published var contactImageData: Data?
     @Published var contactImage: UIImage?
     @Published var isNameRecognizable = false
-    
     @Published var showEditImageActionSheet = false
     @Published var showPhotoLibrary = false
     @Published var showCapturePhoto = false
 
+    // MARK: - Functions
+    
     func isValidForSave(existingCharacter: Character?) -> Bool {
+        
+        // Ensure name is not empty and isn't the AI Buddy default, else return false (invalid for save)
         guard !name.isEmpty && name != "AI Buddy" else { return false }
 
+        // if editing previous character
         if let character = existingCharacter {
+            // check for a change from it's previous saved properties
             if character.name != name || character.promptPrefix != aboutMe || character.isRecognizableName != isNameRecognizable || character.imgData != contactImageData {
                 if isNameRecognizable || !aboutMe.isEmpty {
                     return true
                 }
             }
         } else {
+            // if it's a new character, ensure it's either a famous person with a name or that the about field is not empty
             if isNameRecognizable || !aboutMe.isEmpty {
                 return true
             }
         }
 
+        // return false if any checks fail
         return false
     }
 
@@ -47,6 +56,7 @@ class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
         contactImage = image
     }
     
+    // Save character function (works for both existing character or new character)
     func saveCharacter(existingCharacter: Character?, completion: @escaping (Bool) -> Void) {
         if let character = existingCharacter {
             // Overwriting previous character
@@ -85,8 +95,9 @@ class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
     }
     
     func sendGreetingText(from newChar: Character, completion: @escaping (Bool) -> Void) {
-        //define prompt from message text
+        // define message text
         let messageText = "Greet me in a way unique to you"
+        // create a prompt string with the message text, and adding in character details for the ai's persona
         var prompt: String {
             if isNameRecognizable {
                 if !aboutMe.isEmpty {
@@ -103,6 +114,7 @@ class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
             }
         }
         
+        // Get a response string from the OpenAI API and create an assign the result to a Message object for a character
         APIHandler.shared.getResponse(input: prompt, isAIBuddy: false) { result in
             switch result {
             case .success(let output):
@@ -123,22 +135,27 @@ class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
                 completion(true) // Indicates success
                 
             case .failure:
-                completion(false) // Indicates failure
+                completion(false) // Return false indicating failure
             }
         }
     }
     
+    // autofill fields for existing character
     func prefillFields(for character: Character) {
-            //set name
+        
+            // set name
             name = character.name
-            //set isFamousCharacter
+        
+            // set isFamousCharacter
             isNameRecognizable = character.isRecognizableName
             
-            //set image if applicable
+            // set image if applicable
             if let image = character.image {
                 contactImage = image
                 contactImageData = character.imgData
             }
+        
+            // set aboutMe
             aboutMe = character.promptPrefix
     }
     

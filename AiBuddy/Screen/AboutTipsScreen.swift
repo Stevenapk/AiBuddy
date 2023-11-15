@@ -48,21 +48,22 @@ struct AboutTipsScreen: View {
             }
             .padding()
         }
-            .navigationBarBackButtonHidden(true) // Hide the default back button
-            
-            // Provide a custom back button or view
-            .navigationBarItems(leading:
-                Button(action: {
-                // Dismiss: navigate back to last screen
-                    dismiss()
-                }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                    }
-                }
-            )
-            .navigationTitle("\"About\" Tips")
-            .navigationBarTitleDisplayMode(.inline)
+        // Hide the default back button
+        .navigationBarBackButtonHidden(true)
+        
+        // Provide a custom back button or view
+        .navigationBarItems(leading:
+                                Button(action: {
+            // Dismiss: navigate back to last screen
+            dismiss()
+        }) {
+            HStack {
+                Image(systemName: "chevron.left")
+            }
+        }
+        )
+        .navigationTitle("\"About\" Tips")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

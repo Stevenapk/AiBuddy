@@ -61,6 +61,7 @@ class HomeScreenViewModelTests: XCTestCase {
     }
 }
 
+// MARK: - MockHomeScreenViewModel
 
 class MockHomeScreenViewModel: HomeScreenViewModelProtocol {
     

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Name TextField with custom formatting for NewCharacterScreen
 struct NameTextField: View {
     @Binding var name: String
 

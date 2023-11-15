@@ -19,13 +19,15 @@ struct LoginScreen: View {
     
     var body: some View {
         ZStack {
+            // Background Looping Animated Gradient
             GradientBackgroundView()
+            
             VStack(alignment: .leading, spacing: 15) {
                 Spacer()
                     .frame(height: 160)
                 AppLogo()
-                .padding(.bottom, 40)
-                .padding(.leading, -60)
+                    .padding(.bottom, 40)
+                    .padding(.leading, -60)
                 WelcomeTextView()
                 Spacer()
                 CustomAppleSigninButton(loginModel: loginModel)
@@ -36,10 +38,11 @@ struct LoginScreen: View {
             .padding(.leading, 60)
         }
         .ignoresSafeArea()
+        
+        // Present alert(s) if an error has occured on this screen
         .alert(loginModel.errorMessage, isPresented: $loginModel.showError) {
         }
         .alert(item: $persistenceController.persistenceError) { persistenceError in
-            // Present an alert based on the error
             Alert(
                 title: Text("Error"),
                 message: Text(persistenceError.error.localizedDescription),
@@ -47,7 +50,7 @@ struct LoginScreen: View {
             )
         }
     }
-
+    
 }
 
 struct LoginScreen_Previews: PreviewProvider {

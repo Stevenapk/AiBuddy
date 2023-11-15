@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Triangle for use as Message Tail
 struct Triangle: Shape {
     var direction: TriangleDirection
     

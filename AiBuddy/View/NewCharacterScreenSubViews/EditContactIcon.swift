@@ -13,15 +13,16 @@ struct EditContactIcon: View {
     @Binding var name: String
     @Binding var isKeyboardShowing: Bool
     
+    var firstInitial: String {
+        String(name.prefix(1)).uppercased()
+    }
+    
     var body: some View {
         VStack {
             VStack {
                 if contactImage == nil && !name.isEmpty {
                     ZStack {
-                        
-                        let firstInitial = String(name.prefix(1)).uppercased()
-                        
-                        
+                        // If they have a first initial and no contact image, set colored circle background according to their initial
                         Circle()
                             .foregroundColor(getColorFor(initial: firstInitial))
                         Text(firstInitial)
@@ -29,6 +30,7 @@ struct EditContactIcon: View {
                             .font(.headline)
                     }
                 } else {
+                    // Display contact image if available, or default image if not
                     if let contactImage {
                         Image(uiImage: contactImage)
                             .resizable()
@@ -41,6 +43,7 @@ struct EditContactIcon: View {
                     }
                 }
             }
+            // Enlarge contact icon size when keyboard is not showing
             .frame(width: isKeyboardShowing ? 50 : 105,
                    height: isKeyboardShowing ? 50 : 105)
             Text(contactImage != nil ? "Edit Photo" : "Add Photo")
@@ -49,7 +52,7 @@ struct EditContactIcon: View {
         }
     }
     
-    //used for profile icon background color selection
+    // Determines contact icon color if no image is added based on first initial
     func getColorFor(initial: String) -> Color {
         switch initial.lowercased() {
         case "a", "b", "c", "d":
@@ -75,11 +78,10 @@ struct EditContactIcon: View {
 struct EditContactIcon_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
+            // Set random Binding<UUID> for the preview
             let refreshID = Binding<UUID>(get: {
-                // Set random UUID as initial value
                 return UUID()
             }, set: { newValue in
-                // Handle the updated value here
             })
             NewCharacterScreen(refreshID: refreshID, viewModel: NewCharacterViewModel())
         }

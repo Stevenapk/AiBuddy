@@ -11,6 +11,8 @@ import CoreData
 
 struct MessageScreen: View {
     
+    // MARK: - Properties
+    
     @EnvironmentObject var persistenceController: PersistenceController
     
     @State private var hasPerformedInitialSetup = false
@@ -18,11 +20,14 @@ struct MessageScreen: View {
     
     @ObservedObject var viewModel: MessageScreenViewModel
     @ObservedObject var refreshManager: RefreshManager
+    
     @Binding var refreshID: UUID
 
     var character: Character
     var messageIndexToScrollTo: Int?
     var unreadMessageCount: Int
+    
+    // MARK: - Body
 
     var body: some View {
         VStack(spacing: 0) {
@@ -38,6 +43,8 @@ struct MessageScreen: View {
             MessageInputField(character: character, viewModel: viewModel, keyboardDismissed: $keyboardDismissed)
 
         }
+        
+        // Show alert if an error occurs on this screen (ex: AI failed to send response message)
         .alert(isPresented: $viewModel.showAlertMessage) {
             Alert(
                 title: Text("Error"),
@@ -47,13 +54,13 @@ struct MessageScreen: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            //On only first screen setup
+            // On only first screen setup
             if !hasPerformedInitialSetup {
                 
-                //set hasPerformedInitialSetup to true
+                // Set hasPerformedInitialSetup to true
                 hasPerformedInitialSetup = true
                 
-                //unmark the unread message and save this change
+                // Unmark the unread message and save this change
                 viewModel.unmarkUnreadMessage(for: character)
             }
         }
@@ -66,11 +73,10 @@ struct MessageScreen: View {
 struct MessageScreen_Previews: PreviewProvider {
     static var previews: some View {
         
+        // Set default random Binding<UUID> for preview
         let refreshID = Binding<UUID>(get: {
-            // Return your initial value here
             return UUID()
         }, set: { newValue in
-            // Handle the updated value here
         })
         
         MessageScreen(viewModel: MessageScreenViewModel(messages: []), refreshManager: RefreshManager(), refreshID: refreshID, character: Character(context: Constants.context), unreadMessageCount: 0)

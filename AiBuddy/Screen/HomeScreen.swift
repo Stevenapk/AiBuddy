@@ -25,7 +25,7 @@ struct HomeScreen: View {
     @State private var hasPerformedInitialSetup = false
     @State private var shouldUpdate = false
     
-    // Fetch characters using Core Data
+    // Characters Fetch Request sorted by last modified
     @FetchRequest(
         entity: Character.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
@@ -40,6 +40,7 @@ struct HomeScreen: View {
     
     
     // MARK: - Body
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -96,7 +97,7 @@ struct HomeScreen: View {
                 }
                 .listStyle(PlainListStyle()) // Use .plain style
                 .fullScreenCover(item: $viewModel.characterToEdit) { character in
-                    NewCharacterScreen(refreshID: $refreshID, character: character, viewModel: NewCharacterViewModel()) // Show new character screen for editing
+                    NewCharacterScreen(refreshID: $refreshID, viewModel: NewCharacterViewModel(), character: character) // Show new character screen for editing
                 }
                 .sheet(isPresented: $viewModel.showingNewCharacterScreen) {
                     NewCharacterScreen(refreshID: $refreshID, viewModel: NewCharacterViewModel()) // Show new character screen for creating

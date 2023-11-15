@@ -22,6 +22,8 @@ extension Message {
     @NSManaged public var isSentByUser: Bool
     @NSManaged public var character: Character
     
+    // MARK: Functions
+    
     func set(_ character: Character) {
         //set character property
         self.character = character

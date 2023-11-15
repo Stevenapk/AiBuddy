@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct MessageSearchResultsList: View {
+    
     var messages: FetchedResults<Message>
     var unreadMessageCount: Int
+    
     @Binding var searchText: String
     @Binding var selectedMessage: Message?
     @Binding var refreshID: UUID
@@ -24,6 +26,7 @@ struct MessageSearchResultsList: View {
         }) { message in
             
             NavigationLink {
+                // Define properties to pass that aren't explicit
                 let character = message.character
                 let messages = character.sortedMessages
                 let indexToScrollTo = messages.firstIndex(of: message)
@@ -31,7 +34,7 @@ struct MessageSearchResultsList: View {
                 // Initialize message screen's view model
                 let messageScreenViewModel = MessageScreenViewModel(messages: messages)
                 
-                //present message screen passing optional index variable
+                //present message screen; pass optional index variable
                 MessageScreen(
                     viewModel: messageScreenViewModel, refreshManager: refreshManager, refreshID: $refreshID, character: character,
                     messageIndexToScrollTo: indexToScrollTo,
@@ -41,6 +44,6 @@ struct MessageSearchResultsList: View {
                 MessageRow(message: message, lettersToHighlight: searchText)
             }
         }
-        .listStyle(PlainListStyle()) // Use .plain style
+        .listStyle(PlainListStyle()) // Use .plain style to prevent inset group style
     }
 }

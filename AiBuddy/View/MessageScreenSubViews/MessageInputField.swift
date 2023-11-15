@@ -16,23 +16,26 @@ struct MessageInputField: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            Rectangle() // Add a rectangle as the first view
-                .foregroundColor(Color(uiColor: .systemBackground)) // Set the desired background color
+            Rectangle()
+                .foregroundColor(Color(uiColor: .systemBackground))
                 .frame(height: textFieldHeight-10)
             ZStack {
+                // Rounded Rectangle Background to contain textfield and send button
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(Color(.secondaryLabel), lineWidth: 1)
                     .frame(height: textFieldHeight-30)
                     .padding(.bottom, 17.5)
                     .padding(.horizontal, 25)
+                // HStack containing the text field and send button
                 HStack(alignment: .bottom) {
+                    // User message input field with placeholder and dynamic height
                     TextField("Type a message...", text: $viewModel.messageText, axis: .vertical)
                         .font(Font.subheadline)
                         .padding(.top, 10)
                         .padding(.bottom, 10)
                         .padding(.horizontal, 10)
-                    //                            .background(Color(.clear))
                         .onTapGesture {
+                            // Dismiss keyboard when tapping on the text field if it was dismissed
                             if keyboardDismissed == true {
                                 keyboardDismissed = false
                             }
@@ -44,16 +47,14 @@ struct MessageInputField: View {
                                     textFieldHeight = newHeight + 40
                                 }
                         })
-                    if                         // make label transparent when blank
-                        !viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    // Hide send message button when user inputted text is empty
+                    if !viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         SendMessageButton(viewModel: viewModel, character: character)
                     }
                 }
                 .padding(.bottom, 17.5)
                 .padding(.horizontal, 25)
             }
-            
-            
         }
         .gesture(
             DragGesture().onChanged { value in

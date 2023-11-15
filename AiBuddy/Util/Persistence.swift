@@ -18,39 +18,44 @@ class PersistenceController: ObservableObject {
     
     static let shared = PersistenceController()
 
+    // A preview instance of `PersistenceController` for SwiftUI previews
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         return result
     }()
 
+    // The CloudKit compatible Core Data container for AiBuddy
     let container: NSPersistentCloudKitContainer
     
-    @Published var persistenceError: PersistenceError? = nil // Publish the persistent store error
+    // Publish the persistent store error
+    @Published var persistenceError: PersistenceError? = nil
 
+    // MARK: - Initialization
+    
+    /// Initializes a new `PersistenceController`.
+    /// - Parameter inMemory: A boolean indicating whether to use an in-memory store.
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "AiBuddy")
+        
+        // Configure the container for an in-memory store if specified
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        
+        // Load persistent stores and handle completion
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error {
                 self.persistenceError = PersistenceError(error: error)
-                // Replace this implementation with code to handle the error appropriately.
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
             }
         })
+        
+        // Enable automatic merging of changes from the parent context
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
     
     // MARK: - Core Data Saving support
+    
     func saveContext() {
         let context = container.viewContext
         if context.hasChanges {

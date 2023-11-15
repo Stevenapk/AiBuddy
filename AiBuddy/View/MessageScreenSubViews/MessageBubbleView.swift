@@ -9,19 +9,19 @@ import SwiftUI
 
 struct MessageBubbleView: View {
     
-    @State private var hasPerformedInitialSetup = false
-    
     var message: Message
     var index: Int
     var messageIndexToScrollTo: Int?
+    var proxy: ScrollViewProxy
+    var character: Character
+    var bottomMessageIndex: Int { messages.indices.last ?? 0 }
+    
+    @State private var hasPerformedInitialSetup = false
+    
     @Binding var selectedMessage: Message?
     @Binding var isTextFieldFocused: Bool
     @Binding var messages: [Message]
     @Binding var messageDeleted: Bool
-    var proxy: ScrollViewProxy // Include proxy property
-    var character: Character
-    
-    var bottomMessageIndex: Int { messages.indices.last ?? 0 }
     
     func scrollToBottom(with proxy: ScrollViewProxy) {
         guard messages.indices.contains(bottomMessageIndex) else {
@@ -48,13 +48,8 @@ struct MessageBubbleView: View {
                                 if let scrollToIndex = messageIndexToScrollTo {
                                     proxy.scrollTo(scrollToIndex, anchor: .bottom)
                                 } else {
-                                    //scroll to bottom (most recent message) if no selectedIndex
-//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                                        
-//                                                            }
+                                    //scroll to bottom (most recent message) if no selectedIndex                      }
                                     scrollToBottom(with: proxy)
-//                                    let yOffset = geometry.frame(in: .named("scrollview")).origin.y - 30
-//                                    proxy.scrollTo(bottomMessageIndex, anchor: UnitPoint(x: 0.5, y: yOffset / geometry.size.height))
                                 }
                             }
                         }

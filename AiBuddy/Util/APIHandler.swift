@@ -83,9 +83,6 @@ final class APIHandler: APIHandlerProtocol {
                 }
                 message.set(character)
                 
-                // save changes to core data
-                // PersistenceController.shared.saveContext() //TODO: Uncomment this if weird sending message behavior
-                
                 // Call the completion handler with the created message
                 completion(.success(message))
             case .failure(let error):

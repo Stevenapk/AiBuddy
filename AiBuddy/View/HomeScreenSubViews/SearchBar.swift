@@ -15,7 +15,6 @@ struct SearchBar: View {
     
     var body: some View {
         // Add text field for searching with a placeholder text
-        
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .foregroundColor(Color(.systemGray6)) // Set background color

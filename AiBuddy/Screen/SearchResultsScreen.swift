@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SearchResultsScreen: View {
     
+    // MARK: - Properties
+    
     @Binding var refreshID: UUID
     
     @State private var hasPerformedInitialSetup = false
@@ -18,11 +20,15 @@ struct SearchResultsScreen: View {
     @ObservedObject var viewModel: SearchResultsViewModel
     @ObservedObject var refreshManager: RefreshManager
     
+    // MARK: - Fetch Requests
+    
+    // Messages sorted by most recent
     @FetchRequest(
         entity: Message.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Message.timestamp, ascending: false)]
     ) var messages: FetchedResults<Message>
     
+    // Characters sorted by last modified
     @FetchRequest(
         entity: Character.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Character.modified, ascending: false)]
@@ -30,34 +36,36 @@ struct SearchResultsScreen: View {
     
     var unreadMessageCount: Int
     
+    // MARK: - Body
+    
     var body: some View {
-            VStack(spacing: 0) {
-                SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
-                Divider()
-                // Display four contact icons
-                ContactIconsRow(
-                    characters: characters,
-                    unreadMessageCount: unreadMessageCount,
-                    searchText: $viewModel.searchText,
-                    refreshID: $refreshID,
-                    refreshManager: refreshManager)
-                Divider()
-                // If there is typed in search text
-                if !viewModel.searchText.isEmpty {
-                    // Display filtered messages list
-                    MessageSearchResultsList(messages: messages, unreadMessageCount: unreadMessageCount, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID, refreshManager: refreshManager)
-                } else {
-                    ZStack {
-                        Spacer()
-                            .background(Color(uiColor: .systemBackground))
-                    }
-                    .background(Color(uiColor: .systemBackground))
-                    .onTapGesture {
-                        showKeyboard = false
-                    }
+        VStack(spacing: 0) {
+            SearchBarView(viewModel: viewModel, showKeyboard: _showKeyboard)
+            Divider()
+            // Display four contact icons
+            ContactIconsRow(
+                characters: characters,
+                unreadMessageCount: unreadMessageCount,
+                searchText: $viewModel.searchText,
+                refreshID: $refreshID,
+                refreshManager: refreshManager)
+            Divider()
+            // If there is typed in search text
+            if !viewModel.searchText.isEmpty {
+                // Display filtered messages list
+                MessageSearchResultsList(messages: messages, unreadMessageCount: unreadMessageCount, searchText: $viewModel.searchText, selectedMessage: $viewModel.selectedMessage, refreshID: $refreshID, refreshManager: refreshManager)
+            } else {
+                ZStack {
+                    Spacer()
+                        .background(Color(uiColor: .systemBackground))
                 }
-                Divider()
-            } 
+                .background(Color(uiColor: .systemBackground))
+                .onTapGesture {
+                    showKeyboard = false
+                }
+            }
+            Divider()
+        }
         .navigationBarHidden(true)
         .onAppear {
             if !hasPerformedInitialSetup {
@@ -71,12 +79,13 @@ struct SearchResultsScreen: View {
 
 struct SearchResultsScreen_Previews: PreviewProvider {
     static var previews: some View {
+        
+        // Default Binding<UUID> for preview
         let refreshID = Binding<UUID>(get: {
-                    // Return your initial value here
-                    return UUID()
-                }, set: { newValue in
-                    // Handle the updated value here
-                })
+            return UUID()
+        }, set: { newValue in
+        })
+        
         return SearchResultsScreen(refreshID: refreshID, viewModel: SearchResultsViewModel(), refreshManager: RefreshManager(), unreadMessageCount: 0)
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }

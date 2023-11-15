@@ -13,10 +13,12 @@ import CoreData
 public class Message: NSManagedObject {
     public override func awakeFromInsert() {
         super.awakeFromInsert()
-        //set defaults
-        //id
+        setDefaults()
+    }
+    func setDefaults() {
+        //set to random new UUID
         self.id = UUID()
-        //timestamp ("created on")
+        //set timestamp to date self was first initialized
         self.timestamp = Date()
     }
 }

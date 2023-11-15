@@ -67,6 +67,7 @@ class MessageScreenViewModelTests: XCTestCase {
     }
 }
 
+// MARK: - MockMessageScreenViewModel
 
 class MockMessageScreenViewModel: MessageScreenViewModelProtocol {
     

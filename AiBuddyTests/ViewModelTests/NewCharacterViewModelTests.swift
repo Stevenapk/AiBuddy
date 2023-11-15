@@ -69,6 +69,7 @@ class NewCharacterViewModelTests: XCTestCase {
     }
 }
 
+// MARK: - MockNewCharacterViewModel
 
 class MockNewCharacterViewModel: NewCharacterViewModelProtocol {
     var name = ""

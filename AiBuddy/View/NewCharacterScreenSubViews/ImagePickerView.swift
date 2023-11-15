@@ -8,6 +8,7 @@
 import SwiftUI
 import UIKit
 
+// Image Picker View for adding contact icons
 struct ImagePickerView: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     @Binding var imageData: Data?

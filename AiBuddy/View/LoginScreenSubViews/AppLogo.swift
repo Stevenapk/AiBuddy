@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// App Logo from project asset for use in login screen
 struct AppLogo: View {
     var body: some View {
         HStack {

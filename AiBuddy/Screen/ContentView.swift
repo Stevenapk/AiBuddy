@@ -9,13 +9,24 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
-    var nilString: String?
+    
+    // MARK: - Properties
+    
+    // Login Status
     @AppStorage("log_status") var logStatus: Bool = false
+    
+    // Refresh Manager for homescreen
     @StateObject private var refreshManager = RefreshManager()
+    
+    // MARK: - Body
+    
     var body: some View {
+        
+        // If the user is logged in, present HomeScreen
         if logStatus {
             HomeScreen(viewModel: HomeScreenViewModel(), refreshManager: refreshManager)
         } else {
+        // If user is not logged in, present LoginScreen
             LoginScreen()
         }
     }

@@ -48,9 +48,15 @@ extension UIApplication {
 }
 
 extension View {
+    // A utility function for performing an action without animations
+    /// - Parameters:
+    ///   - action: A closure containing the action to be performed without animations
     func withoutAnimation(action: @escaping () -> Void) {
+        // Create a custom transaction with animations disabled
         var transaction = Transaction()
         transaction.disablesAnimations = true
+        
+        // Execute the action within the custom transaction
         withTransaction(transaction) {
             action()
         }

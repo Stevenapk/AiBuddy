@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Centered formatted date label for MessageScreen
 struct TimestampView: View {
     var date: Date
     

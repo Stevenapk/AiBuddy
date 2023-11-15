@@ -21,6 +21,7 @@ struct AiBuddyApp: App {
 
     var body: some Scene {
         WindowGroup {
+            // Present ContentView with the Persistence Controller instance and view context added to environment
             return ContentView()
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(PersistenceController.shared)

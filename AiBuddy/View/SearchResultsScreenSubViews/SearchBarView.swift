@@ -7,17 +7,20 @@
 
 import SwiftUI
 
+// Search Bar and Cancel Button
 struct SearchBarView: View {
+    
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: SearchResultsViewModel
     @FocusState var showKeyboard: Bool
 
     var body: some View {
         HStack {
+            // Search Bar
             SearchBar(text: $viewModel.searchText, showKeyboard: _showKeyboard)
-
+            
+            // Cancel Button with dismiss to homescreen action
             Button("Cancel") {
-                // Dismiss to HomeScreen
                 dismiss()
             }
         }

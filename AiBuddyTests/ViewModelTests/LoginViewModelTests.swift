@@ -46,8 +46,8 @@ class LoginViewModelTests: XCTestCase {
     }
 }
 
+// MARK: - MockLoginViewModel
 
-// Define MockLoginViewModel for testing purposes
 class MockLoginViewModel: LoginViewModelProtocol {
 
     //MARK: Error Properties

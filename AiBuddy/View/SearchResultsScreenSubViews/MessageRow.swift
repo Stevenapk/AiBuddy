@@ -25,11 +25,13 @@ struct MessageRow: View {
                         .font(.headline)
                 }
             } else {
+                // Display contact image if the user has assigned one
                 Image(uiImage: message.character.image ?? UIImage(systemName: "person.crop.circle")!)
                     .resizable()
                     .frame(width: 52.375, height: 52.375)
                     .clipShape(Circle())
             }
+            // Show Characters name and the highlighted searchText in their relevant message
             VStack(alignment: .leading) {
                 Text(message.character.name)
                     .font(.headline)

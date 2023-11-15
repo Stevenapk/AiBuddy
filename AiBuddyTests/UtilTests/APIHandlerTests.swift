@@ -24,8 +24,7 @@ final class APIHandlerTests: XCTestCase {
     }
     
     func testGetResponseSuccess() {
-        // Set up your mockOpenAIAPI to return a successful response
-        
+        // Set up mockApiHandler to return a successful response
         mockApiHandler.getResponse(input: "input", isAIBuddy: true) { result in
             switch result {
             case .success(let output):
@@ -37,7 +36,7 @@ final class APIHandlerTests: XCTestCase {
     }
     
     func testGetResponseFailure() {
-        // Set up your mockOpenAIAPI to return a failure response
+        // Set up mockApiHandler to return a failure response
         mockApiHandler.shouldSucceed = false
         
         mockApiHandler.getResponse(input: "input", isAIBuddy: true) { result in
@@ -57,7 +56,8 @@ enum OpenAIError: Error {
     case someError // Add a specific error case for testing
 }
 
-// Define MockOpenAIAPI for testing purposes
+// MARK: - MockAPIHandler
+
 class MockAPIHandler: APIHandlerProtocol {
     
     var shouldSucceed: Bool = true // This flag determines if the mock should succeed or fail
@@ -71,5 +71,4 @@ class MockAPIHandler: APIHandlerProtocol {
             completion(.failure(error))
         }
     }
-    
 }

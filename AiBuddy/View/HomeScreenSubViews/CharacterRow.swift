@@ -56,7 +56,6 @@ struct CharacterRow: View {
             }
             Spacer()
                 .frame(width: 20)
-//            .padding(.top, 5) // Add top padding
         }
     }
 }

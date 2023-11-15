@@ -21,7 +21,9 @@ struct EditContactIconView: View {
         } label: {
             EditContactIcon(contactImage: $viewModel.contactImage, name: $viewModel.name, isKeyboardShowing: $isKeyboardShowing)
         }
+        // Action Sheet with options to select image, capture image, or remove current image
         .actionSheet(isPresented: $showEditImageActionSheet) {
+            //Add button to select a picture from camera roll by default
             var buttons: [ActionSheet.Button] = [
                 .default(Text("Camera Roll")) {
                     // Handle selecting from camera roll
@@ -30,6 +32,7 @@ struct EditContactIconView: View {
                 .cancel()
             ]
 
+            //If the user's camera is available, add an option to capture a new image with camera
             if viewModel.isCameraAvailable() {
                 buttons.insert(.default(Text("Camera"), action: {
                     // Handle taking a new photo
@@ -37,6 +40,7 @@ struct EditContactIconView: View {
                 }), at: 1)
             }
 
+            // If there is a user-selected contact image, add option to remove it
             if viewModel.contactImage != nil {
                 buttons.append(.default(Text("Remove Current Photo"), action: {
                     // Remove Current Photo from Contact Image
@@ -44,7 +48,6 @@ struct EditContactIconView: View {
                     viewModel.contactImage = nil
                 }))
             }
-
             return ActionSheet(title: Text("Select Image"), buttons: buttons)
         }
     }
