@@ -38,7 +38,12 @@ class LoginViewModelTests: XCTestCase {
         mockLoginViewModel.mockAppleAuthenticate(shouldSucceed: false)
         XCTAssertFalse(mockLoginViewModel.logStatus)
     }
-
+    
+    func testHandleError() {
+        mockLoginViewModel.mockAppleAuthenticate(shouldSucceed: false)
+        XCTAssertTrue(mockLoginViewModel.showError, "Error should be shown.")
+        XCTAssertEqual(mockLoginViewModel.errorMessage, "some error", "Error message should be same as provided.")
+    }
 }
 
 
@@ -56,17 +61,20 @@ class MockLoginViewModel: LoginViewModelProtocol {
     @Published var nonce: String = ""
     
     //MARK: Error Handling
-    func handleError(error: Error) async {
-        await MainActor.run(body: {
-            errorMessage = error.localizedDescription
-            showError.toggle()
-        })
+    func handleError(errorString: String)  {
+        errorMessage = errorString
+        showError.toggle()
     }
     
     //MARK: Mock Apple Authenticate
     func mockAppleAuthenticate(shouldSucceed: Bool) {
-        guard shouldSucceed else {return}
-        self.logStatus = true
+        if shouldSucceed {
+            self.logStatus = true
+        } else {
+            self.logStatus = false
+            let errorString = "some error"
+            handleError(errorString: errorString)
+        }
     }
     
 }

@@ -25,15 +25,12 @@ struct NewCharacterScreen: View {
         NavigationView {
             VStack {
                 EditContactIconView(viewModel: viewModel, isKeyboardShowing: $isKeyboardShowing)
-                    .animation(.easeInOut)
                 NameTextField(name: $viewModel.name)
-                    .animation(.easeInOut)
                 ToggleFamousCharacterView(isNameRecognizable: $viewModel.isNameRecognizable, name: $viewModel.name)
-                    .animation(.easeInOut)
                 AboutMeView(aboutMe: $viewModel.aboutMe, isNameRecognizable: $viewModel.isNameRecognizable, isKeyboardShowing: $isKeyboardShowing)
-                    .animation(.easeInOut)
                 Spacer()
             }
+            .animation(.easeInOut, value: isKeyboardShowing)
             .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidHideNotification)) { _ in
                 isKeyboardShowing = false
             }

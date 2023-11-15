@@ -16,8 +16,6 @@ struct PersistenceError: Identifiable {
 
 class PersistenceController: ObservableObject {
     
-    @EnvironmentObject var alertManager: ErrorAlertManager
-    
     static let shared = PersistenceController()
 
     static var preview: PersistenceController = {
@@ -28,8 +26,7 @@ class PersistenceController: ObservableObject {
 
     let container: NSPersistentCloudKitContainer
     
-    @Published var saveError: PersistenceError? = nil // Publish the save error
-    @Published var persistentStoreError: PersistenceError? = nil // Publish the persistent store error
+    @Published var persistenceError: PersistenceError? = nil // Publish the persistent store error
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "AiBuddy")
@@ -38,9 +35,7 @@ class PersistenceController: ObservableObject {
         }
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error {
-                self.persistentStoreError = PersistenceError(error: error)
-            }
-            if let error = error as NSError? {
+                self.persistenceError = PersistenceError(error: error)
                 // Replace this implementation with code to handle the error appropriately.
                 /*
                  Typical reasons for an error here include:
@@ -50,7 +45,6 @@ class PersistenceController: ObservableObject {
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
                  */
-                print("Unresolved error \(error), \(error.userInfo)")
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
@@ -63,7 +57,7 @@ class PersistenceController: ObservableObject {
             do {
                 try context.save()
             } catch let error {
-                self.saveError = PersistenceError(error: error)
+                self.persistenceError = PersistenceError(error: error)
             }
         }
     }

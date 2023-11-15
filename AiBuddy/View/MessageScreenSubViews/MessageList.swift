@@ -39,8 +39,8 @@ struct MessageList: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     ForEach(viewModel.messages.indices, id: \.self) { index in
-                        var previousIndex = index > 1 ? (index-1) : 0
-                        var topPadding = viewModel.messages[index].isSentByUser == viewModel.messages[previousIndex].isSentByUser ? 0.0 : 15.0
+                        let previousIndex = index > 1 ? (index-1) : 0
+                        let topPadding = viewModel.messages[index].isSentByUser == viewModel.messages[previousIndex].isSentByUser ? 0.0 : 15.0
                         if index == 0 || viewModel.messages[index].timestamp.timeIntervalSince(viewModel.messages[index-1].timestamp) >= 3600 {
                             
                             TimestampView(date: viewModel.messages[index].timestamp)

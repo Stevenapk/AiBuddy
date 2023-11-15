@@ -12,7 +12,6 @@ import CoreData
 struct MessageScreen: View {
     
     @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var alertManager: ErrorAlertManager
     
     @State private var hasPerformedInitialSetup = false
     @State private var keyboardDismissed = true
@@ -22,15 +21,6 @@ struct MessageScreen: View {
     @Binding var refreshID: UUID
 
     var character: Character
-    
-    // Fetch Messages from Core Data and sort by timestamp
-    //    @FetchRequest(
-    //        entity: Message.entity(),
-    //        sortDescriptors: [NSSortDescriptor(keyPath: \Message.timestamp, ascending: true)]
-    //    ) var messages: FetchedResults<Message>
-//
-//    @State var messages: [Message]
-    
     var messageIndexToScrollTo: Int?
     var unreadMessageCount: Int
 
@@ -48,18 +38,10 @@ struct MessageScreen: View {
             MessageInputField(character: character, viewModel: viewModel, keyboardDismissed: $keyboardDismissed)
 
         }
-        .alert(isPresented: $alertManager.showAlert) {
+        .alert(isPresented: $viewModel.showAlertMessage) {
             Alert(
                 title: Text("Error"),
-                message: Text(alertManager.message),
-                dismissButton: .default(Text("OK"))
-            )
-        }
-        .alert(item: $persistenceController.saveError) { saveError in
-            // Present an alert based on the error
-            Alert(
-                title: Text("Error"),
-                message: Text(saveError.error.localizedDescription),
+                message: Text(viewModel.alertMessage),
                 dismissButton: .default(Text("OK"))
             )
         }

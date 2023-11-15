@@ -106,8 +106,6 @@ extension HomeScreenViewModel {
                 return false
             }
         } catch {
-            // Handle the error here (if any)
-            print("Called: has not opened before, Error fetching AppStatus: \(error)")
             let appStatus = AppStatus(context: Constants.context)
             appStatus.hasBeenOpenedBefore = true
             PersistenceController.shared.saveContext()

@@ -27,11 +27,9 @@ class LoginViewModel: ObservableObject, LoginViewModelProtocol {
     @Published var nonce: String = ""
     
     //MARK: Error Handling
-    func handleError(error: Error) async {
-        await MainActor.run(body: {
-            errorMessage = error.localizedDescription
-            showError.toggle()
-        })
+    func handleError(error: Error) {
+        errorMessage = error.localizedDescription
+        showError.toggle()
     }
     
     //MARK: Apple Signin Api
@@ -50,8 +48,9 @@ class LoginViewModel: ObservableObject, LoginViewModelProtocol {
         let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com", idToken: tokenString, rawNonce: nonce)
         
         Auth.auth().signIn(with: firebaseCredential) { (result, err) in
-            if let _ = err {
+            if let err = err {
                 //Login Error
+                self.handleError(error: err)
                 return
             }
             

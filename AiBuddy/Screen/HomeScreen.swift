@@ -16,7 +16,6 @@ class RefreshManager: ObservableObject {
 struct HomeScreen: View {
  
     @EnvironmentObject var persistenceController: PersistenceController
-//    @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var viewModel: HomeScreenViewModel
     @ObservedObject var refreshManager: RefreshManager
     
@@ -24,7 +23,6 @@ struct HomeScreen: View {
     
     @State private var refreshID = UUID() // Unique identifier for view refreshing
     @State private var hasPerformedInitialSetup = false
-    
     @State private var shouldUpdate = false
     
     // Fetch characters using Core Data
@@ -181,11 +179,11 @@ struct HomeScreen: View {
                     }
                 }
             }
-            .alert(item: $persistenceController.persistentStoreError) { persistentStoreError in
+            .alert(item: $persistenceController.persistenceError) { persistenceError in
                 // Present an alert based on the error
                 Alert(
                     title: Text("Error"),
-                    message: Text(persistentStoreError.error.localizedDescription),
+                    message: Text(persistenceError.error.localizedDescription),
                     dismissButton: .default(Text("OK"))
                 )
             }

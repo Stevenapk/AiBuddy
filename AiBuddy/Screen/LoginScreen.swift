@@ -38,11 +38,11 @@ struct LoginScreen: View {
         .ignoresSafeArea()
         .alert(loginModel.errorMessage, isPresented: $loginModel.showError) {
         }
-        .alert(item: $persistenceController.persistentStoreError) { persistentStoreError in
+        .alert(item: $persistenceController.persistenceError) { persistenceError in
             // Present an alert based on the error
             Alert(
                 title: Text("Error"),
-                message: Text(persistentStoreError.error.localizedDescription),
+                message: Text(persistenceError.error.localizedDescription),
                 dismissButton: .default(Text("OK"))
             )
         }

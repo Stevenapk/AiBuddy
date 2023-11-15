@@ -24,7 +24,6 @@ struct AiBuddyApp: App {
             return ContentView()
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(PersistenceController.shared)
-                .environmentObject(ErrorAlertManager())
         }
     }
 }

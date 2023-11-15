@@ -56,15 +56,8 @@ class HomeScreenViewModelTests: XCTestCase {
 
     
     func testHasUserOpenedAppBefore() {
-        do {
             let hasOpenedBefore = viewModel.hasUserOpenedAppBefore()
-            
-            let appStatusCountAfter = try context.fetch(AppStatus.fetchRequest()).count
-            
             XCTAssertFalse(hasOpenedBefore, "User should be considered as NOT having opened the app before")
-        } catch {
-            XCTFail("Error fetching AppStatus entities: \(error)")
-        }
     }
 }
 
