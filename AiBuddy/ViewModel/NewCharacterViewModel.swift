@@ -7,7 +7,13 @@
 
 import SwiftUI
 
-class NewCharacterViewModel: ObservableObject {
+protocol NewCharacterViewModelProtocol {
+    func isValidForSave(existingCharacter: Character?) -> Bool
+    func saveCharacter(existingCharacter: Character?, completion: @escaping (Bool) -> Void)
+    func prefillFields(for character: Character)
+}
+
+class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
     
     @Published var name = ""
     @Published var aboutMe = ""

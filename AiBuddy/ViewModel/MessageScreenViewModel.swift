@@ -17,16 +17,8 @@ protocol MessageScreenViewModelProtocol {
     func getKeyboardHeight() -> CGFloat
 }
 
-class MessageScreenViewModel: ObservableObject {
-    
-//    static let shared = MessageScreenViewModel(messages: [])
-//    private let messageScreenViewModel: MessageScreenViewModelProtocol
-//
-//    init(messages: [Message], viewModel: MessageScreenViewModelProtocol = shared) {
-//        self.messageScreenViewModel = viewModel
-//        self.messages = messages
-//    }
-    
+class MessageScreenViewModel: ObservableObject, MessageScreenViewModelProtocol {
+
     init(messages: [Message]) {
         self.messages = messages
     }
@@ -84,12 +76,13 @@ class MessageScreenViewModel: ObservableObject {
                 //append response to messages array
                 self.messages.append(message)
                 //TODO: delete these two things below after you've tested that the alert works :)
-                self.alertManager.activateAlert("The message was succesful!!")
+//                self.alertManager.activateAlert("The message was succesful!!")
                 print("SUCCESS SHOULD SHOW ALERT!!!")
             case .failure(let error):
                 // Present an error alert in MessageScreen with the error
                 // Set the alert message according to the specific error
-                self.alertManager.activateAlert("It looks like there was an issue. \(error.localizedDescription)")
+//                self.alertManager.activateAlert("It looks like there was an issue. \(error.localizedDescription)")
+                print("ah \(error)")
             }
         }
     }

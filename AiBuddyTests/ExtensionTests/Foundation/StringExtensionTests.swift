@@ -10,18 +10,6 @@ import XCTest
 
 class StringExtensionsTests: XCTestCase {
     
-//    func testHighlighted() {
-//        let originalString = "Hello, World!"
-//        let searchString = "World"
-//        
-//        let attributedString = originalString.highlighted(letters: searchString)
-//        
-//        // Validate the attributes of the attributed string
-//        let nsRange = NSRange(location: 7, length: 5) // Range of "World" in the original string
-//        let color = attributedString.getAttributes(at: nsRange, effectiveRange: nil)[.foregroundColor] as? UIColor
-//        XCTAssertEqual(color, UIColor.label, "Highlighted text should have label color")
-//    }
-    
     func testRemoveUnwantedLines() {
         let inputString = """
             Line 1.

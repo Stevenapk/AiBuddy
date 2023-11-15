@@ -13,12 +13,14 @@ class MessageExtensionTests: XCTestCase {
     
     var mockCharacter: Character!
     var mockMessage: Message!
+    var context: NSManagedObjectContext!
     
     override func setUp() {
         super.setUp()
         
+        context = PersistenceController(inMemory: true).container.viewContext
+        
         // Initialize a mock Character object
-        let context = Constants.context
         mockCharacter = Character(context: context)
         mockCharacter.name = "Mock Character"
         mockCharacter.promptPrefix = "Hello"
@@ -32,13 +34,20 @@ class MessageExtensionTests: XCTestCase {
         mockMessage.set(mockCharacter)
     }
     
+    override func tearDown() {
+        mockCharacter = nil
+        mockMessage = nil
+        context = nil
+        super.tearDown()
+    }
+    
     func testSet() {
         // Ensure the message's character is initially set to the mock character
         XCTAssertEqual(mockCharacter.lastText, "Test Message", "Last text should be set correctly")
         XCTAssertEqual(mockCharacter.modified, mockMessage.timestamp, "Modified date should be set correctly")
         
         // Update the message's character
-        let newCharacter = Character(context: PersistenceController.shared.container.viewContext)
+        let newCharacter = Character(context: context)
         newCharacter.name = "New Character"
         newCharacter.promptPrefix = "Hi"
         newCharacter.isRecognizableName = false

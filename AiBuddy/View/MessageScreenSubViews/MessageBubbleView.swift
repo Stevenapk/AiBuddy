@@ -24,6 +24,9 @@ struct MessageBubbleView: View {
     var bottomMessageIndex: Int { messages.indices.last ?? 0 }
     
     func scrollToBottom(with proxy: ScrollViewProxy) {
+        guard messages.indices.contains(bottomMessageIndex) else {
+            return // Message index is out of bounds, do not scroll
+        }
         withAnimation {
             proxy.scrollTo(bottomMessageIndex, anchor: .bottom)
         }
@@ -81,7 +84,6 @@ struct MessageBubbleView: View {
                     buttons: [
                         .destructive(Text("Delete"), action: {
                             handleDeleteMessage(message)
-                            messageDeleted = true
                         }),
                         .cancel(Text("Cancel"))
                     ]
@@ -113,6 +115,8 @@ struct MessageBubbleView: View {
             } else {
                 character.lastText = ""
             }
+        } else {
+            messageDeleted = true
         }
         
         // Save changes to core data

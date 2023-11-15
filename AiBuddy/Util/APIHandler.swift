@@ -16,12 +16,6 @@ final class APIHandler: APIHandlerProtocol {
     
     static let shared = APIHandler()
     
-    private let apiHandler: APIHandlerProtocol
-        
-    init(apiHandler: APIHandlerProtocol = shared) {
-        self.apiHandler = apiHandler
-    }
-    
     //Send first single message -> called when creating a character or when character.sortedMessages.isEmpty
     public func getResponse(input: String, isAIBuddy: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         

@@ -21,18 +21,6 @@ class LoginViewModelTests: XCTestCase {
         mockLoginViewModel = nil
     }
     
-//    func testHandleError() {
-//        // Simulate an error
-//        let testError = NSError(domain: "com.yourapp.error", code: 42, userInfo: [NSLocalizedDescriptionKey: "Test Error"])
-//        
-//        // Call handleError
-//        loginViewModel.handleError(error: testError)
-//        
-//        // Check if errorMessage and showError are updated
-//        XCTAssertEqual(loginViewModel.errorMessage, "Test Error")
-//        XCTAssertTrue(loginViewModel.showError)
-//    }
-    
     func testSha256() {
         let inputString = "Hello, World!"
         let expectedOutput = "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"

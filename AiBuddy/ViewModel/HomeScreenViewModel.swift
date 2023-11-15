@@ -7,7 +7,13 @@
 
 import SwiftUI
 
-class HomeScreenViewModel: ObservableObject {
+protocol HomeScreenViewModelProtocol {
+    func rollForRandomNewMessage(from character: Character, completion: @escaping (Bool) -> Void)
+    func createDefaultCharactersIfNeeded()
+    func hasUserOpenedAppBefore() -> Bool
+}
+
+class HomeScreenViewModel: ObservableObject, HomeScreenViewModelProtocol {
     
     @Published var searchText = "" // Text for searching characters
     @Published var selectedCharacter: Character? = nil // Selected character for detailed view
@@ -30,9 +36,6 @@ class HomeScreenViewModel: ObservableObject {
                 return 2
             }
         }
-    }
-    
-    init() {
     }
     
     func rollForRandomNewMessage(from character: Character, completion: @escaping (Bool) -> Void) {

@@ -41,8 +41,8 @@ struct EditContactIcon: View {
                     }
                 }
             }
-            .frame(width: isKeyboardShowing ? 50 : 150,
-                   height: isKeyboardShowing ? 50 : 150)
+            .frame(width: isKeyboardShowing ? 50 : 105,
+                   height: isKeyboardShowing ? 50 : 105)
             Text(contactImage != nil ? "Edit Photo" : "Add Photo")
                 .font(.caption)
                 .padding(4)

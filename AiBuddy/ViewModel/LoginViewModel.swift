@@ -15,14 +15,7 @@ import AuthenticationServices
 //#endif
 
 class LoginViewModel: ObservableObject, LoginViewModelProtocol {
-    
-    static let shared = LoginViewModel()
-    private let loginViewModel: LoginViewModelProtocol
-        
-    init(loginViewModel: LoginViewModelProtocol = shared) {
-        self.loginViewModel = loginViewModel
-    }
-    
+
     //MARK: Error Properties
     @Published var showError: Bool = false
     @Published var errorMessage: String = ""
