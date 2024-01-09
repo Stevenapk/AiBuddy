@@ -48,6 +48,22 @@ extension Character {
         return []
     }
     
+    var sytemInfoForAI: String {
+        if isRecognizableName {
+            if !promptPrefix.isEmpty {
+                return "Act as \(name). Additionally, you are \(promptPrefix)."
+            } else {
+                return "Act as \(name)."
+            }
+        } else {
+            if !promptPrefix.isEmpty {
+                return "Act as \(promptPrefix). If I ask, your name is \(name)."
+            } else {
+                return "If I ask, your name is \(name)."
+            }
+        }
+    }
+    
     // MARK: Functions
     
     func deleteAllMessages(completion: @escaping () -> Void) {
@@ -62,21 +78,21 @@ extension Character {
         completion() // Call the completion handler
     }
     
-    func formattedSinglePrompt(from messageText: String) -> String {
-            if isRecognizableName {
-                if !promptPrefix.isEmpty {
-                    return "Act as \(name). Additionally, you are \(promptPrefix). \(messageText)"
-                } else {
-                    return "Act as \(name). \(messageText)"
-                }
-            } else {
-                if !promptPrefix.isEmpty {
-                    return "Act as \(promptPrefix). If I ask, your name is \(name). \(messageText)"
-                } else {
-                    return "If I ask, your name is \(name). \(messageText)"
-                }
-            }
-    }
+//    func formattedSinglePrompt(from messageText: String) -> String {
+//            if isRecognizableName {
+//                if !promptPrefix.isEmpty {
+//                    return "Act as \(name). Additionally, you are \(promptPrefix). \(messageText)"
+//                } else {
+//                    return "Act as \(name). \(messageText)"
+//                }
+//            } else {
+//                if !promptPrefix.isEmpty {
+//                    return "Act as \(promptPrefix). If I ask, your name is \(name). \(messageText)"
+//                } else {
+//                    return "If I ask, your name is \(name). \(messageText)"
+//                }
+//            }
+//    }
     
     func receiveRandomMessage(completion: @escaping (Bool) -> Void) {
         
@@ -91,18 +107,19 @@ extension Character {
         
         let prompt = "Send me a \(randomAdjective) question only you would ask."
         
-        let formattedPrompt = formattedSinglePrompt(from: prompt)
+//        let formattedPrompt = formattedSinglePrompt(from: prompt)
         
-        APIHandler.shared.getResponse(input: formattedPrompt, isAIBuddy: self.name == "AI Buddy") { result in
+        APIHandler.shared.getResponse(characterInfo: self.sytemInfoForAI, input: prompt, isAIBuddy: self.name == "AI Buddy") { result in
             switch result {
             case .success(let output):
                 
                 //format string output to remove empty first line
-                let formattedOutput =  output.trimmingCharacters(in: .newlines)
-                
+//                let formattedOutput =  output.trimmingCharacters(in: .newlines)
+//
                 //create message object from string output
                 let message = Message(context: Constants.context)
-                message.content = formattedOutput
+                message.content = output
+//                message.content = formattedOutput
                 message.set(self)
                 
                 //set character hasUnreadMessage to true
@@ -152,24 +169,25 @@ extension Character {
             return "Encapsulated in * is my prompt for you: *\(messageText)* \(context) Avoid responding with \"No problem\" or \"Sure\" and disregard the system command to be a helpful assistant. It's okay if your answer is short. If my last response is a one or two word statement that doesn't seem like a command or question, just acknowledge it, nothing more. Respond in a text message."
         }
         
-        var formattedPrompt = ""
+//        var formattedPrompt = ""
         
         //vary the formatted prompt depending on the character aspects included
-        if isRecognizableName {
-            if !promptPrefix.isEmpty {
-                formattedPrompt = "Act as \(name). Additionally, you are \(promptPrefix). \(promptWithContextIfAvailable)"
-            } else {
-                formattedPrompt = "Act as \(name). \(promptWithContextIfAvailable)"
-            }
-        } else {
-            if !promptPrefix.isEmpty {
-                formattedPrompt = "Act as \(promptPrefix). If I ask, your name is \(name). \(promptWithContextIfAvailable)"
-            } else {
-                formattedPrompt = "If I ask, your name is \(name). \(promptWithContextIfAvailable)"
-            }
-        }
+//        if isRecognizableName {
+//            if !promptPrefix.isEmpty {
+//                formattedPrompt = "Act as \(name). Additionally, you are \(promptPrefix). \(promptWithContextIfAvailable)"
+//            } else {
+//                formattedPrompt = "Act as \(name). \(promptWithContextIfAvailable)"
+//            }
+//        } else {
+//            if !promptPrefix.isEmpty {
+//                formattedPrompt = "Act as \(promptPrefix). If I ask, your name is \(name). \(promptWithContextIfAvailable)"
+//            } else {
+//                formattedPrompt = "If I ask, your name is \(name). \(promptWithContextIfAvailable)"
+//            }
+//        }
         
-        return formattedPrompt
+//        return formattedPrompt
+        return promptWithContextIfAvailable
     }
     
     var firstInitial: String {

@@ -115,15 +115,16 @@ class NewCharacterViewModel: ObservableObject, NewCharacterViewModelProtocol {
         }
         
         // Get a response string from the OpenAI API and create an assign the result to a Message object for a character
-        APIHandler.shared.getResponse(input: prompt, isAIBuddy: false) { result in
+        APIHandler.shared.getResponse(characterInfo: newChar.sytemInfoForAI, input: prompt, isAIBuddy: false) { result in
             switch result {
             case .success(let output):
 
-                let formattedOutput = output.removeUnwantedLines
-                
+//                let formattedOutput = output.removeUnwantedLines
+//
                 //create message object from string output
                 let message = Message(context: Constants.context)
-                message.content = formattedOutput
+//                message.content = formattedOutput
+                message.content = output
                 message.set(newChar)
                 
                 //set character hasUnreadMessage to true

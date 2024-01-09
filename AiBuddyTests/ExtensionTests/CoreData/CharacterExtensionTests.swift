@@ -47,19 +47,19 @@ class CharacterExtensionTests: XCTestCase {
         }
     }
 
-    func testFormattedSinglePrompt() {
-        // Create a mock character
-        let mockCharacter = Character(context: context)
-        mockCharacter.name = "Mock Character"
-        mockCharacter.isRecognizableName = true
-        mockCharacter.promptPrefix = "Mock Prefix"
-
-        let messageText = "Sample Message Text"
-
-        let formattedPrompt = mockCharacter.formattedSinglePrompt(from: messageText)
-
-        XCTAssertEqual(formattedPrompt, "Act as Mock Character. Additionally, you are Mock Prefix. \(messageText)", "Formatted prompt should match expected result")
-    }
+//    func testFormattedSinglePrompt() {
+//        // Create a mock character
+//        let mockCharacter = Character(context: context)
+//        mockCharacter.name = "Mock Character"
+//        mockCharacter.isRecognizableName = true
+//        mockCharacter.promptPrefix = "Mock Prefix"
+//
+//        let messageText = "Sample Message Text"
+//
+//        let formattedPrompt = mockCharacter.formattedSinglePrompt(from: messageText)
+//
+//        XCTAssertEqual(formattedPrompt, "Act as Mock Character. Additionally, you are Mock Prefix. \(messageText)", "Formatted prompt should match expected result")
+//    }
 
     func testFirstInitial() {
         let character = Character(context: context)

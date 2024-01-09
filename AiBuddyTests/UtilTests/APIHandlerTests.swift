@@ -25,7 +25,7 @@ final class APIHandlerTests: XCTestCase {
     
     func testGetResponseSuccess() {
         // Set up mockApiHandler to return a successful response
-        mockApiHandler.getResponse(input: "input", isAIBuddy: true) { result in
+        mockApiHandler.getResponse(characterInfo: "You are a helpful assistant and friend.", input: "input", isAIBuddy: true) { result in
             switch result {
             case .success(let output):
                 XCTAssertEqual(output, "Mocked Response")
@@ -39,7 +39,7 @@ final class APIHandlerTests: XCTestCase {
         // Set up mockApiHandler to return a failure response
         mockApiHandler.shouldSucceed = false
         
-        mockApiHandler.getResponse(input: "input", isAIBuddy: true) { result in
+        mockApiHandler.getResponse(characterInfo: "You are a helpful assistant and friend.", input: "input", isAIBuddy: true) { result in
             switch result {
             case .success(_):
                 XCTFail("Expected failure")
@@ -62,7 +62,7 @@ class MockAPIHandler: APIHandlerProtocol {
     
     var shouldSucceed: Bool = true // This flag determines if the mock should succeed or fail
     
-    func getResponse(input: String, isAIBuddy: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func getResponse(characterInfo: String, input: String, isAIBuddy: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         if shouldSucceed {
             let mockResponse = "Mocked Response"
             completion(.success(mockResponse))
