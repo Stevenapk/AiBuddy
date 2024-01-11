@@ -1,6 +1,6 @@
 # AI Buddy
 
-## Synopsis
+## Concept
 
 AI Buddy is a simple messaging app reminiscent of iMessage. However, instead of contacts, you can define your own characters. Want to text Selena Gomez as if she was your friend from high school? Why Not? Want a budget travel guide for the state or country you live in? No problem. 
 
