@@ -10,6 +10,6 @@ The idea of the app is to have fun and create a sort of list of different charac
 
 The project was created in SwiftUI using the MVVM design pattern. It makes use of OpenAI through backend cloud function requests with Firebase for authentication. It also has a high test coverage using XCTest. 
 
-## Other Features
+## Bonus Features
 
 Other features include characters randomly texting you first, characters taking into account context of your conversation where necessary, specifying unique behaviors and attitudes for them, a text-message-like quality to the way they message you, and adding custom contact images for each character.
