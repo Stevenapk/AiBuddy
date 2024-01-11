@@ -6,4 +6,4 @@ The idea of the app is to have fun and create a sort of list of different charac
 
 The project was created in SwiftUI using the MVVM design pattern. It also has a high test coverage percentage using XCTest. 
 
-Other features include adding contact images for your characters, characters taking into account context of your conversation where necessary, specifying unique behaviors and attitudes for them, and a text-message-like quality to the way they message you. 
+Other features include characters randomly texting you first, characters taking into account context of your conversation where necessary, specifying unique behaviors and attitudes for them, a text-message-like quality to the way they message you, and adding contact images for each character.
